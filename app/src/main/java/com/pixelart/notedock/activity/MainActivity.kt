@@ -1,11 +1,12 @@
 package com.pixelart.notedock.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.lifecycle.Observer
+import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.ViewDataBinding
+import com.pixelart.notedock.BR
 import com.pixelart.notedock.R
+import com.pixelart.notedock.setupDataBinding
 import com.pixelart.notedock.viewModel.MainViewModel
-import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
@@ -16,17 +17,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        observeLiveData()
-    }
-
-    private fun observeLiveData() {
-        mainViewModel.userNameLd.observe(this, Observer {
-            textField.text = it
-        })
-
-        mainViewModel.koinTestLd.observe(this, Observer {
-            textFieldKoin.text = it
-        })
-
+        setupDataBinding<ViewDataBinding>(R.layout.activity_main, BR.viewModel to mainViewModel)
     }
 }
