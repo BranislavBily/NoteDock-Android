@@ -6,14 +6,14 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: "kotlin-kapt"
 
-apply plugin: 'com.google.gms.google-services'
-
 android {
     compileSdkVersion 29
     defaultConfig {
         applicationId "com.pixelart.notedock"
         minSdkVersion 19
         targetSdkVersion 29
+        //I was getting Error: null, Cannot fit requested classes in a single dex file (# methods: 101929 > 65536), this fixed it
+        multiDexEnabled true
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -28,6 +28,8 @@ android {
         enabled = true
     }
 }
+
+apply plugin: 'com.google.gms.google-services'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -50,4 +52,6 @@ dependencies {
 
     //Firebase
     implementation 'com.google.firebase:firebase-analytics:17.2.0'
+    implementation 'com.google.firebase:firebase-auth:19.1.0'
+    implementation 'com.google.firebase:firebase-firestore:21.1.1'
 }

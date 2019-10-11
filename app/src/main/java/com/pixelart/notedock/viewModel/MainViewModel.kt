@@ -1,11 +1,15 @@
 package com.pixelart.notedock.viewModel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.firestore.EventListener
+import com.pixelart.notedock.domain.repository.FolderRepository
 import com.pixelart.notedock.domain.usecase.KoinTestingUseCase
 
-class MainViewModel(koinTestingUseCase: KoinTestingUseCase): ViewModel() {
+class MainViewModel(koinTestingUseCase: KoinTestingUseCase,
+                    private val folderRepository: FolderRepository): ViewModel() {
 
 
 
@@ -18,4 +22,12 @@ class MainViewModel(koinTestingUseCase: KoinTestingUseCase): ViewModel() {
         it.postValue(koinTestingUseCase.testKoin())
     }
     val koinTest: LiveData<String> = _koinTest
+
+    private val _firebaseTest = MutableLiveData<String>().also {
+        it.postValue("nic")
+        folderRepository.getFolders(EventListener {list, _ ->
+            Log.i("ViewController", list.toString())
+        })
+    }
+    val firebaseTest: LiveData<String> = _firebaseTest
 }
