@@ -8,7 +8,7 @@ interface FirebaseIDSRepository {
 
 class FirebaseIDSImpl: FirebaseIDSRepository {
     override fun getCollectionFolders(): String {
-        return "folder"
+        return "folders"
     }
 
     override fun getFolderName(): String {
