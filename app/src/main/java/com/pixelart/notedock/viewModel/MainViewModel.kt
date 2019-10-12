@@ -6,28 +6,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.EventListener
 import com.pixelart.notedock.domain.repository.FolderRepository
-import com.pixelart.notedock.domain.usecase.KoinTestingUseCase
+import com.pixelart.notedock.module.FolderModule
 
-class MainViewModel(koinTestingUseCase: KoinTestingUseCase,
-                    private val folderRepository: FolderRepository): ViewModel() {
+class MainViewModel(private val folderRepository: FolderRepository): ViewModel() {
 
-
-
-    private val _userName = MutableLiveData<String>().also {
-        it.postValue("Hello world with MVVM!")
-    }
-    val userName: LiveData<String> = _userName
-
-    private val _koinTest = MutableLiveData<String>().also {
-        it.postValue(koinTestingUseCase.testKoin())
-    }
-    val koinTest: LiveData<String> = _koinTest
-
-    private val _firebaseTest = MutableLiveData<String>().also {
-        it.postValue("nic")
+    private val _firebaseTest = MutableLiveData<ArrayList<FolderModule>>().also { liveData ->
         folderRepository.getFolders(EventListener {list, _ ->
-            Log.i("ViewController", list.toString())
+            Log.i("MainViewModel", list.toString())
+            liveData.postValue(list)
         })
     }
-    val firebaseTest: LiveData<String> = _firebaseTest
+    val firebaseTest: LiveData<ArrayList<FolderModule>> = _firebaseTest
 }

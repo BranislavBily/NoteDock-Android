@@ -19,6 +19,7 @@ class FolderRepositoryImpl(
         firebaseInstance.collection(firebaseIDSRepository.getCollectionFolders())
             .addSnapshotListener { queryDocumentSnapshots, _ ->
                 queryDocumentSnapshots?.let {
+                    folders.clear()
                     for (documentSnapshot in it) {
                         folders.add(folderModuleFromDocumentUseCase.getModule(documentSnapshot))
                     }

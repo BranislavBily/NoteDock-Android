@@ -15,7 +15,7 @@ import org.koin.dsl.module
 
 val appModule = module {
     single { KoinTestingImpl() as KoinTestingUseCase}
-    viewModel { MainViewModel(get(), get()) }
+    viewModel { MainViewModel(get()) }
 }
 
 val firebaseModule = module {
