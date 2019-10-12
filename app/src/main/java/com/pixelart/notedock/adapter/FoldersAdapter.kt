@@ -5,14 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.pixelart.notedock.R
-import com.pixelart.notedock.module.FolderModule
+import com.pixelart.notedock.model.FolderModel
 import kotlinx.android.synthetic.main.folders_list_item.view.*
 
 class FoldersAdapter : RecyclerView.Adapter<FoldersAdapter.FoldersHolder>() {
 
-    private var folders = ArrayList<FolderModule>()
+    private var folders = ArrayList<FolderModel>()
 
-    fun setNewData(newData: ArrayList<FolderModule>) {
+    fun setNewData(newData: ArrayList<FolderModel>) {
         folders = newData
         notifyDataSetChanged()
     }
@@ -33,7 +33,7 @@ class FoldersAdapter : RecyclerView.Adapter<FoldersAdapter.FoldersHolder>() {
 
     class FoldersHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
-        fun bindData(folder: FolderModule) {
+        fun bindData(folder: FolderModel) {
             itemView.textViewFolderName.text = folder.name
             itemView.textViewNotesCount.text = folder.notesCount
         }
