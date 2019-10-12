@@ -1,10 +1,10 @@
-package com.pixelart.notedock.module
+package com.pixelart.notedock.model
 
-class FolderModule {
+class FolderModel {
     var name: String? = null
     var notesCount: String? = null
 
     override fun toString(): String {
-        return "FolderModule(name=$name, notesCount=$notesCount)"
+        return "FolderModel(name=$name, notesCount=$notesCount)"
     }
 }
