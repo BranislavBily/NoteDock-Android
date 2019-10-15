@@ -36,11 +36,12 @@ class FolderFragment : Fragment() {
             uid?.let {
                 folderRepository.getFolder(uid, EventListener { folderModel, _ ->
                     folderModel?.let {
-                        textViewFolderDescription.text = it.toString()
+                        textViewFolderDescriptionUID.text = it.uid
+                        textViewFolderDescriptionName.text = it.name
+                        textViewFolderDescriptionNotesCount.text = it.notesCount
                     }
                 })
             }
         }
     }
-
 }

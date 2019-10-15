@@ -11,7 +11,19 @@
             android:layout_height="match_parent" >
 
         <TextView
-                android:id="@+id/textViewFolderDescription"
+                android:id="@+id/textViewFolderDescriptionUID"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.502"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.37" />
+
+        <TextView
+                android:id="@+id/textViewFolderDescriptionName"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -19,6 +31,18 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+                android:id="@+id/textViewFolderDescriptionNotesCount"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.502"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.644" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
