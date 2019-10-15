@@ -28,10 +28,8 @@ class FolderFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val navigationController = Navigation.findNavController(view)
-
-        folderButton.setOnClickListener {
-            navigationController.navigate(R.id.action_folderFragment_to_foldersViewFragment)
+        arguments?.let {
+            textViewFolderDescription.text = it.getString("uid")
         }
     }
 

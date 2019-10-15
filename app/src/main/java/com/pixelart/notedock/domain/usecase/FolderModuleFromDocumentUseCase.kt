@@ -11,6 +11,9 @@ interface FolderModuleFromDocumentUseCase {
 class FolderModuleFromDocumentImpl(private val firebaseIDSRepository: FirebaseIDSRepository): FolderModuleFromDocumentUseCase {
     override fun getModule(documentSnapshot: QueryDocumentSnapshot): FolderModel {
         val folder = FolderModel()
+
+        folder.uid = documentSnapshot.id
+
         documentSnapshot.getString(firebaseIDSRepository.getFolderName())?.let {
             folder.name = it
         }
