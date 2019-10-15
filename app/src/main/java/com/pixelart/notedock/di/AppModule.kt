@@ -5,21 +5,21 @@ import com.pixelart.notedock.domain.repository.FirebaseIDSImpl
 import com.pixelart.notedock.domain.repository.FirebaseIDSRepository
 import com.pixelart.notedock.domain.repository.FolderRepository
 import com.pixelart.notedock.domain.repository.FolderRepositoryImpl
-import com.pixelart.notedock.domain.usecase.FolderModuleFromDocumentImpl
-import com.pixelart.notedock.domain.usecase.FolderModuleFromDocumentUseCase
-import com.pixelart.notedock.domain.usecase.KoinTestingImpl
-import com.pixelart.notedock.domain.usecase.KoinTestingUseCase
+import com.pixelart.notedock.domain.usecase.FolderModelFromDocumentImpl
+import com.pixelart.notedock.domain.usecase.FolderModelFromDocumentSnapshotImpl
+import com.pixelart.notedock.domain.usecase.FolderModelFromDocumentSnapshotUseCase
+import com.pixelart.notedock.domain.usecase.FolderModelFromDocumentUseCase
 import com.pixelart.notedock.viewModel.FoldersViewViewModel
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
-    single { KoinTestingImpl() as KoinTestingUseCase}
     viewModel { FoldersViewViewModel(get())}
 }
 
 val firebaseModule = module {
     single { FirebaseIDSImpl() as FirebaseIDSRepository}
-    single {FolderModuleFromDocumentImpl(get()) as FolderModuleFromDocumentUseCase}
-    single {FolderRepositoryImpl(get(), get(), FirebaseFirestore.getInstance()) as FolderRepository}
+    single { FolderModelFromDocumentImpl(get()) as FolderModelFromDocumentUseCase }
+    single { FolderRepositoryImpl(get(), get(), get(), FirebaseFirestore.getInstance()) as FolderRepository}
+    single { FolderModelFromDocumentSnapshotImpl(get()) as FolderModelFromDocumentSnapshotUseCase }
 }
