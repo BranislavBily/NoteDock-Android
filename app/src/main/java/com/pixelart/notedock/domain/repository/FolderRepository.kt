@@ -30,7 +30,9 @@ class FolderRepositoryImpl(
                 eventListener.onEvent(folder, null)
             }
             .addOnFailureListener { exception ->
-                Log.e(TAG, exception.message)
+                exception.let {
+                    Log.e(TAG, it.message)
+                }
             }
     }
 

@@ -27,7 +27,6 @@ class FolderFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_folder, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
