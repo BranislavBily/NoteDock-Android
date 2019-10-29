@@ -14,5 +14,6 @@
                 android:layout_weight="1"
                 app:defaultNavHost="true"
                 app:navGraph="@navigation/nav_graph"/>
+
     </LinearLayout>
 </layout>
