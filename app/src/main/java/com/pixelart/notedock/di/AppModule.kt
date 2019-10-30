@@ -6,12 +6,14 @@ import com.pixelart.notedock.domain.repository.FirebaseIDSRepository
 import com.pixelart.notedock.domain.repository.FolderRepository
 import com.pixelart.notedock.domain.repository.FolderRepositoryImpl
 import com.pixelart.notedock.domain.usecase.*
-import com.pixelart.notedock.viewModel.FoldersViewViewModel
+import com.pixelart.notedock.viewModel.FolderFragmentViewModel
+import com.pixelart.notedock.viewModel.FoldersViewFragmentViewModel
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
-    viewModel { FoldersViewViewModel(get())}
+    viewModel { FoldersViewFragmentViewModel(get()) }
+    viewModel { FolderFragmentViewModel() }
 }
 
 val firebaseModule = module {
@@ -20,4 +22,5 @@ val firebaseModule = module {
     single { FolderRepositoryImpl(get(), get(), get(), FirebaseFirestore.getInstance()) as FolderRepository}
     single { FolderModelFromDocumentSnapshotImpl(get()) as FolderModelFromDocumentSnapshotUseCase }
     single { AddFolderImpl(get(), FirebaseFirestore.getInstance()) as AddFolderUseCase}
+    single { DeleteFolderImpl(get(), FirebaseFirestore.getInstance()) as DeleteFolderUseCase}
 }

@@ -1,48 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        tools:context=".fragment.FolderFragment">
+<layout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <data>
+
+        <variable
+                name="viewmodel"
+                type="com.pixelart.notedock.viewModel.FolderFragmentViewModel" />
+        <variable
+                name="deleteButtonListener"
+                type="com.pixelart.notedock.viewModel.DeleteButtonListener" />
+    </data>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="match_parent"
+            tools:context=".fragment.FolderFragment">
 
-        <TextView
-                android:id="@+id/textViewFolderDescriptionUID"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.502"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.37" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-        <TextView
-                android:id="@+id/textViewFolderDescriptionName"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                    android:id="@+id/textViewFolderDescriptionUID"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.502"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.37" />
 
-        <TextView
-                android:id="@+id/textViewFolderDescriptionNotesCount"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.502"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.644" />
+            <TextView
+                    android:id="@+id/textViewFolderDescriptionName"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</FrameLayout>
+            <TextView
+                    android:id="@+id/textViewFolderDescriptionNotesCount"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.502"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.644" />
+
+            <Button
+                    android:id="@+id/buttonDeleteFolder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/delete_dialog"
+                    android:onClick="@{() -> deleteButtonListener.buttonClicked()}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.498"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.742" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+</layout>

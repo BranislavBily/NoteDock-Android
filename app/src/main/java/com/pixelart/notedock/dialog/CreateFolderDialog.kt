@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.pixelart.notedock.R
-import com.pixelart.notedock.domain.usecase.AddFolderImpl
 import com.pixelart.notedock.domain.usecase.AddFolderUseCase
 import com.pixelart.notedock.model.FolderModel
 import kotlinx.android.synthetic.main.create_folder_dialog.view.*
@@ -21,13 +20,14 @@ class CreateFolderDialog : DialogFragment() {
             val inflater = requireActivity().layoutInflater
             val view = inflater.inflate(R.layout.create_folder_dialog, null)
             builder.setView(view)
-                .setPositiveButton(R.string.create
+                .setPositiveButton(R.string.create_dialog
                 ) { dialog, id ->
+                    //Deal with size of name of Folder and maybe create better code?
                     val folderModel = FolderModel()
                     folderModel.name = view.editTextFolderName.text.toString()
                     addFolderImpl.addFolder(folderModel)
                 }
-                .setNegativeButton(R.string.cancel
+                .setNegativeButton(R.string.cancel_dialog
                 ) { dialog, id ->
                     dialog.cancel()
                 }

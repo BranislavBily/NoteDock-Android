@@ -1,10 +1,7 @@
 package com.pixelart.notedock.fragment
 
 
-import android.app.AlertDialog
-import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,13 +14,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.pixelart.notedock.R
 import com.pixelart.notedock.adapter.FoldersAdapter
 import com.pixelart.notedock.dialog.CreateFolderDialog
-import com.pixelart.notedock.viewModel.FoldersViewViewModel
+import com.pixelart.notedock.viewModel.FoldersViewFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_folders_view.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
 
-    private val foldersViewViewModel: FoldersViewViewModel by viewModel()
+    private val foldersViewFragmentViewModel: FoldersViewFragmentViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,7 +48,7 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
 
 
     private fun observeLiveData(foldersAdapter: FoldersAdapter) {
-        foldersViewViewModel.firebaseTest.observe(this, Observer {
+        foldersViewFragmentViewModel.firebaseTest.observe(this, Observer {
             foldersAdapter.setNewData(it)
         })
     }
