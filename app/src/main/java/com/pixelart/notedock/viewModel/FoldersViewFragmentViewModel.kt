@@ -9,11 +9,10 @@ import com.google.firebase.firestore.EventListener
 import com.pixelart.notedock.domain.repository.FolderRepository
 import com.pixelart.notedock.model.FolderModel
 
-class FoldersViewViewModel(private val folderRepository: FolderRepository): ViewModel() {
+class FoldersViewFragmentViewModel(private val folderRepository: FolderRepository): ViewModel() {
 
     private val _firebaseTest = MutableLiveData<ArrayList<FolderModel>>().also { liveData ->
         folderRepository.getFolders(EventListener {list, _ ->
-            Log.i("FoldersViewViewModel", list.toString())
             liveData.postValue(list)
         })
     }
