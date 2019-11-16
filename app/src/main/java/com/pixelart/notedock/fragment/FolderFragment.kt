@@ -5,13 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.google.firebase.firestore.EventListener
+import com.pixelart.notedock.BR
 import com.pixelart.notedock.R
 import com.pixelart.notedock.dialog.DeleteFolderDialog
 import com.pixelart.notedock.domain.repository.FolderRepository
+import com.pixelart.notedock.domain.usecase.DeleteFolderUseCase
 import com.pixelart.notedock.model.FolderModel
+import com.pixelart.notedock.setupDataBinding
 import com.pixelart.notedock.viewModel.FolderFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_folder.*
 import org.koin.android.ext.android.inject
@@ -31,13 +35,10 @@ class FolderFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_folder, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+        val databinding = setupDataBinding<ViewDataBinding>(
+            R.layout.fragment_folder,
+            BR.viewmodel to folderFragmentViewModel
+        )
         arguments?.let { uidOfFolder ->
             val uid = uidOfFolder.getString("uid")
             uid?.let {
@@ -47,10 +48,17 @@ class FolderFragment : Fragment() {
                         textViewFolderDescriptionUID.text = it.uid
                         textViewFolderDescriptionName.text = it.name
                         textViewFolderDescriptionNotesCount.text = it.notesCount
+                        activity?.title = it.name
                     }
                 })
             }
         }
+        // Inflate the layout for this fragment
+        return databinding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         observeLiveData()
     }
 

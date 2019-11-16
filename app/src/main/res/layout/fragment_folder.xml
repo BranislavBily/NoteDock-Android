@@ -6,9 +6,6 @@
         <variable
                 name="viewmodel"
                 type="com.pixelart.notedock.viewModel.FolderFragmentViewModel" />
-        <variable
-                name="deleteButtonListener"
-                type="com.pixelart.notedock.viewModel.DeleteButtonListener" />
     </data>
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -61,7 +58,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/delete_dialog"
-                    android:onClick="@{() -> deleteButtonListener.buttonClicked()}"
+                    android:onClick="@{() -> viewmodel.onButtonClicked()}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.498"
