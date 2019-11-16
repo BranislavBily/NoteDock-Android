@@ -11,12 +11,14 @@ import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.google.firebase.firestore.EventListener
+import com.pixelart.notedock.NavigationRouter
 import com.pixelart.notedock.R
 import com.pixelart.notedock.dialog.DeleteFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogDeleteSuccessListener
 import com.pixelart.notedock.domain.repository.FolderRepository
 import com.pixelart.notedock.model.FolderModel
 import com.pixelart.notedock.setupDataBinding
+import com.pixelart.notedock.viewModel.DeleteButtonEvent
 import com.pixelart.notedock.viewModel.FolderDeleteEvent
 import com.pixelart.notedock.viewModel.FolderFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_folder.*
@@ -66,9 +68,9 @@ class FolderFragment : Fragment() {
     }
 
     private fun observeLiveData() {
-        folderFragmentViewModel.buttonClicked.observe(this, Observer {buttonClicked ->
-            if (buttonClicked) {
-                createDeleteDialog()
+        folderFragmentViewModel.buttonClicked.observe(this, Observer {event ->
+            when(event) {
+                DeleteButtonEvent.onClick -> createDeleteDialog()
             }
         })
 
@@ -77,6 +79,10 @@ class FolderFragment : Fragment() {
                 is FolderDeleteEvent.Success ->  {
                     //route to FoldersView
                     Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
+                    view?.let { view ->
+                        val navigationRouter = NavigationRouter(view)
+                        navigationRouter.openFragment(R.id.action_folderFragment_to_foldersViewFragment)
+                    }
                 }
                 is FolderDeleteEvent.Error -> Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
             }
@@ -94,11 +100,3 @@ class FolderFragment : Fragment() {
         }
     }
 }
-
-//view?.let {
-//    view ->
-//    val navigationController = Navigation.findNavController(view)
-//    navigationController.navigate(
-//        R.id.action_folderFragment_to_foldersViewFragment
-//    )
-//}

@@ -13,11 +13,11 @@ class FolderFragmentViewModel(
     private val deleteFolderUseCase: DeleteFolderUseCase
 ): LifecycleViewModel() {
 
-    private val _buttonClicked = MutableLiveData<Boolean>()
-    val buttonClicked: LiveData<Boolean> = _buttonClicked
+    private val _buttonClicked = SingleLiveEvent<DeleteButtonEvent>()
+    val buttonClicked: LiveData<DeleteButtonEvent> = _buttonClicked
 
     fun onButtonClicked() {
-        _buttonClicked.postValue(true)
+        _buttonClicked.postValue(DeleteButtonEvent.onClick)
     }
 
     private val _folderDeleted = SingleLiveEvent<FolderDeleteEvent>()
@@ -39,4 +39,8 @@ class FolderFragmentViewModel(
 sealed class FolderDeleteEvent {
     object Error: FolderDeleteEvent()
     object Success: FolderDeleteEvent()
+}
+
+sealed class DeleteButtonEvent {
+    object onClick: DeleteButtonEvent()
 }
