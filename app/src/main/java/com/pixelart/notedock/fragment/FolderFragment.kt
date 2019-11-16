@@ -6,14 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
+import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.google.firebase.firestore.EventListener
-import com.pixelart.notedock.BR
 import com.pixelart.notedock.R
 import com.pixelart.notedock.dialog.DeleteFolderDialog
 import com.pixelart.notedock.domain.repository.FolderRepository
-import com.pixelart.notedock.domain.usecase.DeleteFolderUseCase
 import com.pixelart.notedock.model.FolderModel
 import com.pixelart.notedock.setupDataBinding
 import com.pixelart.notedock.viewModel.FolderFragmentViewModel
@@ -35,7 +34,7 @@ class FolderFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val databinding = setupDataBinding<ViewDataBinding>(
+        val dataBinding = setupDataBinding<ViewDataBinding>(
             R.layout.fragment_folder,
             BR.viewmodel to folderFragmentViewModel
         )
@@ -53,8 +52,7 @@ class FolderFragment : Fragment() {
                 })
             }
         }
-        // Inflate the layout for this fragment
-        return databinding.root
+        return dataBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
