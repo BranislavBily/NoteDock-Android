@@ -12,8 +12,8 @@ import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
-    viewModel { FoldersViewFragmentViewModel(get()) }
-    viewModel { FolderFragmentViewModel() }
+    viewModel { FolderFragmentViewModel(get()) }
+    viewModel { FoldersViewFragmentViewModel(get(), get()) }
 }
 
 val firebaseModule = module {

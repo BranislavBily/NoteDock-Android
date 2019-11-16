@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
@@ -12,9 +13,11 @@ import androidx.lifecycle.Observer
 import com.google.firebase.firestore.EventListener
 import com.pixelart.notedock.R
 import com.pixelart.notedock.dialog.DeleteFolderDialog
+import com.pixelart.notedock.dialog.FolderDialogDeleteSuccessListener
 import com.pixelart.notedock.domain.repository.FolderRepository
 import com.pixelart.notedock.model.FolderModel
 import com.pixelart.notedock.setupDataBinding
+import com.pixelart.notedock.viewModel.FolderDeleteEvent
 import com.pixelart.notedock.viewModel.FolderFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_folder.*
 import org.koin.android.ext.android.inject
@@ -57,17 +60,44 @@ class FolderFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         observeLiveData()
     }
 
     private fun observeLiveData() {
         folderFragmentViewModel.buttonClicked.observe(this, Observer {buttonClicked ->
             if (buttonClicked) {
-                fragmentManager?.let { fragmentManager ->
-                    val deleteFolderDialog = DeleteFolderDialog(folderModel)
-                    deleteFolderDialog.show(fragmentManager, "Delete Folder Dialog")
+                createDeleteDialog()
+            }
+        })
+
+        folderFragmentViewModel.folderDeleted.observe(this, Observer { event ->
+            when(event) {
+                is FolderDeleteEvent.Success ->  {
+                    //route to FoldersView
+                    Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
                 }
+                is FolderDeleteEvent.Error -> Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
             }
         })
     }
+
+    private fun createDeleteDialog() {
+        fragmentManager?.let { fragmentManager ->
+            val deleteFolderDialog = DeleteFolderDialog(object : FolderDialogDeleteSuccessListener {
+                    override fun onDelete() {
+                        folderFragmentViewModel.deleteFolderModel(folderModel)
+                    }
+                })
+            deleteFolderDialog.show(fragmentManager, "Delete Folder Dialog")
+        }
+    }
 }
+
+//view?.let {
+//    view ->
+//    val navigationController = Navigation.findNavController(view)
+//    navigationController.navigate(
+//        R.id.action_folderFragment_to_foldersViewFragment
+//    )
+//}
