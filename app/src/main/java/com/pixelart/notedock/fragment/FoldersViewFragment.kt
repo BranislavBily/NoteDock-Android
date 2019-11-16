@@ -1,12 +1,15 @@
 package com.pixelart.notedock.fragment
 
 
+import android.icu.text.CaseMap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.databinding.ViewDataBinding
+import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
@@ -14,6 +17,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.pixelart.notedock.R
 import com.pixelart.notedock.adapter.FoldersAdapter
 import com.pixelart.notedock.dialog.CreateFolderDialog
+import com.pixelart.notedock.dialog.FolderDialogCreateListener
+import com.pixelart.notedock.model.FolderModel
+import com.pixelart.notedock.setupDataBinding
+import com.pixelart.notedock.viewModel.FABClickedEvent
+import com.pixelart.notedock.viewModel.FolderViewEvent
 import com.pixelart.notedock.viewModel.FoldersViewFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_folders_view.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -26,8 +34,12 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_folders_view, container, false)
+        val dataBinding = setupDataBinding<ViewDataBinding>(
+            R.layout.fragment_folders_view,
+            BR.viewmodel to foldersViewFragmentViewModel
+        )
+        foldersViewFragmentViewModel.lifecycleOwner = this
+        return dataBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -38,18 +50,25 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
         val folderAdapter = FoldersAdapter(this)
         recyclerViewFolders.adapter = folderAdapter
         observeLiveData(folderAdapter)
-
-        //Floating Button onClick, not working with VM, this is my last resort
-        fab.setOnClickListener {
-            Toast.makeText(context, "Hey", Toast.LENGTH_LONG).show()
-            createDialog()
-        }
     }
 
 
     private fun observeLiveData(foldersAdapter: FoldersAdapter) {
         foldersViewFragmentViewModel.firebaseTest.observe(this, Observer {
             foldersAdapter.setNewData(it)
+        })
+
+        foldersViewFragmentViewModel.fabClicked.observe(this, Observer {
+            when(it) {
+                FABClickedEvent.Clicked -> createDialog()
+            }
+        })
+
+        foldersViewFragmentViewModel.newFolderCreated.observe(this, Observer {
+            when(it) {
+                FolderViewEvent.Success -> Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
+                FolderViewEvent.Error -> Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+            }
         })
     }
 
@@ -69,7 +88,12 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
     }
 
     private fun createDialog() {
-        val dialog = CreateFolderDialog()
+        val dialog = CreateFolderDialog(object : FolderDialogCreateListener {
+            override fun onCreate(name: String) {
+                val folderModel = FolderModel().apply { this.name = name }
+                foldersViewFragmentViewModel.uploadFolderModel(folderModel)
+            }
+        })
         fragmentManager?.let {
             dialog.show(it, "CreateFolderDialog")
         }

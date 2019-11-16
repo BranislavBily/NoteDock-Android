@@ -1,15 +1,21 @@
 package com.pixelart.notedock.viewModel
 
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.EventListener
+import com.pixelart.notedock.LifecycleViewModel
+import com.pixelart.notedock.SingleLiveEvent
 import com.pixelart.notedock.domain.repository.FolderRepository
+import com.pixelart.notedock.domain.usecase.AddFolderUseCase
 import com.pixelart.notedock.model.FolderModel
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.schedulers.Schedulers
 
-class FoldersViewFragmentViewModel(private val folderRepository: FolderRepository): ViewModel() {
+class FoldersViewFragmentViewModel(
+    private val folderRepository: FolderRepository,
+    private val addFolderUseCase: AddFolderUseCase
+): LifecycleViewModel() {
+
 
     private val _firebaseTest = MutableLiveData<ArrayList<FolderModel>>().also { liveData ->
         folderRepository.getFolders(EventListener {list, _ ->
@@ -17,4 +23,34 @@ class FoldersViewFragmentViewModel(private val folderRepository: FolderRepositor
         })
     }
     val firebaseTest: LiveData<ArrayList<FolderModel>> = _firebaseTest
+
+    private val _newFolderCreated = SingleLiveEvent<FolderViewEvent>()
+    val newFolderCreated: LiveData<FolderViewEvent> = _newFolderCreated
+
+    private val _fabClicked = SingleLiveEvent<FABClickedEvent>()
+    val fabClicked: LiveData<FABClickedEvent> = _fabClicked
+
+    fun onFABClicked() {
+        _fabClicked.postValue(FABClickedEvent.Clicked)
+    }
+
+    fun uploadFolderModel(folderModel: FolderModel) {
+        startStopDisposeBag?.let { bag ->
+            addFolderUseCase.addFolder(folderModel)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe( { _newFolderCreated.postValue(FolderViewEvent.Success)},
+                    { _newFolderCreated.postValue(FolderViewEvent.Error)})
+                .addTo(bag)
+        }
+    }
+}
+
+sealed class FolderViewEvent {
+    object Error : FolderViewEvent()
+    object Success: FolderViewEvent()
+}
+
+sealed class FABClickedEvent {
+    object Clicked: FABClickedEvent()
 }
