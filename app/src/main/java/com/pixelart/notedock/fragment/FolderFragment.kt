@@ -41,6 +41,7 @@ class FolderFragment : Fragment() {
             R.layout.fragment_folder,
             BR.viewmodel to folderFragmentViewModel
         )
+        folderFragmentViewModel.lifecycleOwner = this
         arguments?.let { uidOfFolder ->
             val uid = uidOfFolder.getString("uid")
             uid?.let {

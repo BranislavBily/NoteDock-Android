@@ -22,7 +22,6 @@ class DeleteFolderDialog(private val callback: FolderDialogDeleteSuccessListener
                 ) { dialog, _ ->
                     dialog.cancel()
                 }
-            // Create the AlertDialog object and return it
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }

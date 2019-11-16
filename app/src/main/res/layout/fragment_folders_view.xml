@@ -3,6 +3,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+
+        <variable
+                name="viewmodel"
+                type="com.pixelart.notedock.viewModel.FoldersViewFragmentViewModel" />
+    </data>
+
     <FrameLayout
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -21,6 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|bottom"
                 android:layout_margin="16dp"
+                android:onClick="@{() -> viewmodel.onFABClicked()}"
                 android:contentDescription="@string/create_new_folder"
                 android:src="@drawable/ic_add_white_24dp"
                 app:backgroundTint="#30679E" />

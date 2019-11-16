@@ -27,10 +27,13 @@ class FoldersViewFragmentViewModel(
     private val _newFolderCreated = SingleLiveEvent<FolderViewEvent>()
     val newFolderCreated: LiveData<FolderViewEvent> = _newFolderCreated
 
-    private val _fabClicked = MutableLiveData<Boolean>()
+    private val _fabClicked = MutableLiveData<Boolean>()?.also {
+        it.postValue(false)
+    }
     val fabClicked = _fabClicked
 
     fun onFABClicked() {
+        //Event
         _fabClicked.postValue(true)
     }
 

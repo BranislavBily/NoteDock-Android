@@ -23,11 +23,12 @@ class CreateFolderDialog(
             val view = inflater.inflate(R.layout.create_folder_dialog, null)
             builder.setView(view)
                 .setPositiveButton(R.string.create_dialog)
-                 { dialog, id ->
+                 { dialog, _ ->
                     callback.onSuccess(view.editTextFolderName.text.toString())
+                     dialog.cancel()
                 }
                 .setNegativeButton(R.string.cancel_dialog
-                ) { dialog, id ->
+                ) { dialog, _ ->
                     dialog.cancel()
                 }
             builder.create()
