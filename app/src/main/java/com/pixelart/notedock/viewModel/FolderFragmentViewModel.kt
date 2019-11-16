@@ -36,7 +36,6 @@ class FolderFragmentViewModel(
         }
     }
 }
-
 sealed class FolderDeleteEvent {
     object Error: FolderDeleteEvent()
     object Success: FolderDeleteEvent()

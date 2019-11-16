@@ -27,14 +27,12 @@ class FoldersViewFragmentViewModel(
     private val _newFolderCreated = SingleLiveEvent<FolderViewEvent>()
     val newFolderCreated: LiveData<FolderViewEvent> = _newFolderCreated
 
-    private val _fabClicked = MutableLiveData<Boolean>()?.also {
-        it.postValue(false)
-    }
-    val fabClicked = _fabClicked
+    private val _fabClicked = SingleLiveEvent<FABClickedEvent>()
+    val fabClicked: LiveData<FABClickedEvent> = _fabClicked
 
     fun onFABClicked() {
         //Event
-        _fabClicked.postValue(true)
+        _fabClicked.postValue(FABClickedEvent.Clicked)
     }
 
     fun uploadFolderModel(folderModel: FolderModel) {
@@ -54,4 +52,8 @@ class FoldersViewFragmentViewModel(
 sealed class FolderViewEvent {
     object Error : FolderViewEvent()
     class Success(val uuid: String): FolderViewEvent()
+}
+
+sealed class FABClickedEvent {
+    object Clicked: FABClickedEvent()
 }

@@ -19,6 +19,7 @@ import com.pixelart.notedock.dialog.CreateFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogSuccessListener
 import com.pixelart.notedock.model.FolderModel
 import com.pixelart.notedock.setupDataBinding
+import com.pixelart.notedock.viewModel.FABClickedEvent
 import com.pixelart.notedock.viewModel.FolderDeleteEvent
 import com.pixelart.notedock.viewModel.FolderViewEvent
 import com.pixelart.notedock.viewModel.FoldersViewFragmentViewModel
@@ -38,6 +39,7 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
             R.layout.fragment_folders_view,
             BR.viewmodel to foldersViewFragmentViewModel
         )
+        foldersViewFragmentViewModel.lifecycleOwner = this
         return dataBinding.root
     }
 
@@ -67,12 +69,11 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
         })
 
         foldersViewFragmentViewModel.fabClicked.observe(this, Observer {
-            if(it) {
-                createFolderDialog()
+            when(it) {
+                FABClickedEvent.Clicked -> createFolderDialog()
             }
         })
     }
-
 
     override fun onFolderClick(uid: String?) {
 
