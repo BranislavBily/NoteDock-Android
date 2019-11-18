@@ -2,6 +2,7 @@ package com.pixelart.notedock
 
 import android.view.View
 import androidx.core.os.bundleOf
+import androidx.navigation.NavDirections
 import androidx.navigation.Navigation
 
 class NavigationRouter(private val view: View?) {
@@ -19,6 +20,13 @@ class NavigationRouter(private val view: View?) {
             navigationController.navigate(
                 R.id.action_foldersViewFragment_to_folderFragment
             )
+        }
+    }
+
+    fun openAction(action: NavDirections) {
+        view?.let {
+            val navigationController = Navigation.findNavController(view)
+            navigationController.navigate(action)
         }
     }
 }
