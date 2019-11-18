@@ -7,13 +7,15 @@ import com.pixelart.notedock.dataBinding.LifecycleViewModel
 import com.pixelart.notedock.dataBinding.SingleLiveEvent
 import com.pixelart.notedock.domain.repository.FolderRepository
 import com.pixelart.notedock.domain.usecase.AddFolderUseCase
+import com.pixelart.notedock.domain.usecase.FolderNameTakenUseCase
 import com.pixelart.notedock.model.FolderModel
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 
 class FoldersViewFragmentViewModel(
     private val folderRepository: FolderRepository,
-    private val addFolderUseCase: AddFolderUseCase
+    private val addFolderUseCase: AddFolderUseCase,
+    private val folderNameTakenUseCase: FolderNameTakenUseCase
 ): LifecycleViewModel() {
 
 
@@ -24,19 +26,21 @@ class FoldersViewFragmentViewModel(
     }
     val firebaseTest: LiveData<ArrayList<FolderModel>> = _firebaseTest
 
-    private val _newFolderCreated =
-        SingleLiveEvent<NewFolderEvent>()
+    private val _newFolderCreated = SingleLiveEvent<NewFolderEvent>()
     val newNewFolderCreated: LiveData<NewFolderEvent> = _newFolderCreated
+
+    private val _usernameTaken = SingleLiveEvent<FolderNameTakenEvent>()
+    val usernameTaken: LiveData<FolderNameTakenEvent> = _usernameTaken
 
     private val _fabClicked = SingleLiveEvent<FABClickedEvent>()
     val fabClicked: LiveData<FABClickedEvent> = _fabClicked
 
+
     fun onFABClicked() {
-        //Event
         _fabClicked.postValue(FABClickedEvent.Clicked)
     }
 
-    fun uploadFolderModel(folderModel: FolderModel) {
+    private fun uploadFolderModel(folderModel: FolderModel) {
         startStopDisposeBag?.let { bag ->
             addFolderUseCase.addFolder(folderModel)
                 .subscribeOn(Schedulers.io())
@@ -44,6 +48,22 @@ class FoldersViewFragmentViewModel(
                 .subscribe(
                     { _newFolderCreated.postValue(NewFolderEvent.Success(it)) },
                     { _newFolderCreated.postValue(NewFolderEvent.Error) }
+                )
+                .addTo(bag)
+        }
+    }
+
+    fun isNameTaken(folderName: String) {
+        startStopDisposeBag?.let { bag ->
+            folderNameTakenUseCase.isNameTaken(folderName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(
+                    {taken ->
+                        _usernameTaken.postValue(FolderNameTakenEvent.Success(taken))
+                        if (!taken) { uploadFolderModel(FolderModel(folderName)) }
+                    },
+                    { _usernameTaken.postValue(FolderNameTakenEvent.Error) }
                 )
                 .addTo(bag)
         }
@@ -60,7 +80,6 @@ sealed class FABClickedEvent {
 }
 
 sealed class FolderNameTakenEvent {
-    object Taken: FolderNameTakenEvent()
-    object Free: FolderNameTakenEvent()
+    class Success(val taken: Boolean) : FolderNameTakenEvent()
     object Error: FolderNameTakenEvent()
 }

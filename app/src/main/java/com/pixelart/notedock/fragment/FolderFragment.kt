@@ -79,8 +79,6 @@ class FolderFragment : Fragment() {
             when(event) {
                 is FolderDeleteEvent.Success ->  {
                     // Not sure if this is safe option
-//                    activity?.onBackPressed()
-                    //This might be safer and better
                     view?.let {
                         Navigation.findNavController(it).popBackStack()
                     }
