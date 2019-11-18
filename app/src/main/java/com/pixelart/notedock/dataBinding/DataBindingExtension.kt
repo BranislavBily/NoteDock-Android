@@ -1,4 +1,4 @@
-package com.pixelart.notedock
+package com.pixelart.notedock.dataBinding
 
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity

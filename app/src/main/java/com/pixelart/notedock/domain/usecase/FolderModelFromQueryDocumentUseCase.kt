@@ -4,13 +4,16 @@ import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.pixelart.notedock.domain.repository.FirebaseIDSRepository
 import com.pixelart.notedock.model.FolderModel
 
-interface FolderModuleFromDocumentUseCase {
-    fun getModule(documentSnapshot: QueryDocumentSnapshot): FolderModel
+interface FolderModelFromDocumentUseCase {
+    fun getModel(documentSnapshot: QueryDocumentSnapshot): FolderModel
 }
 
-class FolderModuleFromDocumentImpl(private val firebaseIDSRepository: FirebaseIDSRepository): FolderModuleFromDocumentUseCase {
-    override fun getModule(documentSnapshot: QueryDocumentSnapshot): FolderModel {
+class FolderModelFromDocumentImpl(private val firebaseIDSRepository: FirebaseIDSRepository): FolderModelFromDocumentUseCase {
+    override fun getModel(documentSnapshot: QueryDocumentSnapshot): FolderModel {
         val folder = FolderModel()
+
+        folder.uid = documentSnapshot.id
+
         documentSnapshot.getString(firebaseIDSRepository.getFolderName())?.let {
             folder.name = it
         }
