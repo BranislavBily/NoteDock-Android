@@ -11,6 +11,7 @@ import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.firebase.firestore.EventListener
 import com.pixelart.notedock.R
 import com.pixelart.notedock.dataBinding.setupDataBinding
@@ -33,6 +34,8 @@ class FolderFragment : Fragment() {
     private val folderRepository: FolderRepository by inject()
     private val folderFragmentViewModel: FolderFragmentViewModel by viewModel()
 
+    val args: FolderFragmentArgs by navArgs()
+
     private var folderModel = FolderModel()
 
     override fun onCreateView(
@@ -44,20 +47,16 @@ class FolderFragment : Fragment() {
             BR.viewmodel to folderFragmentViewModel
         )
         folderFragmentViewModel.lifecycleOwner = this
-        arguments?.let { uidOfFolder ->
-            val uid = uidOfFolder.getString("uid")
-            uid?.let {
-                folderRepository.getFolder(uid, EventListener { folder, _ ->
-                    folder?.let {
-                        folderModel = it
-                        textViewFolderDescriptionUID.text = it.uid
-                        textViewFolderDescriptionName.text = it.name
-                        textViewFolderDescriptionNotesCount.text = it.notesCount
-                        activity?.title = it.name
-                    }
-                })
+        val uid = args.folderUUID
+        folderRepository.getFolder(uid, EventListener { folder, _ ->
+            folder?.let {
+                folderModel = it
+                textViewFolderDescriptionUID.text = it.uid
+                textViewFolderDescriptionName.text = it.name
+                textViewFolderDescriptionNotesCount.text = it.notesCount
+                activity?.title = it.name
             }
-        }
+        })
         return dataBinding.root
     }
 

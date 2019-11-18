@@ -109,8 +109,9 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
 
     override fun onFolderClick(uid: String?) {
         uid?.let { uuid ->
+            val action = FoldersViewFragmentDirections.actionFoldersViewFragmentToFolderFragment(uuid)
             val navigationRouter = NavigationRouter(view)
-            navigationRouter.openFragment(R.id.action_foldersViewFragment_to_folderFragment, uuid)
+            navigationRouter.openAction(action)
         }
     }
 }
