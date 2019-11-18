@@ -22,5 +22,13 @@
             android:id="@+id/folderFragment"
             android:name="com.pixelart.notedock.fragment.FolderFragment"
             android:label="Folder details"
-            tools:layout="@layout/fragment_folder" />
+            tools:layout="@layout/fragment_folder" >
+        <action
+                android:id="@+id/action_folderFragment_to_foldersViewFragment"
+                app:destination="@id/foldersViewFragment"
+                app:enterAnim="@anim/slide_in_right"
+                app:exitAnim="@anim/slide_out_left"
+                app:popEnterAnim="@anim/slide_in_left"
+                app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
 </navigation>

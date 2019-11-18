@@ -26,6 +26,3 @@ class AddFolderImpl(private val firebaseIDSRepository: FirebaseIDSRepository,
         }
     }
 }
-
-
-

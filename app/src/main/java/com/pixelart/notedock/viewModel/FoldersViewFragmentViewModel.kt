@@ -3,7 +3,7 @@ package com.pixelart.notedock.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.EventListener
-import com.pixelart.notedock.dataBinding.LifecycleViewModel
+import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
 import com.pixelart.notedock.dataBinding.SingleLiveEvent
 import com.pixelart.notedock.domain.repository.FolderRepository
 import com.pixelart.notedock.domain.usecase.AddFolderUseCase
@@ -26,28 +26,27 @@ class FoldersViewFragmentViewModel(
     }
     val firebaseTest: LiveData<ArrayList<FolderModel>> = _firebaseTest
 
-    private val _newFolderCreated = SingleLiveEvent<NewFolderEvent>()
-    val newNewFolderCreated: LiveData<NewFolderEvent> = _newFolderCreated
+    private val _newFolderCreated = SingleLiveEvent<FolderViewEvent>()
+    val newFolderCreated: LiveData<FolderViewEvent> = _newFolderCreated
 
-    private val _usernameTaken = SingleLiveEvent<FolderNameTakenEvent>()
-    val usernameTaken: LiveData<FolderNameTakenEvent> = _usernameTaken
+    private val _isNameTaken = SingleLiveEvent<FolderNameTakenEvent>()
+    val isNameTaken : LiveData<FolderNameTakenEvent> = _isNameTaken
 
     private val _fabClicked = SingleLiveEvent<FABClickedEvent>()
     val fabClicked: LiveData<FABClickedEvent> = _fabClicked
-
-
     fun onFABClicked() {
+        //Event
         _fabClicked.postValue(FABClickedEvent.Clicked)
     }
 
-    private fun uploadFolderModel(folderModel: FolderModel) {
+    fun uploadFolderModel(folderModel: FolderModel) {
         startStopDisposeBag?.let { bag ->
             addFolderUseCase.addFolder(folderModel)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe(
-                    { _newFolderCreated.postValue(NewFolderEvent.Success(it)) },
-                    { _newFolderCreated.postValue(NewFolderEvent.Error) }
+                    { _newFolderCreated.postValue(FolderViewEvent.Success(it)) },
+                    { _newFolderCreated.postValue(FolderViewEvent.Error) }
                 )
                 .addTo(bag)
         }
@@ -59,20 +58,21 @@ class FoldersViewFragmentViewModel(
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe(
-                    {taken ->
-                        _usernameTaken.postValue(FolderNameTakenEvent.Success(taken))
-                        if (!taken) { uploadFolderModel(FolderModel(folderName)) }
-                    },
-                    { _usernameTaken.postValue(FolderNameTakenEvent.Error) }
+                    {
+                        if(!it) {
+                            uploadFolderModel(FolderModel(folderName))
+                        }
+                        _isNameTaken.postValue(FolderNameTakenEvent.Success(it)) },
+                    { _isNameTaken.postValue(FolderNameTakenEvent.Error) }
                 )
                 .addTo(bag)
         }
     }
 }
 
-sealed class NewFolderEvent {
-    object Error : NewFolderEvent()
-    class Success(val uuid: String): NewFolderEvent()
+sealed class FolderViewEvent {
+    object Error : FolderViewEvent()
+    class Success(val uuid: String): FolderViewEvent()
 }
 
 sealed class FABClickedEvent {

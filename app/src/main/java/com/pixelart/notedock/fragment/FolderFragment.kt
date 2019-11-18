@@ -10,14 +10,14 @@ import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import com.google.firebase.firestore.EventListener
 import com.pixelart.notedock.R
+import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogDeleteSuccessListener
 import com.pixelart.notedock.domain.repository.FolderRepository
 import com.pixelart.notedock.model.FolderModel
-import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.viewModel.DeleteButtonEvent
 import com.pixelart.notedock.viewModel.FolderDeleteEvent
 import com.pixelart.notedock.viewModel.FolderFragmentViewModel
@@ -53,8 +53,7 @@ class FolderFragment : Fragment() {
                         textViewFolderDescriptionUID.text = it.uid
                         textViewFolderDescriptionName.text = it.name
                         textViewFolderDescriptionNotesCount.text = it.notesCount
-
-
+                        activity?.title = it.name
                     }
                 })
             }
@@ -78,10 +77,7 @@ class FolderFragment : Fragment() {
         folderFragmentViewModel.folderDeleted.observe(this, Observer { event ->
             when(event) {
                 is FolderDeleteEvent.Success ->  {
-                    // Not sure if this is safe option
-                    view?.let {
-                        Navigation.findNavController(it).popBackStack()
-                    }
+                    view?.findNavController()?.popBackStack()
                 }
                 is FolderDeleteEvent.Error -> Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
             }
