@@ -18,9 +18,8 @@ import com.pixelart.notedock.adapter.FoldersAdapter
 import com.pixelart.notedock.dialog.CreateFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogSuccessListener
 import com.pixelart.notedock.model.FolderModel
-import com.pixelart.notedock.setupDataBinding
+import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.viewModel.FABClickedEvent
-import com.pixelart.notedock.viewModel.FolderDeleteEvent
 import com.pixelart.notedock.viewModel.FolderViewEvent
 import com.pixelart.notedock.viewModel.FoldersViewFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_folders_view.*
