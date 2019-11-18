@@ -3,8 +3,8 @@ package com.pixelart.notedock.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.EventListener
-import com.pixelart.notedock.LifecycleViewModel
-import com.pixelart.notedock.SingleLiveEvent
+import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
+import com.pixelart.notedock.dataBinding.SingleLiveEvent
 import com.pixelart.notedock.domain.repository.FolderRepository
 import com.pixelart.notedock.domain.usecase.AddFolderUseCase
 import com.pixelart.notedock.model.FolderModel
@@ -56,4 +56,8 @@ sealed class FolderViewEvent {
 
 sealed class FABClickedEvent {
     object Clicked: FABClickedEvent()
+}
+
+sealed class FolderNameTakenEvent {
+
 }

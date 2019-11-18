@@ -1,4 +1,4 @@
-package com.pixelart.notedock
+package com.pixelart.notedock.dataBinding.rxjava
 
 import io.reactivex.disposables.CompositeDisposable
 

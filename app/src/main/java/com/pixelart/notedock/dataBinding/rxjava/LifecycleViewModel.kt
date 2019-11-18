@@ -1,4 +1,4 @@
-package com.pixelart.notedock
+package com.pixelart.notedock.dataBinding.rxjava
 
 import androidx.lifecycle.*
 import io.reactivex.disposables.CompositeDisposable
@@ -38,7 +38,8 @@ abstract class LifecycleViewModel : ViewModel() {
         }
 
     private val startStopDisposable = ReusableCompositeDisposable { onStartStopObserve(it) }
-    private val resumePauseDisposable = ReusableCompositeDisposable { onResumePauseObserve(it) }
+    private val resumePauseDisposable = ReusableCompositeDisposable { onResumePauseObserve(it)
+        }
     /**
      * Use this CompositeDisposable when you need to dispose subscription, that was subscribed out of
      * onStartStopObserve method, when on STOP lifecycle event is triggered.
