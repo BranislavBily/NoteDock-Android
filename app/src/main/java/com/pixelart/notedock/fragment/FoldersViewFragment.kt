@@ -17,6 +17,7 @@ import com.pixelart.notedock.adapter.FoldersAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.CreateFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogSuccessListener
+import com.pixelart.notedock.model.FolderModel
 import com.pixelart.notedock.viewModel.FABClickedEvent
 import com.pixelart.notedock.viewModel.FolderNameTakenEvent
 import com.pixelart.notedock.viewModel.FolderViewEvent
@@ -27,6 +28,9 @@ import org.koin.android.viewmodel.ext.android.viewModel
 class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
 
     private val foldersViewFragmentViewModel: FoldersViewFragmentViewModel by viewModel()
+
+    //So sorry
+    private var name: String = ""
 
 
     override fun onCreateView(
@@ -58,11 +62,7 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
         })
         foldersViewFragmentViewModel.newFolderCreated.observe(this, Observer { event ->
             when (event) {
-                is FolderViewEvent.Success -> {
-                    //UIX Design dilemma
-                    val navigationRouter = NavigationRouter(view)
-                    navigationRouter.openFragment(R.id.action_foldersViewFragment_to_folderFragment, event.uuid)
-                }
+                is FolderViewEvent.Success -> { }
                 is FolderViewEvent.Error -> Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
             }
         })
@@ -85,6 +85,8 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
                     if (event.taken) {
                         //Toast in weird place, maaybe deal with that
                         Toast.makeText(context, "Folder with this name already exists", Toast.LENGTH_SHORT).show()
+                    } else {
+                        foldersViewFragmentViewModel.uploadFolderModel(FolderModel(name))
                     }
                 }
                 is FolderNameTakenEvent.Error -> {
@@ -96,9 +98,10 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
     private fun createFolderDialog() {
         val dialog = CreateFolderDialog(object : FolderDialogSuccessListener {
             override fun onSuccess(folderName: String?) {
-                folderName?.let { name ->
+                folderName?.let { folderName ->
                     //Checks if name is taken
-                    foldersViewFragmentViewModel.isNameTaken(name)
+                    name = folderName
+                    foldersViewFragmentViewModel.isNameTaken(folderName)
                 }
             }
         })

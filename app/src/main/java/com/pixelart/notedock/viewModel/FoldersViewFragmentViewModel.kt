@@ -3,8 +3,8 @@ package com.pixelart.notedock.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.EventListener
-import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
 import com.pixelart.notedock.dataBinding.SingleLiveEvent
+import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
 import com.pixelart.notedock.domain.repository.FolderRepository
 import com.pixelart.notedock.domain.usecase.AddFolderUseCase
 import com.pixelart.notedock.domain.usecase.FolderNameTakenUseCase
@@ -58,11 +58,7 @@ class FoldersViewFragmentViewModel(
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe(
-                    {
-                        if(!it) {
-                            uploadFolderModel(FolderModel(folderName))
-                        }
-                        _isNameTaken.postValue(FolderNameTakenEvent.Success(it)) },
+                    { _isNameTaken.postValue(FolderNameTakenEvent.Success(it)) },
                     { _isNameTaken.postValue(FolderNameTakenEvent.Error) }
                 )
                 .addTo(bag)
