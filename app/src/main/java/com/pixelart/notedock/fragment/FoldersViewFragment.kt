@@ -1,11 +1,16 @@
 package com.pixelart.notedock.fragment
 
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context.NOTIFICATION_SERVICE
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -53,6 +58,8 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
         val folderAdapter = FoldersAdapter(this)
         recyclerViewFolders.adapter = folderAdapter
         observeLiveData(folderAdapter)
+
+        createNotificationChannel()
     }
 
 
@@ -95,6 +102,7 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
             }
         })
     }
+
     private fun createFolderDialog() {
         val dialog = CreateFolderDialog(object : FolderDialogSuccessListener {
             override fun onSuccess(folderName: String?) {
@@ -115,6 +123,37 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
             val action = FoldersViewFragmentDirections.actionFoldersViewFragmentToFolderFragment(uuid)
             val navigationRouter = NavigationRouter(view)
             navigationRouter.openAction(action)
+        }
+    }
+
+    private fun createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create the NotificationChannel
+            val name = "Alarm"
+            val descriptionText = "Ked potrebujes vstat"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val CHANNEL_ID = "NEVIEM"
+            val mChannel = NotificationChannel(CHANNEL_ID, name, importance)
+            mChannel.description = descriptionText
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            val notificationManager = context?.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(mChannel)
+            context?.let {
+                val builder = NotificationCompat.Builder(it, "NEVIEM")
+                    .setSmallIcon(R.drawable.ic_notification)
+                    .setContentTitle("NoteDock ta pozdravuje")
+                    .setContentText("Cauky mnauky, si sexy inac len tak si chcem povedat")
+                    .setStyle(
+                        NotificationCompat.BigTextStyle()
+                            .bigText("Cauky mnauky, si sexy inac len tak si chcem povedat, waifu material")
+                    )
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                notificationManager.notify(0, builder.build())
+            }
         }
     }
 }
