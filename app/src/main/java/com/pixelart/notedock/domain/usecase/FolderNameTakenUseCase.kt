@@ -14,21 +14,13 @@ class FolderNameTakenImpl(private val firebaseFirestore: FirebaseFirestore,
     override fun isNameTaken(folderName: String): Single<Boolean> {
         return Single.create<Boolean> { emitter ->
             firebaseFirestore.collection(firebaseIDSRepository.getCollectionFolders())
+                    //add whereEqualTo
+                .whereEqualTo(firebaseIDSRepository.getFolderName(), folderName)
                 .get()
                 .addOnSuccessListener { documents ->
-                    var taken = false
-                    for (document in documents) {
-                        document.getString(firebaseIDSRepository.getFolderName())?.let {
-                            if(it == folderName) {
-                                taken = true
-                            }
-                        }
-                    }
-                    //Skusal som s typom FolderNameTakenEvent ale ta proste to neslo toto ide jej
-                    emitter.onSuccess(taken)
+                    emitter.onSuccess(!documents.isEmpty)
                 }
                 .addOnFailureListener {emitter.onError(it)}
         }
     }
 }
-
