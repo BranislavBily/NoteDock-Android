@@ -19,12 +19,12 @@ class FoldersViewFragmentViewModel(
 ): LifecycleViewModel() {
 
 
-    private val _firebaseTest = MutableLiveData<ArrayList<FolderModel>>().also { liveData ->
+    private val _loadFolders = MutableLiveData<ArrayList<FolderModel>>().also { liveData ->
         folderRepository.getFolders(EventListener {list, _ ->
             liveData.postValue(list)
         })
     }
-    val firebaseTest: LiveData<ArrayList<FolderModel>> = _firebaseTest
+    val loadFolders: LiveData<ArrayList<FolderModel>> = _loadFolders
 
     private val _newFolderCreated = SingleLiveEvent<FolderViewEvent>()
     val newFolderCreated: LiveData<FolderViewEvent> = _newFolderCreated
