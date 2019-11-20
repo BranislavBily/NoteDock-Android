@@ -64,19 +64,14 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
 
 
     private fun observeLiveData(foldersAdapter: FoldersAdapter) {
-        foldersViewFragmentViewModel.firebaseTest.observe(this, Observer {
+        foldersViewFragmentViewModel.loadFolders.observe(this, Observer {
             foldersAdapter.setNewData(it)
         })
+
         foldersViewFragmentViewModel.newFolderCreated.observe(this, Observer { event ->
             when (event) {
                 is FolderViewEvent.Success -> { }
                 is FolderViewEvent.Error -> Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
-            }
-        })
-
-        foldersViewFragmentViewModel.fabClicked.observe(this, Observer {
-            when (it) {
-                FABClickedEvent.Clicked -> createFolderDialog()
             }
         })
 
