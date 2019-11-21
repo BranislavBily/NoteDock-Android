@@ -1,15 +1,15 @@
 package com.pixelart.notedock.domain.repository
 
-import android.util.Log
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pixelart.notedock.domain.usecase.FolderModelFromDocumentSnapshotUseCase
 import com.pixelart.notedock.domain.usecase.FolderModelFromDocumentUseCase
 import com.pixelart.notedock.model.FolderModel
+import io.reactivex.Single
 
 interface FolderRepository {
     fun getFolders(eventListener: EventListener<ArrayList<FolderModel>?>)
-    fun getFolder(uid: String, eventListener: EventListener<FolderModel>)
+    fun getFolder(uid: String): Single<FolderModel>
 }
 
 class FolderRepositoryImpl(
@@ -21,19 +21,17 @@ class FolderRepositoryImpl(
 
     private val TAG = "FolderRepository"
 
-    override fun getFolder(uid: String, eventListener: EventListener<FolderModel>) {
-        firebaseInstance.collection(firebaseIDSRepository.getCollectionFolders())
-            .document(uid)
-            .get()
-            .addOnSuccessListener { documentSnapshot ->
-                val folder = folderModelFromDocumentSnapshotUseCase.getModel(documentSnapshot)
-                eventListener.onEvent(folder, null)
-            }
-            .addOnFailureListener { exception ->
-                exception.let {
-                    Log.e(TAG, it.message)
+    override fun getFolder(uid: String): Single<FolderModel> {
+        return Single.create<FolderModel> { emitter ->
+            firebaseInstance.collection(firebaseIDSRepository.getCollectionFolders())
+                .document(uid)
+                .get()
+                .addOnSuccessListener { documentSnapshot ->
+                    val folder = folderModelFromDocumentSnapshotUseCase.getModel(documentSnapshot)
+                    emitter.onSuccess(folder)
                 }
-            }
+                .addOnFailureListener { exception -> emitter.onError(exception) }
+        }
     }
 
     override fun getFolders(eventListener: EventListener<ArrayList<FolderModel>?>) {
