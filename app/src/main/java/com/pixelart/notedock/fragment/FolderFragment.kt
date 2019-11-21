@@ -16,9 +16,12 @@ import com.pixelart.notedock.R
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogDeleteSuccessListener
+import com.pixelart.notedock.model.FolderModel
 import com.pixelart.notedock.viewModel.DeleteButtonEvent
 import com.pixelart.notedock.viewModel.FolderDeleteEvent
 import com.pixelart.notedock.viewModel.FolderFragmentViewModel
+import com.pixelart.notedock.viewModel.LoadFolderEvent
+import kotlinx.android.synthetic.main.fragment_folder.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 
@@ -37,13 +40,18 @@ class FolderFragment : Fragment() {
             BR.viewmodel to folderFragmentViewModel
         )
         folderFragmentViewModel.lifecycleOwner = this
-
         return dataBinding.root
+    }
+
+    //Not sure but this might be the solution
+    override fun onResume() {
+        super.onResume()
+
+        folderFragmentViewModel.loadFolderModel(args.folderUUID)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         observeLiveData()
     }
@@ -55,6 +63,15 @@ class FolderFragment : Fragment() {
             }
         })
 
+        folderFragmentViewModel.folderLoaded.observe(this, Observer { event ->
+            when(event) {
+                is LoadFolderEvent.Success -> {
+                    showFolderData(event.folderModel)
+                }
+                is LoadFolderEvent.Error -> Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+            }
+        })
+
         folderFragmentViewModel.folderDeleted.observe(this, Observer { event ->
             when(event) {
                 is FolderDeleteEvent.Success ->  {
@@ -63,6 +80,12 @@ class FolderFragment : Fragment() {
                 is FolderDeleteEvent.Error -> Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun showFolderData(folderModel: FolderModel) {
+        textViewFolderDescriptionUID.text = folderModel.uid
+        textViewFolderDescriptionName.text = folderModel.name
+        textViewFolderDescriptionNotesCount.text = folderModel.notesCount
     }
 
     private fun createDeleteDialog() {
