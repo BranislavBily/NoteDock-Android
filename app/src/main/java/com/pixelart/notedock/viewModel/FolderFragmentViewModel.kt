@@ -1,10 +1,9 @@
 package com.pixelart.notedock.viewModel
 
 import androidx.lifecycle.LiveData
-import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
 import com.pixelart.notedock.dataBinding.SingleLiveEvent
+import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
 import com.pixelart.notedock.domain.usecase.DeleteFolderUseCase
-import com.pixelart.notedock.model.FolderModel
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 
@@ -15,16 +14,16 @@ class FolderFragmentViewModel(
     private val _buttonClicked = SingleLiveEvent<DeleteButtonEvent>()
     val buttonClicked: LiveData<DeleteButtonEvent> = _buttonClicked
 
-    fun onButtonClicked() {
-        _buttonClicked.postValue(DeleteButtonEvent.onClick)
-    }
-
     private val _folderDeleted = SingleLiveEvent<FolderDeleteEvent>()
     val folderDeleted: LiveData<FolderDeleteEvent> = _folderDeleted
 
-    fun deleteFolderModel(folderModel: FolderModel) {
+    fun onButtonClicked() {
+        _buttonClicked.postValue(DeleteButtonEvent.OnClick)
+    }
+
+    fun deleteFolderModel(folderUUID: String) {
         startStopDisposeBag?.let { bag ->
-            deleteFolderUseCase.deleteFolder(folderModel)
+            deleteFolderUseCase.deleteFolder(folderUUID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe(
@@ -41,5 +40,5 @@ sealed class FolderDeleteEvent {
 }
 
 sealed class DeleteButtonEvent {
-    object onClick: DeleteButtonEvent()
+    object OnClick: DeleteButtonEvent()
 }

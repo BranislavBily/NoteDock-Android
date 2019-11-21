@@ -12,31 +12,21 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.firebase.firestore.EventListener
 import com.pixelart.notedock.R
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogDeleteSuccessListener
-import com.pixelart.notedock.domain.repository.FolderRepository
-import com.pixelart.notedock.model.FolderModel
 import com.pixelart.notedock.viewModel.DeleteButtonEvent
 import com.pixelart.notedock.viewModel.FolderDeleteEvent
 import com.pixelart.notedock.viewModel.FolderFragmentViewModel
-import kotlinx.android.synthetic.main.fragment_folder.*
-import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 
-/**
- * A simple [Fragment] subclass.
- */
+
 class FolderFragment : Fragment() {
 
-    private val folderRepository: FolderRepository by inject()
     private val folderFragmentViewModel: FolderFragmentViewModel by viewModel()
 
     val args: FolderFragmentArgs by navArgs()
-
-    private var folderModel = FolderModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,21 +37,13 @@ class FolderFragment : Fragment() {
             BR.viewmodel to folderFragmentViewModel
         )
         folderFragmentViewModel.lifecycleOwner = this
-        val uid = args.folderUUID
-        folderRepository.getFolder(uid, EventListener { folder, _ ->
-            folder?.let {
-                folderModel = it
-                textViewFolderDescriptionUID.text = it.uid
-                textViewFolderDescriptionName.text = it.name
-                textViewFolderDescriptionNotesCount.text = it.notesCount
-                activity?.title = it.name
-            }
-        })
+
         return dataBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
         observeLiveData()
     }
@@ -69,7 +51,7 @@ class FolderFragment : Fragment() {
     private fun observeLiveData() {
         folderFragmentViewModel.buttonClicked.observe(this, Observer {event ->
             when(event) {
-                DeleteButtonEvent.onClick -> createDeleteDialog()
+                DeleteButtonEvent.OnClick -> createDeleteDialog()
             }
         })
 
@@ -87,7 +69,7 @@ class FolderFragment : Fragment() {
         fragmentManager?.let { fragmentManager ->
             val deleteFolderDialog = DeleteFolderDialog(object : FolderDialogDeleteSuccessListener {
                     override fun onDelete() {
-                        folderFragmentViewModel.deleteFolderModel(folderModel)
+                        folderFragmentViewModel.deleteFolderModel(args.folderUUID)
                     }
                 })
             deleteFolderDialog.show(fragmentManager, "Delete Folder Dialog")

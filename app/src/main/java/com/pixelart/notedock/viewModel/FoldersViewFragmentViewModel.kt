@@ -58,7 +58,7 @@ class FoldersViewFragmentViewModel(
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe(
-                    { _isNameTaken.postValue(FolderNameTakenEvent.Success(it)) },
+                    { _isNameTaken.postValue(FolderNameTakenEvent.Success(it, folderName)) },
                     { _isNameTaken.postValue(FolderNameTakenEvent.Error) }
                 )
                 .addTo(bag)
@@ -76,6 +76,6 @@ sealed class FABClickedEvent {
 }
 
 sealed class FolderNameTakenEvent {
-    class Success(val taken: Boolean) : FolderNameTakenEvent()
+    class Success(val taken: Boolean, val folderName: String) : FolderNameTakenEvent()
     object Error: FolderNameTakenEvent()
 }
