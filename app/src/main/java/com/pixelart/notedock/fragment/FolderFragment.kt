@@ -14,11 +14,14 @@ import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.firestore.EventListener
 import com.pixelart.notedock.R
 import com.pixelart.notedock.adapter.NotesAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogDeleteSuccessListener
+import com.pixelart.notedock.domain.usecase.GetData
+import com.pixelart.notedock.model.NoteModel
 import com.pixelart.notedock.viewModel.DeleteButtonEvent
 import com.pixelart.notedock.viewModel.FolderDeleteEvent
 import com.pixelart.notedock.viewModel.FolderFragmentViewModel
@@ -52,6 +55,10 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
         val notesAdapter = NotesAdapter(this)
         setupRecyclerView(notesAdapter)
         observeLiveData()
+
+        val notes = ArrayList<NoteModel>()
+        notes.add(NoteModel("asdasdasdasdasd", "Hello", "World"))
+        notesAdapter.setNewData(notes)
     }
 
     private fun setupRecyclerView(notesAdapter: NotesAdapter) {

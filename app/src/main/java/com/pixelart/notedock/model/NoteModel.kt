@@ -12,6 +12,13 @@ class NoteModel {
         this.noteDescription = noteDescription
     }
 
+    constructor(uid: String?, noteTitle: String?, noteDescription: String?) {
+        this.uid = uid
+        this.noteTitle = noteTitle
+        this.noteDescription = noteDescription
+    }
+
+
     override fun toString(): String {
         return "NoteModel(uid=$uid, noteTitle=$noteTitle, noteDescription=$noteDescription)"
     }
