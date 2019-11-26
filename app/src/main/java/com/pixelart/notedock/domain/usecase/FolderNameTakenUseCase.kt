@@ -14,7 +14,6 @@ class FolderNameTakenImpl(private val firebaseFirestore: FirebaseFirestore,
     override fun isNameTaken(folderName: String): Single<Boolean> {
         return Single.create<Boolean> { emitter ->
             firebaseFirestore.collection(firebaseIDSRepository.getCollectionFolders())
-                    //add whereEqualTo
                 .whereEqualTo(firebaseIDSRepository.getFolderName(), folderName)
                 .get()
                 .addOnSuccessListener { documents ->
