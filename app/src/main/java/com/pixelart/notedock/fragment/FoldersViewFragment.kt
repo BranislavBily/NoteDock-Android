@@ -45,10 +45,14 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
         super.onViewCreated(view, savedInstanceState)
 
 
+        val foldersAdapter = FoldersAdapter(this)
+        setupRecyclerView(foldersAdapter)
+        observeLiveData(foldersAdapter)
+    }
+
+    private fun setupRecyclerView(foldersAdapter: FoldersAdapter) {
         recyclerViewFolders.layoutManager = LinearLayoutManager(context)
-        val folderAdapter = FoldersAdapter(this)
-        recyclerViewFolders.adapter = folderAdapter
-        observeLiveData(folderAdapter)
+        recyclerViewFolders.adapter = foldersAdapter
     }
 
 
