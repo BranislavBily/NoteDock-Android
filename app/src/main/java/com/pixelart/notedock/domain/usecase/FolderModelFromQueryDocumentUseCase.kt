@@ -22,5 +22,4 @@ class FolderModelFromDocumentImpl(private val firebaseIDSRepository: FirebaseIDS
         }
         return folder
     }
-
 }

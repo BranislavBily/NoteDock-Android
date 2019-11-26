@@ -19,8 +19,6 @@ class FolderRepositoryImpl(
     private val firebaseInstance: FirebaseFirestore
 ) : FolderRepository {
 
-    private val TAG = "FolderRepository"
-
     override fun getFolder(uid: String): Single<FolderModel> {
         return Single.create<FolderModel> { emitter ->
             firebaseInstance.collection(firebaseIDSRepository.getCollectionFolders())

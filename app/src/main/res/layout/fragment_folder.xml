@@ -19,12 +19,5 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     tools:listitem="@layout/note_list_item" />
-
-            <Button
-                    android:id="@+id/buttonDeleteFolder"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/delete_dialog"
-                    android:onClick="@{() -> viewmodel.onDeleteButtonClicked()}" />
     </FrameLayout>
 </layout>

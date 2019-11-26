@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.baseAdapters.BR
@@ -14,13 +13,11 @@ import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.firebase.firestore.EventListener
 import com.pixelart.notedock.R
 import com.pixelart.notedock.adapter.NotesAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogDeleteSuccessListener
-import com.pixelart.notedock.domain.usecase.GetData
 import com.pixelart.notedock.model.NoteModel
 import com.pixelart.notedock.viewModel.DeleteButtonEvent
 import com.pixelart.notedock.viewModel.FolderDeleteEvent
@@ -54,7 +51,7 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
 
         val notesAdapter = NotesAdapter(this)
         setupRecyclerView(notesAdapter)
-        observeLiveData()
+        observeLiveData(notesAdapter)
 
         val notes = ArrayList<NoteModel>()
         notes.add(NoteModel("asdasdasdasdasd", "Hello", "World"))
@@ -66,7 +63,9 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
         recyclerViewNotes.adapter = notesAdapter
     }
 
-    private fun observeLiveData() {
+    private fun observeLiveData(notesAdapter: NotesAdapter) {
+        folderFragmentViewModel.loadNotes(args.folderUUID)
+
         folderFragmentViewModel.buttonClicked.observe(this, Observer {event ->
             when(event) {
                 DeleteButtonEvent.OnClick -> createDeleteDialog()
@@ -80,6 +79,10 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
                 }
                 is FolderDeleteEvent.Error -> Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
             }
+        })
+
+        folderFragmentViewModel.loadedNotes.observe(this, Observer { notes ->
+            notesAdapter.setNewData(notes)
         })
     }
 
