@@ -20,7 +20,7 @@
                 android:id="@+id/recyclerViewFolders"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:listitem="@layout/folders_list_item" />
+                tools:listitem="@layout/folder_list_item" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab"
