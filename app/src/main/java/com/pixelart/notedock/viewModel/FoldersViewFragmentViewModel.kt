@@ -6,8 +6,8 @@ import com.google.firebase.firestore.EventListener
 import com.pixelart.notedock.dataBinding.SingleLiveEvent
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
 import com.pixelart.notedock.domain.repository.FolderRepository
-import com.pixelart.notedock.domain.usecase.AddFolderUseCase
-import com.pixelart.notedock.domain.usecase.FolderNameTakenUseCase
+import com.pixelart.notedock.domain.usecase.folder.AddFolderUseCase
+import com.pixelart.notedock.domain.usecase.folder.FolderNameTakenUseCase
 import com.pixelart.notedock.model.FolderModel
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
