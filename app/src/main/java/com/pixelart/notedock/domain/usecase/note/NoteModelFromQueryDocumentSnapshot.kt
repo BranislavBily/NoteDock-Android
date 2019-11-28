@@ -1,4 +1,4 @@
-package com.pixelart.notedock.domain.usecase
+package com.pixelart.notedock.domain.usecase.note
 
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.pixelart.notedock.domain.repository.FirebaseIDSRepository
@@ -8,7 +8,8 @@ interface NoteModelFromQueryDocumentSnapshotUseCase {
     fun getModel(queryDocumentSnapshot: QueryDocumentSnapshot): NoteModel
 }
 
-class NoteModelFromQueryDocumentSnapshotImpl(private val firebaseIDSRepository: FirebaseIDSRepository): NoteModelFromQueryDocumentSnapshotUseCase {
+class NoteModelFromQueryDocumentSnapshotImpl(private val firebaseIDSRepository: FirebaseIDSRepository):
+    NoteModelFromQueryDocumentSnapshotUseCase {
     override fun getModel(queryDocumentSnapshot: QueryDocumentSnapshot): NoteModel {
         val note = NoteModel()
 

@@ -1,4 +1,4 @@
-package com.pixelart.notedock.domain.usecase
+package com.pixelart.notedock.domain.usecase.folder
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pixelart.notedock.domain.repository.FirebaseIDSRepository
@@ -10,7 +10,8 @@ interface AddFolderUseCase {
 }
 
 class AddFolderImpl(private val firebaseIDSRepository: FirebaseIDSRepository,
-                    private val firebaseInstance: FirebaseFirestore): AddFolderUseCase {
+                    private val firebaseInstance: FirebaseFirestore):
+    AddFolderUseCase {
 
     override fun addFolder(folder: FolderModel): Single<String> {
         return Single.create { emitter ->
