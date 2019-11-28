@@ -94,9 +94,10 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
     }
 
     override fun onNoteClick(uid: String?) {
-        val action = FolderFragmentDirections.actionFolderFragmentToNoteFragment()
-        val navigationRouter = NavigationRouter(view)
-        navigationRouter.openAction(action)
-
+        uid?.let {
+            val action = FolderFragmentDirections.actionFolderFragmentToNoteFragment(args.folderUUID, uid)
+            val navigationRouter = NavigationRouter(view)
+            navigationRouter.openAction(action)
+        }
     }
 }

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.baseAdapters.BR
+import androidx.navigation.fragment.navArgs
 
 import com.pixelart.notedock.R
 import com.pixelart.notedock.dataBinding.setupDataBinding
@@ -18,6 +19,8 @@ import org.koin.android.viewmodel.ext.android.viewModel
 class NoteFragment : Fragment() {
 
     private val noteFragmentViewModel: NoteFragmentViewModel by viewModel()
+
+    private val args: NoteFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,4 +34,13 @@ class NoteFragment : Fragment() {
         return dataBinding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        observeLiveData()
+    }
+
+    private fun observeLiveData() {
+        noteFragmentViewModel.loadNotes(args.folderUUID, args.noteUUID)
+    }
 }
