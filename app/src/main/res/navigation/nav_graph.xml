@@ -46,6 +46,7 @@
 
         <argument
                 android:name="noteUUID"
+                android:defaultValue="null"
                 app:argType="string" />
 
     </fragment>

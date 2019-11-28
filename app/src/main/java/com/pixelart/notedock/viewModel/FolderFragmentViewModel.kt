@@ -26,6 +26,9 @@ class FolderFragmentViewModel(
     private val _folderDeleted = SingleLiveEvent<FolderDeleteEvent>()
     val folderDeleted: LiveData<FolderDeleteEvent> = _folderDeleted
 
+    private val _fabClicked = SingleLiveEvent<FABButtonEvent>()
+    val fabClicked: LiveData<FABButtonEvent> = _fabClicked
+
     fun onDeleteFolderButtonClicked() {
         _buttonClicked.postValue(DeleteFolderButtonEvent.OnClick)
     }
@@ -48,6 +51,14 @@ class FolderFragmentViewModel(
             _loadedNotes.postValue(notes)
         })
     }
+
+    fun onFABClicked() {
+        _fabClicked.postValue(FABButtonEvent.Clicked)
+    }
+}
+
+sealed class FABButtonEvent {
+    object Clicked: FABButtonEvent()
 }
 
 sealed class FolderDeleteEvent {
