@@ -1,7 +1,7 @@
 package com.pixelart.notedock
 
 import android.app.Application
-import com.pixelart.notedock.di.appModule
+import com.pixelart.notedock.di.viewModelModule
 import com.pixelart.notedock.di.firebaseModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -14,7 +14,7 @@ class NoteDockApplication: Application() {
         startKoin {
             androidLogger()
             androidContext(this@NoteDockApplication)
-            modules(appModule, firebaseModule)
+            modules(viewModelModule, firebaseModule)
         }
     }
 }

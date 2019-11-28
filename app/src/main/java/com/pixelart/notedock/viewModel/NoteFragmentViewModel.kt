@@ -5,10 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import com.pixelart.notedock.dataBinding.SingleLiveEvent
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
 import com.pixelart.notedock.domain.repository.NotesRepository
+import com.pixelart.notedock.domain.usecase.note.DeleteNoteUseCase
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 
-class NoteFragmentViewModel(private val notesRepository: NotesRepository): LifecycleViewModel() {
+class NoteFragmentViewModel(private val notesRepository: NotesRepository,
+                            private val deleteNoteUseCase: DeleteNoteUseCase): LifecycleViewModel() {
 
     private val _textViewNoteTitle = MutableLiveData<String>()
     val textViewNoteTitle: LiveData<String> = _textViewNoteTitle
@@ -19,7 +21,10 @@ class NoteFragmentViewModel(private val notesRepository: NotesRepository): Lifec
     private val _deleteButtonClicked = SingleLiveEvent<DeleteButtonClickEvent>()
     val deleteButtonClicked: LiveData<DeleteButtonClickEvent> = _deleteButtonClicked
 
-    fun loadNotes(folderUUID: String, noteUUID: String) {
+    private val _noteDeleted = SingleLiveEvent<NoteDeletedEvent>()
+    val noteDeleted: LiveData<NoteDeletedEvent> = _noteDeleted
+
+    fun loadNote(folderUUID: String, noteUUID: String) {
         startStopDisposeBag?.let { bag ->
             notesRepository.loadNote(folderUUID, noteUUID)
                 .subscribeOn(Schedulers.io())
@@ -32,9 +37,28 @@ class NoteFragmentViewModel(private val notesRepository: NotesRepository): Lifec
         }
     }
 
+    fun deleteNote(folderUUID: String, noteUUID: String) {
+        startStopDisposeBag?.let { bag ->
+            deleteNoteUseCase.deleteNote(folderUUID, noteUUID)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe( { _noteDeleted.postValue(NoteDeletedEvent.Success)},
+                            { _noteDeleted.postValue(NoteDeletedEvent.Error)})
+        }
+    }
+
     fun onButtonDeleteNoteClick() {
         _deleteButtonClicked.postValue(DeleteButtonClickEvent.Clicked)
     }
+
+    fun onButtonSaveNoteClick() {
+
+    }
+}
+
+sealed class NoteDeletedEvent {
+    object Success: NoteDeletedEvent()
+    object Error: NoteDeletedEvent()
 }
 
 sealed class DeleteButtonClickEvent {

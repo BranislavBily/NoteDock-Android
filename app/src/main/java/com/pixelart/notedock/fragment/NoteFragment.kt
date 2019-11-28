@@ -10,12 +10,14 @@ import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.pixelart.notedock.R
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteNoteDialog
 import com.pixelart.notedock.dialog.NoteDialogDeleteSuccessListener
 import com.pixelart.notedock.viewModel.DeleteButtonClickEvent
+import com.pixelart.notedock.viewModel.NoteDeletedEvent
 import com.pixelart.notedock.viewModel.NoteFragmentViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -44,11 +46,18 @@ class NoteFragment : Fragment() {
     }
 
     private fun observeLiveData() {
-        noteFragmentViewModel.loadNotes(args.folderUUID, args.noteUUID)
+        noteFragmentViewModel.loadNote(args.folderUUID, args.noteUUID)
 
         noteFragmentViewModel.deleteButtonClicked.observe(this, Observer { event ->
             when(event) {
                 DeleteButtonClickEvent.Clicked -> createDeleteNoteDialog()
+            }
+        })
+
+        noteFragmentViewModel.noteDeleted.observe(this, Observer { event ->
+            when(event) {
+                NoteDeletedEvent.Success -> view?.findNavController()?.popBackStack()
+                NoteDeletedEvent.Error -> Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -57,8 +66,7 @@ class NoteFragment : Fragment() {
         fragmentManager?.let { fragmentManager ->
             val dialog = DeleteNoteDialog(object : NoteDialogDeleteSuccessListener {
                 override fun onDelete() {
-                    // vymaz
-                    Toast.makeText(context, "Mazem", Toast.LENGTH_SHORT).show()
+                    noteFragmentViewModel.deleteNote(args.folderUUID, args.noteUUID)
                 }
             })
             dialog.show(fragmentManager, "Delete note dialog")
