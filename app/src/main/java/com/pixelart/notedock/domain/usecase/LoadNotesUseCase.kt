@@ -1,6 +1,5 @@
 package com.pixelart.notedock.domain.usecase
 
-import android.util.Log
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pixelart.notedock.domain.repository.FirebaseIDSRepository
@@ -29,7 +28,6 @@ class LoadNotesImpl(
                     for (document in querySnapshot) {
                         notes.add(noteModelFromQueryDocumentSnapshotUseCase.getModel(document))
                     }
-                    Log.i("Notes", notes.toString())
                     eventListener.onEvent(notes, null)
                 }
             }

@@ -26,7 +26,7 @@ class FolderFragmentViewModel(
     private val _folderDeleted = SingleLiveEvent<FolderDeleteEvent>()
     val folderDeleted: LiveData<FolderDeleteEvent> = _folderDeleted
 
-    fun onDeleteButtonClicked() {
+    fun onDeleteFolderButtonClicked() {
         _buttonClicked.postValue(DeleteButtonEvent.OnClick)
     }
 

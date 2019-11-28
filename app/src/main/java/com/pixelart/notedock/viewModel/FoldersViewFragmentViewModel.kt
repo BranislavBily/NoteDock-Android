@@ -2,7 +2,6 @@ package com.pixelart.notedock.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.androidhuman.rxfirebase2.firestore.RxFirebaseFirestore
 import com.google.firebase.firestore.EventListener
 import com.pixelart.notedock.dataBinding.SingleLiveEvent
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
