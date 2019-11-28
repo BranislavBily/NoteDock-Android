@@ -2,6 +2,7 @@ package com.pixelart.notedock.fragment
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,9 +17,9 @@ import com.pixelart.notedock.R
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteNoteDialog
 import com.pixelart.notedock.dialog.NoteDialogDeleteSuccessListener
-import com.pixelart.notedock.viewModel.DeleteNoteButtonClickEvent
-import com.pixelart.notedock.viewModel.NoteDeletedEvent
-import com.pixelart.notedock.viewModel.NoteFragmentViewModel
+import com.pixelart.notedock.model.NoteModel
+import com.pixelart.notedock.viewModel.*
+import kotlinx.android.synthetic.main.fragment_note.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class NoteFragment : Fragment() {
@@ -54,10 +55,23 @@ class NoteFragment : Fragment() {
             }
         })
 
+        noteFragmentViewModel.saveButtonClicked.observe(this, Observer { event ->
+            when(event) {
+                SaveNoteButtonClickEvent.Clicked -> saveNote()
+            }
+        })
+
         noteFragmentViewModel.noteDeleted.observe(this, Observer { event ->
             when(event) {
                 NoteDeletedEvent.Success -> view?.findNavController()?.popBackStack()
                 NoteDeletedEvent.Error -> Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        noteFragmentViewModel.noteSaved.observe( this, Observer { event ->
+            when(event) {
+                SaveNoteEvent.Success -> view?.findNavController()?.popBackStack()
+                SaveNoteEvent.Error -> Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -70,6 +84,17 @@ class NoteFragment : Fragment() {
                 }
             })
             dialog.show(fragmentManager, "Delete note dialog")
+        }
+    }
+
+    private fun saveNote() {
+        if(editTextNoteTitle.text.isEmpty()) {
+            Toast.makeText(context, "Title cant be empty!", Toast.LENGTH_SHORT).show()
+        } else {
+            val note = NoteModel()
+            note.noteTitle = editTextNoteTitle.text.toString()
+            note.noteDescription = editTextNoteDescription.text.toString()
+            noteFragmentViewModel.addNote(args.folderUUID, note)
         }
     }
 }

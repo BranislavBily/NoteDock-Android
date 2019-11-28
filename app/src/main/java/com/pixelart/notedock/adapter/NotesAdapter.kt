@@ -34,7 +34,7 @@ class NotesAdapter(private val onNoteClickListener: OnNoteClickListener) : Recyc
     class NotesHolder(itemView: View, private val onNoteClickListener: OnNoteClickListener): RecyclerView.ViewHolder(itemView) {
 
         fun bindData(note: NoteModel) {
-            itemView.textViewNoteTitle.text = note.noteTitle
+            itemView.editTextNoteTitle.text = note.noteTitle
             itemView.textViewNotePreview.text = note.noteDescription
 
             itemView.setOnClickListener {

@@ -10,8 +10,7 @@ interface AddFolderUseCase {
 }
 
 class AddFolderImpl(private val firebaseIDSRepository: FirebaseIDSRepository,
-                    private val firebaseInstance: FirebaseFirestore):
-    AddFolderUseCase {
+                    private val firebaseInstance: FirebaseFirestore): AddFolderUseCase {
 
     override fun addFolder(folder: FolderModel): Single<String> {
         return Single.create { emitter ->
