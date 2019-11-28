@@ -19,7 +19,7 @@ import com.pixelart.notedock.adapter.NotesAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogDeleteSuccessListener
-import com.pixelart.notedock.viewModel.DeleteButtonEvent
+import com.pixelart.notedock.viewModel.DeleteFolderButtonEvent
 import com.pixelart.notedock.viewModel.FolderDeleteEvent
 import com.pixelart.notedock.viewModel.FolderFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_folder.*
@@ -62,9 +62,9 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
     private fun observeLiveData(notesAdapter: NotesAdapter) {
         folderFragmentViewModel.loadNotes(args.folderUUID)
 
-        folderFragmentViewModel.buttonClicked.observe(this, Observer {event ->
+        folderFragmentViewModel.folderButtonClicked.observe(this, Observer { event ->
             when(event) {
-                DeleteButtonEvent.OnClick -> createDeleteDialog()
+                DeleteFolderButtonEvent.OnClick -> createDeleteDialog()
             }
         })
 

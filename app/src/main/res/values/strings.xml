@@ -5,6 +5,8 @@
     <string name="enter_folder_name">Enter Folder name</string>
     <string name="delete_folder">Delete notebook and all its notes?</string>
     <string name="delete_folder_additional">You can not go back!</string>
+    <string name="delete_note">Delete note?</string>
+    <string name="delete_note_additional">You can not go back!</string>
     <string name="folder">Notebook</string>
     <string name="create_dialog">Create</string>
     <string name="cancel_dialog">Cancel</string>

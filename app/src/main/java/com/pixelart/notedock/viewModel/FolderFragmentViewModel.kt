@@ -20,14 +20,14 @@ class FolderFragmentViewModel(
     private val _loadedNotes = MutableLiveData<ArrayList<NoteModel>>()
     val loadedNotes: LiveData<ArrayList<NoteModel>> = _loadedNotes
 
-    private val _buttonClicked = SingleLiveEvent<DeleteButtonEvent>()
-    val buttonClicked: LiveData<DeleteButtonEvent> = _buttonClicked
+    private val _buttonClicked = SingleLiveEvent<DeleteFolderButtonEvent>()
+    val folderButtonClicked: LiveData<DeleteFolderButtonEvent> = _buttonClicked
 
     private val _folderDeleted = SingleLiveEvent<FolderDeleteEvent>()
     val folderDeleted: LiveData<FolderDeleteEvent> = _folderDeleted
 
     fun onDeleteFolderButtonClicked() {
-        _buttonClicked.postValue(DeleteButtonEvent.OnClick)
+        _buttonClicked.postValue(DeleteFolderButtonEvent.OnClick)
     }
 
     fun deleteFolderModel(folderUUID: String) {
@@ -55,6 +55,6 @@ sealed class FolderDeleteEvent {
     object Success: FolderDeleteEvent()
 }
 
-sealed class DeleteButtonEvent {
-    object OnClick: DeleteButtonEvent()
+sealed class DeleteFolderButtonEvent {
+    object OnClick: DeleteFolderButtonEvent()
 }
