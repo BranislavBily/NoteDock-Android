@@ -8,12 +8,14 @@ import com.pixelart.notedock.domain.repository.FolderRepositoryImpl
 import com.pixelart.notedock.domain.usecase.*
 import com.pixelart.notedock.viewModel.FolderFragmentViewModel
 import com.pixelart.notedock.viewModel.FoldersViewFragmentViewModel
+import com.pixelart.notedock.viewModel.NoteFragmentViewModel
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
     viewModel { FolderFragmentViewModel(get(), get()) }
     viewModel { FoldersViewFragmentViewModel(get(), get(), get()) }
+    viewModel { NoteFragmentViewModel()}
 }
 
 val firebaseModule = module {

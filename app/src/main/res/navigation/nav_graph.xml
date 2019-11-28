@@ -21,12 +21,22 @@
     <fragment
             android:id="@+id/folderFragment"
             android:name="com.pixelart.notedock.fragment.FolderFragment"
-            android:label="Folder details"
+            android:label="Notes"
             tools:layout="@layout/fragment_folder" >
 
         <argument
                 android:name="folderUUID"
                 app:argType="string"
                 />
+        <action
+                android:id="@+id/action_folderFragment_to_noteFragment"
+                app:destination="@id/noteFragment"
+                app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+                app:popExitAnim="@anim/nav_default_pop_exit_anim"
+                app:popUpTo="@+id/noteFragment" />
     </fragment>
+    <fragment
+            android:id="@+id/noteFragment"
+            android:name="com.pixelart.notedock.fragment.NoteFragment"
+            android:label="Note" />
 </navigation>
