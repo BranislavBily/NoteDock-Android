@@ -18,8 +18,8 @@ class NoteFragmentViewModel(private val notesRepository: NotesRepository,
     private val _textViewNoteDescription = MutableLiveData<String>()
     val textViewNoteDescription: LiveData<String> = _textViewNoteDescription
 
-    private val _deleteButtonClicked = SingleLiveEvent<DeleteButtonClickEvent>()
-    val deleteButtonClicked: LiveData<DeleteButtonClickEvent> = _deleteButtonClicked
+    private val _deleteButtonClicked = SingleLiveEvent<DeleteNoteButtonClickEvent>()
+    val deleteNoteButtonClicked: LiveData<DeleteNoteButtonClickEvent> = _deleteButtonClicked
 
     private val _noteDeleted = SingleLiveEvent<NoteDeletedEvent>()
     val noteDeleted: LiveData<NoteDeletedEvent> = _noteDeleted
@@ -48,11 +48,11 @@ class NoteFragmentViewModel(private val notesRepository: NotesRepository,
     }
 
     fun onButtonDeleteNoteClick() {
-        _deleteButtonClicked.postValue(DeleteButtonClickEvent.Clicked)
+        _deleteButtonClicked.postValue(DeleteNoteButtonClickEvent.Clicked)
     }
 
     fun onButtonSaveNoteClick() {
-
+        _saveButtonClicked.postValue(SaveNoteButtonClickEvent.Clicked)
     }
 }
 
@@ -61,6 +61,10 @@ sealed class NoteDeletedEvent {
     object Error: NoteDeletedEvent()
 }
 
-sealed class DeleteButtonClickEvent {
-    object Clicked: DeleteButtonClickEvent()
+sealed class DeleteNoteButtonClickEvent {
+    object Clicked: DeleteNoteButtonClickEvent()
+}
+
+sealed class SaveNoteButtonClickEvent {
+    object Clicked: SaveNoteButtonClickEvent()
 }

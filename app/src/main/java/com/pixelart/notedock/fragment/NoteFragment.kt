@@ -16,7 +16,7 @@ import com.pixelart.notedock.R
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteNoteDialog
 import com.pixelart.notedock.dialog.NoteDialogDeleteSuccessListener
-import com.pixelart.notedock.viewModel.DeleteButtonClickEvent
+import com.pixelart.notedock.viewModel.DeleteNoteButtonClickEvent
 import com.pixelart.notedock.viewModel.NoteDeletedEvent
 import com.pixelart.notedock.viewModel.NoteFragmentViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -48,9 +48,9 @@ class NoteFragment : Fragment() {
     private fun observeLiveData() {
         noteFragmentViewModel.loadNote(args.folderUUID, args.noteUUID)
 
-        noteFragmentViewModel.deleteButtonClicked.observe(this, Observer { event ->
+        noteFragmentViewModel.deleteNoteButtonClicked.observe(this, Observer { event ->
             when(event) {
-                DeleteButtonClickEvent.Clicked -> createDeleteNoteDialog()
+                DeleteNoteButtonClickEvent.Clicked -> createDeleteNoteDialog()
             }
         })
 
