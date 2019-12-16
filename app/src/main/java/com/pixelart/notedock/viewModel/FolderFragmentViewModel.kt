@@ -7,12 +7,14 @@ import com.pixelart.notedock.dataBinding.SingleLiveEvent
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
 import com.pixelart.notedock.domain.repository.NotesRepository
 import com.pixelart.notedock.domain.usecase.folder.DeleteFolderUseCase
+import com.pixelart.notedock.domain.usecase.note.CreateNoteUseCase
 import com.pixelart.notedock.model.NoteModel
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 
 class FolderFragmentViewModel(
     private val deleteFolderUseCase: DeleteFolderUseCase,
+    private val createFolderUseCase: CreateNoteUseCase,
     private val notesRepository: NotesRepository
 ): LifecycleViewModel() {
 
@@ -29,8 +31,25 @@ class FolderFragmentViewModel(
     private val _fabClicked = SingleLiveEvent<FABButtonEvent>()
     val fabClicked: LiveData<FABButtonEvent> = _fabClicked
 
+    private val _noteCreated = SingleLiveEvent<CreateNoteEvent>()
+    val noteCreated: LiveData<CreateNoteEvent> = _noteCreated
+
     fun onDeleteFolderButtonClicked() {
         _buttonClicked.postValue(DeleteFolderButtonEvent.OnClick)
+    }
+
+    fun createNote(folderUUID: String) {
+        startStopDisposeBag?.let { bag ->
+            createFolderUseCase.createNote(folderUUID)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe( {
+                    _noteCreated.postValue(CreateNoteEvent.Success(it))
+                }, {
+                    _noteCreated.postValue(CreateNoteEvent.Error)
+                })
+                .addTo(bag)
+        }
     }
 
     fun deleteFolderModel(folderUUID: String) {
@@ -59,6 +78,11 @@ class FolderFragmentViewModel(
 
 sealed class FABButtonEvent {
     object Clicked: FABButtonEvent()
+}
+
+sealed class CreateNoteEvent {
+    class Success(val noteUUID: String): CreateNoteEvent()
+    object Error: CreateNoteEvent()
 }
 
 sealed class FolderDeleteEvent {

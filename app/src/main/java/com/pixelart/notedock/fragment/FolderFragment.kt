@@ -19,10 +19,7 @@ import com.pixelart.notedock.adapter.NotesAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogDeleteSuccessListener
-import com.pixelart.notedock.viewModel.DeleteFolderButtonEvent
-import com.pixelart.notedock.viewModel.FABButtonEvent
-import com.pixelart.notedock.viewModel.FolderDeleteEvent
-import com.pixelart.notedock.viewModel.FolderFragmentViewModel
+import com.pixelart.notedock.viewModel.*
 import kotlinx.android.synthetic.main.fragment_folder.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -87,6 +84,13 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
                 FABButtonEvent.Clicked -> createNote()
             }
         })
+
+        folderFragmentViewModel.noteCreated.observe(this, Observer { event ->
+            when(event) {
+                is CreateNoteEvent.Success -> navigateToNote(event.noteUUID)
+                is CreateNoteEvent.Error -> Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun createDeleteDialog() {
@@ -101,14 +105,18 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
     }
 
     private fun createNote() {
-        val action = FolderFragmentDirections.actionFolderFragmentToNoteFragment(args.folderUUID)
+        folderFragmentViewModel.createNote(args.folderUUID)
+    }
+
+    private fun navigateToNote(noteUUID: String) {
+        val action = FolderFragmentDirections.actionFolderFragmentToNoteFragment(args.folderUUID + " " + noteUUID)
         val navigationRouter = NavigationRouter(view)
         navigationRouter.openAction(action)
     }
 
-    override fun onNoteClick(uid: String?) {
-        uid?.let {
-            val action = FolderFragmentDirections.actionFolderFragmentToNoteFragment(args.folderUUID, uid)
+    override fun onNoteClick(noteUUID: String?) {
+        noteUUID?.let {
+            val action = FolderFragmentDirections.actionFolderFragmentToNoteFragment(args.folderUUID + " " + noteUUID)
             val navigationRouter = NavigationRouter(view)
             navigationRouter.openAction(action)
         }

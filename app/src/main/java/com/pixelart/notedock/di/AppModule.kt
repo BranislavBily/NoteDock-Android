@@ -11,7 +11,7 @@ import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val viewModelModule = module {
-    viewModel { FolderFragmentViewModel(get(), get()) }
+    viewModel { FolderFragmentViewModel(get(), get(), get()) }
     viewModel { FoldersViewFragmentViewModel(get(), get(), get()) }
     viewModel { NoteFragmentViewModel(get(), get(), get())}
 }
@@ -29,7 +29,7 @@ val firebaseModule = module {
     single { DeleteFolderImpl(get(), FirebaseFirestore.getInstance()) as DeleteFolderUseCase }
     single { FolderNameTakenImpl(FirebaseFirestore.getInstance(), get()) as FolderNameTakenUseCase }
     //Note
-    single { AddNoteImpl(get(), FirebaseFirestore.getInstance()) as AddNoteUseCase}
+    single { CreateNoteImpl(get(), FirebaseFirestore.getInstance()) as CreateNoteUseCase}
     single { DeleteNoteImpl(get(), FirebaseFirestore.getInstance()) as DeleteNoteUseCase }
     single { NoteModelFromQueryDocumentSnapshotImpl(get()) as NoteModelFromQueryDocumentSnapshotUseCase}
     single { NoteModelFromDocumentSnapshotImpl(get()) as NoteModelFromDocumentSnapshotUseCase }

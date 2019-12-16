@@ -38,12 +38,12 @@ class NotesAdapter(private val onNoteClickListener: OnNoteClickListener) : Recyc
             itemView.textViewNotePreview.text = note.noteDescription
 
             itemView.setOnClickListener {
-                onNoteClickListener.onNoteClick(note.uid)
+                onNoteClickListener.onNoteClick(note.uuid)
             }
         }
     }
 
     interface OnNoteClickListener {
-        fun onNoteClick(uid: String?)
+        fun onNoteClick(noteUUID: String?)
     }
 }

@@ -2,7 +2,6 @@ package com.pixelart.notedock.fragment
 
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,9 +16,7 @@ import com.pixelart.notedock.R
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteNoteDialog
 import com.pixelart.notedock.dialog.NoteDialogDeleteSuccessListener
-import com.pixelart.notedock.model.NoteModel
 import com.pixelart.notedock.viewModel.*
-import kotlinx.android.synthetic.main.fragment_note.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class NoteFragment : Fragment() {
@@ -27,6 +24,8 @@ class NoteFragment : Fragment() {
     private val noteFragmentViewModel: NoteFragmentViewModel by viewModel()
 
     private val args: NoteFragmentArgs by navArgs()
+    private var folderUUID: String = ""
+    private var noteUUID: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,6 +39,14 @@ class NoteFragment : Fragment() {
         return dataBinding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val arguments = args.folderUUIDnoteUUID.split(" ")
+        folderUUID = arguments[0]
+        noteUUID = arguments[1]
+    }
+
     override fun onResume() {
         super.onResume()
 
@@ -47,7 +54,7 @@ class NoteFragment : Fragment() {
     }
 
     private fun observeLiveData() {
-        noteFragmentViewModel.loadNote(args.folderUUID, args.noteUUID)
+        noteFragmentViewModel.loadNote(folderUUID, noteUUID)
 
         noteFragmentViewModel.deleteNoteButtonClicked.observe(this, Observer { event ->
             when(event) {
@@ -80,7 +87,7 @@ class NoteFragment : Fragment() {
         fragmentManager?.let { fragmentManager ->
             val dialog = DeleteNoteDialog(object : NoteDialogDeleteSuccessListener {
                 override fun onDelete() {
-                    noteFragmentViewModel.deleteNote(args.folderUUID, args.noteUUID)
+                    noteFragmentViewModel.deleteNote(folderUUID, noteUUID)
                 }
             })
             dialog.show(fragmentManager, "Delete note dialog")
@@ -88,13 +95,6 @@ class NoteFragment : Fragment() {
     }
 
     private fun saveNote() {
-        if(editTextNoteTitle.text.isEmpty()) {
-            Toast.makeText(context, "Title cant be empty!", Toast.LENGTH_SHORT).show()
-        } else {
-            val note = NoteModel()
-            note.noteTitle = editTextNoteTitle.text.toString()
-            note.noteDescription = editTextNoteDescription.text.toString()
-            noteFragmentViewModel.addNote(args.folderUUID, note)
-        }
+
     }
 }
