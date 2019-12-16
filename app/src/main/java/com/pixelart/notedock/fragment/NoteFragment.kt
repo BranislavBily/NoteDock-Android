@@ -1,10 +1,12 @@
 package com.pixelart.notedock.fragment
 
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.baseAdapters.BR
@@ -47,6 +49,21 @@ class NoteFragment : Fragment() {
         val arguments = args.folderUUIDnoteUUID.split(" ")
         folderUUID = arguments[0]
         noteUUID = arguments[1]
+
+        setupClosingOfKeyboard()
+    }
+
+    private fun setupClosingOfKeyboard() {
+        editTextNoteTitle.setOnFocusChangeListener { view, hasFocus ->
+            if(!hasFocus) {
+                hideKeyboard(view)
+            }
+        }
+        editTextNoteDescription.setOnFocusChangeListener { view, hasFocus ->
+            if(!hasFocus) {
+                hideKeyboard(view)
+            }
+        }
     }
 
     override fun onResume() {
@@ -67,12 +84,6 @@ class NoteFragment : Fragment() {
         noteFragmentViewModel.deleteNoteButtonClicked.observe(this, Observer { event ->
             when(event) {
                 DeleteNoteButtonClickEvent.Clicked -> createDeleteNoteDialog()
-            }
-        })
-
-        noteFragmentViewModel.saveButtonClicked.observe(this, Observer { event ->
-            when(event) {
-                SaveNoteButtonClickEvent.Clicked -> saveNote()
             }
         })
 
@@ -108,5 +119,10 @@ class NoteFragment : Fragment() {
         note.noteTitle = editTextNoteTitle.text.toString()
         note.noteDescription = editTextNoteDescription.text.toString()
         noteFragmentViewModel.saveNote(folderUUID, note)
+    }
+
+    private fun hideKeyboard(view: View) {
+        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }
