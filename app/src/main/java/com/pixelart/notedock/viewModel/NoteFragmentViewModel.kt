@@ -5,14 +5,15 @@ import androidx.lifecycle.MutableLiveData
 import com.pixelart.notedock.dataBinding.SingleLiveEvent
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
 import com.pixelart.notedock.domain.repository.NotesRepository
-import com.pixelart.notedock.domain.usecase.note.CreateNoteUseCase
 import com.pixelart.notedock.domain.usecase.note.DeleteNoteUseCase
+import com.pixelart.notedock.domain.usecase.note.UpdateNoteUseCase
+import com.pixelart.notedock.model.NoteModel
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 
 class NoteFragmentViewModel(private val notesRepository: NotesRepository,
                             private val deleteNoteUseCase: DeleteNoteUseCase,
-                            private val createNoteUseCase: CreateNoteUseCase): LifecycleViewModel() {
+                            private val updateNoteUseCase: UpdateNoteUseCase): LifecycleViewModel() {
 
     private val _editTextNoteTitle = MutableLiveData<String>()
     val editTextNoteTitle: LiveData<String> = _editTextNoteTitle
@@ -52,6 +53,17 @@ class NoteFragmentViewModel(private val notesRepository: NotesRepository,
                 .observeOn(Schedulers.io())
                 .subscribe( { _noteDeleted.postValue(NoteDeletedEvent.Success)},
                             { _noteDeleted.postValue(NoteDeletedEvent.Error)})
+                .addTo(bag)
+        }
+    }
+
+    fun saveNote(folderUUID: String, noteModel: NoteModel) {
+        startStopDisposeBag?.let { bag ->
+            updateNoteUseCase.updateNote(folderUUID, noteModel)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe({ _noteSaved.postValue(SaveNoteEvent.Success)},
+                    { _noteSaved.postValue(SaveNoteEvent.Error)})
                 .addTo(bag)
         }
     }

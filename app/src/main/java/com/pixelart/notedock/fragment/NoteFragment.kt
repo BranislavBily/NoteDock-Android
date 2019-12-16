@@ -16,7 +16,9 @@ import com.pixelart.notedock.R
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteNoteDialog
 import com.pixelart.notedock.dialog.NoteDialogDeleteSuccessListener
+import com.pixelart.notedock.model.NoteModel
 import com.pixelart.notedock.viewModel.*
+import kotlinx.android.synthetic.main.fragment_note.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class NoteFragment : Fragment() {
@@ -51,6 +53,12 @@ class NoteFragment : Fragment() {
         super.onResume()
 
         observeLiveData()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        saveNote()
     }
 
     private fun observeLiveData() {
@@ -95,6 +103,10 @@ class NoteFragment : Fragment() {
     }
 
     private fun saveNote() {
-
+        val note = NoteModel()
+        note.uuid = noteUUID
+        note.noteTitle = editTextNoteTitle.text.toString()
+        note.noteDescription = editTextNoteDescription.text.toString()
+        noteFragmentViewModel.saveNote(folderUUID, note)
     }
 }

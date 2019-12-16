@@ -29,8 +29,9 @@ val firebaseModule = module {
     single { DeleteFolderImpl(get(), FirebaseFirestore.getInstance()) as DeleteFolderUseCase }
     single { FolderNameTakenImpl(FirebaseFirestore.getInstance(), get()) as FolderNameTakenUseCase }
     //Note
-    single { CreateNoteImpl(get(), FirebaseFirestore.getInstance()) as CreateNoteUseCase}
+    single { CreateNoteImpl(get(), FirebaseFirestore.getInstance()) as CreateNoteUseCase }
     single { DeleteNoteImpl(get(), FirebaseFirestore.getInstance()) as DeleteNoteUseCase }
-    single { NoteModelFromQueryDocumentSnapshotImpl(get()) as NoteModelFromQueryDocumentSnapshotUseCase}
+    single { NoteModelFromQueryDocumentSnapshotImpl(get()) as NoteModelFromQueryDocumentSnapshotUseCase }
     single { NoteModelFromDocumentSnapshotImpl(get()) as NoteModelFromDocumentSnapshotUseCase }
+    single { UpdateNoteImpl(get(), FirebaseFirestore.getInstance()) as UpdateNoteUseCase }
 }
