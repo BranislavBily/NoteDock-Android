@@ -30,6 +30,8 @@ class NoteFragment : Fragment() {
     private val args: NoteFragmentArgs by navArgs()
     private var folderUUID: String = ""
     private var noteUUID: String = ""
+    //Please change this later
+    private var deletingNote = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,7 +77,9 @@ class NoteFragment : Fragment() {
     override fun onPause() {
         super.onPause()
 
-        saveNote()
+        if(!deletingNote) {
+            saveNote()
+        }
     }
 
     private fun observeLiveData() {
@@ -89,14 +93,19 @@ class NoteFragment : Fragment() {
 
         noteFragmentViewModel.noteDeleted.observe(this, Observer { event ->
             when(event) {
-                NoteDeletedEvent.Success -> view?.findNavController()?.popBackStack()
+                NoteDeletedEvent.Success -> {
+                    deletingNote = true
+                    view?.findNavController()?.popBackStack()
+                }
                 NoteDeletedEvent.Error -> Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
             }
         })
 
         noteFragmentViewModel.noteSaved.observe( this, Observer { event ->
             when(event) {
-                SaveNoteEvent.Success -> view?.findNavController()?.popBackStack()
+                SaveNoteEvent.Success -> {
+                    view?.findNavController()?.popBackStack()
+                }
                 SaveNoteEvent.Error -> Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
             }
         })
