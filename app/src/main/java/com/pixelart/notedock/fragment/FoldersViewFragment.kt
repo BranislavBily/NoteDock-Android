@@ -1,11 +1,17 @@
 package com.pixelart.notedock.fragment
 
-
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextUtils
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.widget.addTextChangedListener
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -15,8 +21,6 @@ import com.pixelart.notedock.NavigationRouter
 import com.pixelart.notedock.R
 import com.pixelart.notedock.adapter.FoldersAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
-import com.pixelart.notedock.dialog.CreateFolderDialog
-import com.pixelart.notedock.dialog.FolderDialogSuccessListener
 import com.pixelart.notedock.model.FolderModel
 import com.pixelart.notedock.viewModel.FABClickedEvent
 import com.pixelart.notedock.viewModel.FolderNameTakenEvent
@@ -92,16 +96,31 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
     }
 
     private fun createFolderDialog() {
-        val dialog = CreateFolderDialog(object : FolderDialogSuccessListener {
-            override fun onSuccess(folderName: String?) {
-                folderName?.let { name ->
-                    //Checks if name is taken
-                    foldersViewFragmentViewModel.isNameTaken(name)
-                }
+        //Rad by som to mal v triede nejakej ale neviem ako
+        context?.let { context ->
+            val builder = AlertDialog.Builder(context)
+            builder.setTitle(R.string.create_new_folder)
+            builder.setMessage(R.string.enter_folder_name)
+            val input = EditText(context)
+            val lp = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+            )
+            input.layoutParams = lp
+            builder.setPositiveButton(R.string.create_dialog) { dialog, _ ->
+                foldersViewFragmentViewModel.isNameTaken(input.text.toString())
+                dialog.cancel()
             }
-        })
-        fragmentManager?.let {
-            dialog.show(it, "CreateFolderDialog")
+            builder.setNegativeButton(R.string.cancel_dialog) { dialog, _ ->
+                dialog.cancel()
+            }
+            builder.setView(input)
+            val dialog = builder.create()
+            dialog.show()
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+            input.addTextChangedListener { watcher ->
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = !watcher.isNullOrEmpty()
+            }
         }
     }
 
