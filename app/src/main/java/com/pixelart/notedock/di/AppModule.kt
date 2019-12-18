@@ -25,7 +25,7 @@ val firebaseModule = module {
     //UseCase Folder
     single { FolderModelFromDocumentImpl(get()) as FolderModelFromDocumentUseCase }
     single { FolderModelFromDocumentSnapshotImpl(get()) as FolderModelFromDocumentSnapshotUseCase }
-    single { AddFolderImpl(get(), FirebaseFirestore.getInstance()) as AddFolderUseCase }
+    single { CreateFolderImpl(get(), FirebaseFirestore.getInstance()) as CreateFolderUseCase }
     single { DeleteFolderImpl(get(), FirebaseFirestore.getInstance()) as DeleteFolderUseCase }
     single { FolderNameTakenImpl(FirebaseFirestore.getInstance(), get()) as FolderNameTakenUseCase }
     //Note
