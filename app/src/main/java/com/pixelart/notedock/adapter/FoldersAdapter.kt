@@ -35,7 +35,7 @@ class FoldersAdapter(private val onFolderClickListener: OnFolderClickListener) :
 
         fun bindData(folder: FolderModel) {
             itemView.textViewFolderName.text = folder.name
-            itemView.textViewNotesCount.text = folder.notesCount
+            itemView.textViewNotesCount.text = folder.notesCount.toString()
 
             itemView.setOnClickListener {
                 onFolderClickListener.onFolderClick(folder.uid)

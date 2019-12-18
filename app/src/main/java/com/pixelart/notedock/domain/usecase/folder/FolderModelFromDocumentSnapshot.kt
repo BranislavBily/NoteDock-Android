@@ -18,8 +18,8 @@ class FolderModelFromDocumentSnapshotImpl(private val firebaseIDSRepository: Fir
         documentSnapshot.getString(firebaseIDSRepository.getFolderName())?.let {
             folder.name = it
         }
-        documentSnapshot.getString(firebaseIDSRepository.getFolderNotesCount())?.let {
-            folder.notesCount = it
+        documentSnapshot.getLong(firebaseIDSRepository.getFolderNotesCount())?.let {
+            folder.notesCount = it.toInt()
         }
         return folder
     }
