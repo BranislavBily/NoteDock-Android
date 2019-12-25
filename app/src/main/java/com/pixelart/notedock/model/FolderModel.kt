@@ -3,7 +3,7 @@ package com.pixelart.notedock.model
 class FolderModel {
     var uid: String? = null
     var name: String? = null
-    var notesCount: String? = null
+    var notesCount: Int? = null
 
     constructor()
 

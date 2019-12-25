@@ -2,11 +2,16 @@
     <string name="app_name">NoteDock</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="create_new_folder">Create new folder</string>
+    <string name="create_new_note">Create new note</string>
     <string name="enter_folder_name">Enter Folder name</string>
     <string name="delete_folder">Delete notebook and all its notes?</string>
     <string name="delete_folder_additional">You can not go back!</string>
+    <string name="delete_note">Delete note?</string>
+    <string name="delete_note_additional">You can not go back!</string>
     <string name="folder">Notebook</string>
     <string name="create_dialog">Create</string>
     <string name="cancel_dialog">Cancel</string>
     <string name="delete_dialog">Delete</string>
+    <string name="note_hint_title">Title</string>
+    <string name="note_hint_description">Description</string>
 </resources>

@@ -1,8 +1,7 @@
-package com.pixelart.notedock.domain.usecase
+package com.pixelart.notedock.domain.usecase.folder
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pixelart.notedock.domain.repository.FirebaseIDSRepository
-import com.pixelart.notedock.viewModel.FolderNameTakenEvent
 import io.reactivex.Single
 
 interface FolderNameTakenUseCase {
@@ -10,11 +9,11 @@ interface FolderNameTakenUseCase {
 }
 
 class FolderNameTakenImpl(private val firebaseFirestore: FirebaseFirestore,
-                          private val firebaseIDSRepository: FirebaseIDSRepository): FolderNameTakenUseCase {
+                          private val firebaseIDSRepository: FirebaseIDSRepository):
+    FolderNameTakenUseCase {
     override fun isNameTaken(folderName: String): Single<Boolean> {
         return Single.create<Boolean> { emitter ->
             firebaseFirestore.collection(firebaseIDSRepository.getCollectionFolders())
-                    //add whereEqualTo
                 .whereEqualTo(firebaseIDSRepository.getFolderName(), folderName)
                 .get()
                 .addOnSuccessListener { documents ->

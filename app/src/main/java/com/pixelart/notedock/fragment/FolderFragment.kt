@@ -12,20 +12,19 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.pixelart.notedock.NavigationRouter
 import com.pixelart.notedock.R
+import com.pixelart.notedock.adapter.NotesAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogDeleteSuccessListener
-import com.pixelart.notedock.model.FolderModel
-import com.pixelart.notedock.viewModel.DeleteButtonEvent
-import com.pixelart.notedock.viewModel.FolderDeleteEvent
-import com.pixelart.notedock.viewModel.FolderFragmentViewModel
-import com.pixelart.notedock.viewModel.LoadFolderEvent
+import com.pixelart.notedock.viewModel.*
 import kotlinx.android.synthetic.main.fragment_folder.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 
-class FolderFragment : Fragment() {
+class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
 
     private val folderFragmentViewModel: FolderFragmentViewModel by viewModel()
 
@@ -43,49 +42,63 @@ class FolderFragment : Fragment() {
         return dataBinding.root
     }
 
-    //Not sure but this might be the solution
-    override fun onResume() {
-        super.onResume()
-
-        folderFragmentViewModel.loadFolderModel(args.folderUUID)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        observeLiveData()
+
+        val notesAdapter = NotesAdapter(this)
+        setupRecyclerView(notesAdapter)
+        observeLiveData(notesAdapter)
     }
 
-    private fun observeLiveData() {
-        folderFragmentViewModel.buttonClicked.observe(this, Observer {event ->
-            when(event) {
-                DeleteButtonEvent.OnClick -> createDeleteDialog()
-            }
-        })
+    private fun setupRecyclerView(notesAdapter: NotesAdapter) {
+        recyclerViewNotes.layoutManager = LinearLayoutManager(context)
+        recyclerViewNotes.adapter = notesAdapter
+    }
 
-        folderFragmentViewModel.folderLoaded.observe(this, Observer { event ->
-            when(event) {
-                is LoadFolderEvent.Success -> {
-                    showFolderData(event.folderModel)
-                }
-                is LoadFolderEvent.Error -> Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+    private fun observeLiveData(notesAdapter: NotesAdapter) {
+        folderFragmentViewModel.loadNotes(args.folderUUID)
+
+        folderFragmentViewModel.folderButtonClicked.observe(this, Observer { event ->
+            when (event) {
+                DeleteFolderButtonEvent.OnClick -> createDeleteDialog()
             }
         })
 
         folderFragmentViewModel.folderDeleted.observe(this, Observer { event ->
-            when(event) {
-                is FolderDeleteEvent.Success ->  {
+            when (event) {
+                is FolderDeleteEvent.Success -> {
                     view?.findNavController()?.popBackStack()
                 }
-                is FolderDeleteEvent.Error -> Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+                is FolderDeleteEvent.Error -> Toast.makeText(
+                    context,
+                    "Error",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
-    }
 
-    private fun showFolderData(folderModel: FolderModel) {
-        textViewFolderDescriptionUID.text = folderModel.uid
-        textViewFolderDescriptionName.text = folderModel.name
-        textViewFolderDescriptionNotesCount.text = folderModel.notesCount
+        folderFragmentViewModel.loadedNotes.observe(this, Observer { notes ->
+            notesAdapter.setNewData(notes)
+        })
+
+        folderFragmentViewModel.fabClicked.observe(this, Observer { event ->
+            when (event) {
+                FABButtonEvent.Clicked -> createNote()
+            }
+        })
+
+        folderFragmentViewModel.noteCreated.observe(this, Observer { event ->
+            when (event) {
+                is CreateNoteEvent.Success -> navigateToNote(event.noteUUID)
+                is CreateNoteEvent.Error -> Toast.makeText(
+                    context,
+                    "Error",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
     }
 
     private fun createDeleteDialog() {
@@ -96,6 +109,24 @@ class FolderFragment : Fragment() {
                     }
                 })
             deleteFolderDialog.show(fragmentManager, "Delete Folder Dialog")
+        }
+    }
+
+    private fun createNote() {
+        folderFragmentViewModel.createNote(args.folderUUID)
+    }
+
+    private fun navigateToNote(noteUUID: String) {
+        val action = FolderFragmentDirections.actionFolderFragmentToNoteFragment(args.folderUUID + " " + noteUUID)
+        val navigationRouter = NavigationRouter(view)
+        navigationRouter.openAction(action)
+    }
+
+    override fun onNoteClick(noteUUID: String?) {
+        noteUUID?.let {
+            val action = FolderFragmentDirections.actionFolderFragmentToNoteFragment(args.folderUUID + " " + noteUUID)
+            val navigationRouter = NavigationRouter(view)
+            navigationRouter.openAction(action)
         }
     }
 }

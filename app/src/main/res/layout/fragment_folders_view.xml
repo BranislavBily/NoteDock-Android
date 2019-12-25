@@ -20,7 +20,7 @@
                 android:id="@+id/recyclerViewFolders"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:listitem="@layout/folders_list_item" />
+                tools:listitem="@layout/folder_list_item" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab"
@@ -30,7 +30,7 @@
                 android:layout_margin="16dp"
                 android:onClick="@{() -> viewmodel.onFABClicked()}"
                 android:contentDescription="@string/create_new_folder"
-                android:src="@drawable/ic_add_white_24dp"
+                android:src="@drawable/ic_add"
                 app:backgroundTint="#30679E" />
 
     </FrameLayout>

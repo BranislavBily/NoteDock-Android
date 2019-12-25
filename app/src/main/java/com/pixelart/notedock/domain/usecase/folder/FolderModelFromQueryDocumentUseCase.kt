@@ -1,6 +1,7 @@
-package com.pixelart.notedock.domain.usecase
+package com.pixelart.notedock.domain.usecase.folder
 
 import com.google.firebase.firestore.QueryDocumentSnapshot
+import com.google.firebase.firestore.model.value.IntegerValue
 import com.pixelart.notedock.domain.repository.FirebaseIDSRepository
 import com.pixelart.notedock.model.FolderModel
 
@@ -8,7 +9,8 @@ interface FolderModelFromDocumentUseCase {
     fun getModel(documentSnapshot: QueryDocumentSnapshot): FolderModel
 }
 
-class FolderModelFromDocumentImpl(private val firebaseIDSRepository: FirebaseIDSRepository): FolderModelFromDocumentUseCase {
+class FolderModelFromDocumentImpl(private val firebaseIDSRepository: FirebaseIDSRepository):
+    FolderModelFromDocumentUseCase {
     override fun getModel(documentSnapshot: QueryDocumentSnapshot): FolderModel {
         val folder = FolderModel()
 
@@ -17,10 +19,9 @@ class FolderModelFromDocumentImpl(private val firebaseIDSRepository: FirebaseIDS
         documentSnapshot.getString(firebaseIDSRepository.getFolderName())?.let {
             folder.name = it
         }
-        documentSnapshot.getString(firebaseIDSRepository.getFolderNotesCount())?.let {
-            folder.notesCount = it
+        documentSnapshot.getLong(firebaseIDSRepository.getFolderNotesCount())?.let {
+            folder.notesCount = it.toInt()
         }
         return folder
     }
-
 }

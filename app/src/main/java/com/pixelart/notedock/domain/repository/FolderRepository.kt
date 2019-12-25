@@ -2,8 +2,8 @@ package com.pixelart.notedock.domain.repository
 
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
-import com.pixelart.notedock.domain.usecase.FolderModelFromDocumentSnapshotUseCase
-import com.pixelart.notedock.domain.usecase.FolderModelFromDocumentUseCase
+import com.pixelart.notedock.domain.usecase.folder.FolderModelFromDocumentSnapshotUseCase
+import com.pixelart.notedock.domain.usecase.folder.FolderModelFromDocumentUseCase
 import com.pixelart.notedock.model.FolderModel
 import io.reactivex.Single
 
@@ -18,8 +18,6 @@ class FolderRepositoryImpl(
     private val folderModelFromDocumentSnapshotUseCase: FolderModelFromDocumentSnapshotUseCase,
     private val firebaseInstance: FirebaseFirestore
 ) : FolderRepository {
-
-    private val TAG = "FolderRepository"
 
     override fun getFolder(uid: String): Single<FolderModel> {
         return Single.create<FolderModel> { emitter ->

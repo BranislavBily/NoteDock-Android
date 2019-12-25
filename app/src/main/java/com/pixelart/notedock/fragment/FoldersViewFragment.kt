@@ -1,11 +1,13 @@
 package com.pixelart.notedock.fragment
 
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.widget.addTextChangedListener
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -45,10 +47,14 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
         super.onViewCreated(view, savedInstanceState)
 
 
+        val foldersAdapter = FoldersAdapter(this)
+        setupRecyclerView(foldersAdapter)
+        observeLiveData(foldersAdapter)
+    }
+
+    private fun setupRecyclerView(foldersAdapter: FoldersAdapter) {
         recyclerViewFolders.layoutManager = LinearLayoutManager(context)
-        val folderAdapter = FoldersAdapter(this)
-        recyclerViewFolders.adapter = folderAdapter
-        observeLiveData(folderAdapter)
+        recyclerViewFolders.adapter = foldersAdapter
     }
 
 
@@ -88,16 +94,18 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
     }
 
     private fun createFolderDialog() {
-        val dialog = CreateFolderDialog(object : FolderDialogSuccessListener {
-            override fun onSuccess(folderName: String?) {
-                folderName?.let { name ->
-                    //Checks if name is taken
-                    foldersViewFragmentViewModel.isNameTaken(name)
+        //Lepsie ale ajtak stale nie velmi barz
+        activity?.let {activity ->
+            val dialog = CreateFolderDialog(object: FolderDialogSuccessListener {
+                override fun onSuccess(folderName: String?) {
+                    folderName?.let { foldersViewFragmentViewModel.isNameTaken(it) }
                 }
+            }).createDialog(activity)
+            dialog.show()
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+            dialog.findViewById<EditText>(R.id.editTextFolderName)?.addTextChangedListener { watcher ->
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = !watcher.isNullOrEmpty()
             }
-        })
-        fragmentManager?.let {
-            dialog.show(it, "CreateFolderDialog")
         }
     }
 

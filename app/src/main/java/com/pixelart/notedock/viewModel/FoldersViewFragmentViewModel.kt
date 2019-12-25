@@ -6,15 +6,15 @@ import com.google.firebase.firestore.EventListener
 import com.pixelart.notedock.dataBinding.SingleLiveEvent
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
 import com.pixelart.notedock.domain.repository.FolderRepository
-import com.pixelart.notedock.domain.usecase.AddFolderUseCase
-import com.pixelart.notedock.domain.usecase.FolderNameTakenUseCase
+import com.pixelart.notedock.domain.usecase.folder.CreateFolderUseCase
+import com.pixelart.notedock.domain.usecase.folder.FolderNameTakenUseCase
 import com.pixelart.notedock.model.FolderModel
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 
 class FoldersViewFragmentViewModel(
     private val folderRepository: FolderRepository,
-    private val addFolderUseCase: AddFolderUseCase,
+    private val createFolderUseCase: CreateFolderUseCase,
     private val folderNameTakenUseCase: FolderNameTakenUseCase
 ): LifecycleViewModel() {
 
@@ -35,13 +35,12 @@ class FoldersViewFragmentViewModel(
     private val _fabClicked = SingleLiveEvent<FABClickedEvent>()
     val fabClicked: LiveData<FABClickedEvent> = _fabClicked
     fun onFABClicked() {
-        //Event
         _fabClicked.postValue(FABClickedEvent.Clicked)
     }
 
     fun uploadFolderModel(folderModel: FolderModel) {
         startStopDisposeBag?.let { bag ->
-            addFolderUseCase.addFolder(folderModel)
+            createFolderUseCase.createFolder(folderModel)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe(

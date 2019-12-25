@@ -1,4 +1,4 @@
-package com.pixelart.notedock.domain.usecase
+package com.pixelart.notedock.domain.usecase.folder
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pixelart.notedock.domain.repository.FirebaseIDSRepository
