@@ -16,16 +16,15 @@ class UpdateNoteImpl(private val firebaseIDSRepository: FirebaseIDSRepository,
     override fun updateNote(folderUUID: String, note: NoteModel): Single<SaveNoteEvent> {
         return Single.create<SaveNoteEvent> { emitter ->
             note.uuid?.let { noteUID ->
-                val data = hashMapOf(
-                    firebaseIDSRepository.getNoteTitle() to note.noteTitle,
-                    firebaseIDSRepository.getNoteDescription() to note.noteDescription
-                )
 
                 firebaseInstance.collection(firebaseIDSRepository.getCollectionFolders())
                     .document(folderUUID)
                     .collection(firebaseIDSRepository.getCollectionNotes())
                     .document(noteUID)
-                    .set(data)
+                    .update(mapOf(
+                        firebaseIDSRepository.getNoteTitle() to note.noteTitle,
+                        firebaseIDSRepository.getNoteDescription() to note.noteDescription
+                    ))
                     .addOnSuccessListener { emitter.onSuccess(SaveNoteEvent.Success) }
                     .addOnFailureListener { emitter.onError(it)}
             }
