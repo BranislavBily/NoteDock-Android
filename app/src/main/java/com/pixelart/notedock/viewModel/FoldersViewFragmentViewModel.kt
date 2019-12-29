@@ -26,8 +26,8 @@ class FoldersViewFragmentViewModel(
     }
     val loadFolders: LiveData<ArrayList<FolderModel>> = _loadFolders
 
-    private val _newFolderCreated = SingleLiveEvent<FolderViewEvent>()
-    val newFolderCreated: LiveData<FolderViewEvent> = _newFolderCreated
+    private val _newFolderCreated = SingleLiveEvent<CreateFolderEvent>()
+    val newFolderCreated: LiveData<CreateFolderEvent> = _newFolderCreated
 
     private val _isNameTaken = SingleLiveEvent<FolderNameTakenEvent>()
     val isNameTaken : LiveData<FolderNameTakenEvent> = _isNameTaken
@@ -44,8 +44,8 @@ class FoldersViewFragmentViewModel(
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe(
-                    { _newFolderCreated.postValue(FolderViewEvent.Success(it)) },
-                    { _newFolderCreated.postValue(FolderViewEvent.Error) }
+                    { _newFolderCreated.postValue(CreateFolderEvent.Success(it)) },
+                    { _newFolderCreated.postValue(CreateFolderEvent.Error) }
                 )
                 .addTo(bag)
         }
@@ -65,9 +65,9 @@ class FoldersViewFragmentViewModel(
     }
 }
 
-sealed class FolderViewEvent {
-    object Error : FolderViewEvent()
-    class Success(val uuid: String): FolderViewEvent()
+sealed class CreateFolderEvent {
+    object Error : CreateFolderEvent()
+    class Success(val uuid: String): CreateFolderEvent()
 }
 
 sealed class FABClickedEvent {

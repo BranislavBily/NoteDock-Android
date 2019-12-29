@@ -2,6 +2,7 @@ package com.pixelart.notedock.domain.repository
 
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.pixelart.notedock.domain.usecase.note.NoteModelFromDocumentSnapshotUseCase
 import com.pixelart.notedock.domain.usecase.note.NoteModelFromQueryDocumentSnapshotUseCase
 import com.pixelart.notedock.model.NoteModel
@@ -24,6 +25,7 @@ class NotesRepositoryImpl(
         firebaseInstance.collection(firebaseIDSRepository.getCollectionFolders())
             .document(folderUUID)
             .collection(firebaseIDSRepository.getCollectionNotes())
+            .orderBy(firebaseIDSRepository.getFolderAdded(), Query.Direction.DESCENDING)
             .addSnapshotListener { queryDocumentSnapshots, _ ->
                 queryDocumentSnapshots?.let { querySnapshot ->
                     notes.clear()

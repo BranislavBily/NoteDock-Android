@@ -2,6 +2,7 @@ package com.pixelart.notedock.domain.repository
 
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.pixelart.notedock.domain.usecase.folder.FolderModelFromDocumentSnapshotUseCase
 import com.pixelart.notedock.domain.usecase.folder.FolderModelFromDocumentUseCase
 import com.pixelart.notedock.model.FolderModel
@@ -35,6 +36,7 @@ class FolderRepositoryImpl(
     override fun getFolders(eventListener: EventListener<ArrayList<FolderModel>?>) {
         val folders = ArrayList<FolderModel>()
         firebaseInstance.collection(firebaseIDSRepository.getCollectionFolders())
+            .orderBy(firebaseIDSRepository.getFolderAdded(), Query.Direction.DESCENDING)
             .addSnapshotListener { queryDocumentSnapshots, _ ->
                 queryDocumentSnapshots?.let {
                     folders.clear()
