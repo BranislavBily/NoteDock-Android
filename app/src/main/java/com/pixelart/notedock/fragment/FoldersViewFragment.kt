@@ -22,7 +22,7 @@ import com.pixelart.notedock.dialog.FolderDialogSuccessListener
 import com.pixelart.notedock.model.FolderModel
 import com.pixelart.notedock.viewModel.FABClickedEvent
 import com.pixelart.notedock.viewModel.FolderNameTakenEvent
-import com.pixelart.notedock.viewModel.FolderViewEvent
+import com.pixelart.notedock.viewModel.CreateFolderEvent
 import com.pixelart.notedock.viewModel.FoldersViewFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_folders_view.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -65,8 +65,8 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
 
         foldersViewFragmentViewModel.newFolderCreated.observe(this, Observer { event ->
             when (event) {
-                is FolderViewEvent.Success -> { }
-                is FolderViewEvent.Error -> Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+                is CreateFolderEvent.Success -> { }
+                is CreateFolderEvent.Error -> Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
             }
         })
 

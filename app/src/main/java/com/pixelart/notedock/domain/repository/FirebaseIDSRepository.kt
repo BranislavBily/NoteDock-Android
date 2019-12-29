@@ -4,9 +4,11 @@ interface FirebaseIDSRepository {
     fun getCollectionFolders(): String
     fun getFolderName(): String
     fun getFolderNotesCount(): String
+    fun getFolderAdded(): String
     fun getCollectionNotes(): String
     fun getNoteTitle(): String
     fun getNoteDescription(): String
+    fun getNoteAdded(): String
 }
 
 class FirebaseIDSImpl: FirebaseIDSRepository {
@@ -22,6 +24,10 @@ class FirebaseIDSImpl: FirebaseIDSRepository {
         return "notesCount"
     }
 
+    override fun getFolderAdded(): String {
+        return "added"
+    }
+
     override fun getCollectionNotes(): String {
         return "notes"
     }
@@ -33,4 +39,9 @@ class FirebaseIDSImpl: FirebaseIDSRepository {
     override fun getNoteDescription(): String {
         return "description"
     }
+
+    override fun getNoteAdded(): String {
+        return "added"
+    }
+
 }
