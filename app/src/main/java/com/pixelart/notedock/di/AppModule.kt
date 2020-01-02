@@ -6,6 +6,7 @@ import com.pixelart.notedock.domain.usecase.folder.*
 import com.pixelart.notedock.domain.usecase.note.*
 import com.pixelart.notedock.viewModel.FolderFragmentViewModel
 import com.pixelart.notedock.viewModel.FoldersViewFragmentViewModel
+import com.pixelart.notedock.viewModel.LoginFragmentViewModel
 import com.pixelart.notedock.viewModel.NoteFragmentViewModel
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -14,6 +15,7 @@ val viewModelModule = module {
     viewModel { FolderFragmentViewModel(get(), get(), get()) }
     viewModel { FoldersViewFragmentViewModel(get(), get(), get()) }
     viewModel { NoteFragmentViewModel(get(), get(), get())}
+    viewModel { LoginFragmentViewModel() }
 }
 
 val firebaseModule = module {
