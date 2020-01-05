@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.pixelart.notedock.dataBinding.SingleLiveEvent
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
@@ -26,6 +26,9 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository): Lifecy
     val email = MutableLiveData<String>()
     val password = MutableLiveData<String>()
 
+    private val _loading = MutableLiveData<Boolean>().apply { postValue(false) }
+    val loading: LiveData<Boolean> = _loading
+
     val loginEnabled: LiveData<Boolean> = MediatorLiveData<Boolean>().apply {
         addSource(email) {
             postValue(it.isNotEmpty() && password.value?.isNotEmpty() == true)
@@ -44,6 +47,8 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository): Lifecy
             (authRepository.login(email, password))
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
+            .doOnSubscribe { _loading.postValue(true) }
+            .doAfterTerminate { _loading.postValue(false) }
             .subscribe({
                 _loginCompleted.postValue(Success())
             }, {
@@ -55,7 +60,7 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository): Lifecy
     private fun handleLoginError(throwable: Throwable?): LoginEvent {
         return when (throwable) {
             is InvalidEmailException -> InvalidEmail()
-            is FirebaseNetworkException -> NetworkError()
+            is FirebaseException -> NetworkError()
             is FirebaseAuthInvalidCredentialsException -> BadCredentials()
             else -> {
                 Log.e("Login", "${throwable?.message}", throwable)
