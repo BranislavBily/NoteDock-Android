@@ -14,8 +14,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.BR
 import com.pixelart.notedock.R
 import com.pixelart.notedock.dataBinding.setupDataBinding
-import com.pixelart.notedock.viewModel.authentication.LoginEvent
+import com.pixelart.notedock.viewModel.authentication.LoginButtonEvent
 import com.pixelart.notedock.viewModel.authentication.LoginFragmentViewModel
+import kotlinx.android.synthetic.main.fragment_login.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class LoginFragment : Fragment() {
@@ -53,19 +54,21 @@ class LoginFragment : Fragment() {
 
 
     private fun observeLiveData() {
-        loginFragmentViewModel.loginEvent.observe(this, Observer { event ->
+        loginFragmentViewModel.loginButtonEvent.observe(this, Observer { event ->
             when(event) {
-                is LoginEvent.Success ->  Toast.makeText(context, "Pressed", Toast.LENGTH_SHORT).show()
-                is LoginEvent.Error -> Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+                is LoginButtonEvent.Pressed -> onLoginButtonPressed()
             }
         })
     }
 
-//    private fun navigateToFolders() {
-//        val action = LoginFragmentDirections.actionLoginFragmentToFoldersViewFragment()
-//        val navigationRouter = NavigationRouter(view)
-//        navigationRouter.openAction(action)
-//    }
+    private fun onLoginButtonPressed() {
+        val email = editTextEmail.text.toString().trim()
+        val password = editTextPassword.text.toString().trim()
+
+        loginFragmentViewModel.login(email, password)
+    }
+
+
 }
 
 

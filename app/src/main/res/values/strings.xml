@@ -14,4 +14,8 @@
     <string name="delete_dialog">Delete</string>
     <string name="note_hint_title">Title</string>
     <string name="note_hint_description">Description</string>
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="notedockicon">NoteDock icon</string>
 </resources>

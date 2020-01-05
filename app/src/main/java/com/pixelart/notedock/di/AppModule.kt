@@ -1,5 +1,6 @@
 package com.pixelart.notedock.di
 
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pixelart.notedock.domain.repository.*
 import com.pixelart.notedock.domain.usecase.folder.*
@@ -14,9 +15,9 @@ import org.koin.dsl.module
 val viewModelModule = module {
     viewModel {
         FolderFragmentViewModel(
-            get(),
-            get(),
-            get()
+            deleteFolderUseCase = get(),
+            createFolderUseCase = get(),
+            notesRepository = get()
         )
     }
     viewModel {
@@ -27,7 +28,7 @@ val viewModelModule = module {
         )
     }
     viewModel { NoteFragmentViewModel(get(), get(), get())}
-    viewModel { LoginFragmentViewModel() }
+    viewModel { LoginFragmentViewModel(get()) }
 }
 
 val firebaseModule = module {
@@ -48,4 +49,7 @@ val firebaseModule = module {
     single { NoteModelFromQueryDocumentSnapshotImpl(get()) as NoteModelFromQueryDocumentSnapshotUseCase }
     single { NoteModelFromDocumentSnapshotImpl(get()) as NoteModelFromDocumentSnapshotUseCase }
     single { UpdateNoteImpl(get(), FirebaseFirestore.getInstance()) as UpdateNoteUseCase }
+
+    //Authentication
+    single { AuthRepositoryImpl(FirebaseAuth.getInstance()) as AuthRepository}
 }

@@ -5,11 +5,12 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.pixelart.notedock.dataBinding.SingleLiveEvent
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
+import com.pixelart.notedock.domain.repository.AuthRepository
 
-class LoginFragmentViewModel: LifecycleViewModel() {
+class LoginFragmentViewModel(private val authRepository: AuthRepository): LifecycleViewModel() {
 
-    private val _loginEvent = SingleLiveEvent<LoginEvent>()
-    val loginEvent: LiveData<LoginEvent> = _loginEvent
+    private val _loginButtonPressed = SingleLiveEvent<LoginButtonEvent>()
+    val loginButtonEvent: LiveData<LoginButtonEvent> = _loginButtonPressed
 
     val email = MutableLiveData<String>()
     val password = MutableLiveData<String>()
@@ -24,14 +25,16 @@ class LoginFragmentViewModel: LifecycleViewModel() {
     }
 
     fun loginButtonPressed() {
-        _loginEvent.postValue(LoginEvent.Success)
+        _loginButtonPressed.postValue(LoginButtonEvent.Pressed)
     }
 
+    fun login(email: String, password: String) {
+        startStopDisposeBag?.let { bag ->
 
-
+        }
+    }
 }
 
-sealed class LoginEvent {
-    object Success: LoginEvent()
-    object Error: LoginEvent()
+sealed class LoginButtonEvent {
+    object Pressed: LoginButtonEvent()
 }
