@@ -17,9 +17,6 @@ import io.reactivex.schedulers.Schedulers
 
 class LoginFragmentViewModel(private val authRepository: AuthRepository): LifecycleViewModel() {
 
-    private val _loginButtonPressed = SingleLiveEvent<LoginButtonEvent>()
-    val loginButtonEvent: LiveData<LoginButtonEvent> = _loginButtonPressed
-
     private val _loginCompleted = SingleLiveEvent<LoginEvent>()
     val loginCompleted: LiveData<LoginEvent> = _loginCompleted
 
@@ -38,22 +35,23 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository): Lifecy
         }
     }
 
-    fun loginButtonPressed() {
-        _loginButtonPressed.postValue(LoginButtonEvent.Pressed)
-    }
+    fun login() {
+        val email = email.value
+        val password = password.value
 
-    fun login(email: String, password: String) {
-        startStopDisposeBag?.let { bag ->
-            (authRepository.login(email, password))
-            .subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.io())
-            .doOnSubscribe { _loading.postValue(true) }
-            .doAfterTerminate { _loading.postValue(false) }
-            .subscribe({
-                _loginCompleted.postValue(Success())
-            }, {
-                _loginCompleted.postValue(handleLoginError(it))
-            }).addTo(bag)
+        if (!email.isNullOrEmpty() && !password.isNullOrEmpty()) {
+            startStopDisposeBag?.let { bag ->
+                (authRepository.login(email, password))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .doOnSubscribe { _loading.postValue(true) }
+                    .doAfterTerminate { _loading.postValue(false) }
+                    .subscribe({
+                        _loginCompleted.postValue(Success())
+                    }, {
+                        _loginCompleted.postValue(handleLoginError(it))
+                    }).addTo(bag)
+            }
         }
     }
 

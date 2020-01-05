@@ -2,22 +2,20 @@ package com.pixelart.notedock.fragment.authentication
 
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.BR
 import com.pixelart.notedock.R
 import com.pixelart.notedock.dataBinding.setupDataBinding
-import com.pixelart.notedock.viewModel.authentication.LoginButtonEvent
+import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.viewModel.authentication.LoginEvent
 import com.pixelart.notedock.viewModel.authentication.LoginFragmentViewModel
-import kotlinx.android.synthetic.main.fragment_login.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class LoginFragment : Fragment() {
@@ -49,38 +47,26 @@ class LoginFragment : Fragment() {
 
         val currentUser = auth.currentUser
         currentUser?.let {
-            Log.i("LoginActivity", "User is not null")
-        } ?: Log.i("LoginActivity", "Current user is null")
+            findNavController().popBackStack()
+        }
     }
 
 
     private fun observeLiveData() {
-        loginFragmentViewModel.loginButtonEvent.observe(this, Observer { event ->
-            when(event) {
-                is LoginButtonEvent.Pressed -> onLoginButtonPressed()
-            }
-        })
-
         loginFragmentViewModel.loginCompleted.observe(this, Observer { event ->
-            when(event) {
-                is LoginEvent.Success -> Toast.makeText(context, "Logged in", Toast.LENGTH_SHORT).show()
-                is LoginEvent.InvalidEmail -> Toast.makeText(context, "Invalid email", Toast.LENGTH_SHORT).show()
-                is LoginEvent.BadCredentials -> Toast.makeText(context, "Bad credentials", Toast.LENGTH_SHORT).show()
-                is LoginEvent.NetworkError -> Toast.makeText(context, "Network error", Toast.LENGTH_SHORT).show()
-                is LoginEvent.UnknownError -> Toast.makeText(context, "Unknown error", Toast.LENGTH_SHORT).show()
+            view?.let { view ->
+                when(event) {
+                    is LoginEvent.Success -> findNavController().popBackStack()
+                    is LoginEvent.InvalidEmail -> R.string.invalid_email_message.showAsSnackBar(view)
+                    is LoginEvent.BadCredentials -> R.string.invalid_credentials_message.showAsSnackBar(view)
+                    is LoginEvent.NetworkError -> R.string.network_error_message.showAsSnackBar(view)
+                    is LoginEvent.UnknownError -> R.string.unknown_error_message.showAsSnackBar(view)
+                }
             }
         })
     }
-
-    private fun onLoginButtonPressed() {
-        val email = editTextEmail.text.toString().trim()
-        val password = editTextPassword.text.toString().trim()
-
-        loginFragmentViewModel.login(email, password)
-    }
-
-
 }
+
 
 
 

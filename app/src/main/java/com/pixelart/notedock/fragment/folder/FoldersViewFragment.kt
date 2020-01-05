@@ -63,7 +63,7 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
 
         val currentUser = auth.currentUser
         currentUser?.let {
-            Log.i("FoldersViewFragment", "User is logged in")
+            auth.signOut()
         } ?: run {
             view?.let {
                 val action = FoldersViewFragmentDirections.actionFoldersViewFragmentToLoginNavGraph()

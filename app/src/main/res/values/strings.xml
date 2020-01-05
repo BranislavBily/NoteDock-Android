@@ -18,4 +18,8 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="notedockicon">NoteDock icon</string>
+    <string name="invalid_email_message">Invalid Email</string>
+    <string name="invalid_credentials_message">Invalid Credentials</string>
+    <string name="unknown_error_message">An error occurred. Try again</string>
+    <string name="network_error_message">Check your internet connection</string>
 </resources>

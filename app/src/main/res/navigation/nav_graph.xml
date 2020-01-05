@@ -21,7 +21,8 @@
         <action
                 android:id="@+id/action_foldersViewFragment_to_loginNavGraph"
                 app:destination="@+id/login_nav_graph"
-                app:launchSingleTop="true">
+                app:launchSingleTop="true"
+                app:popExitAnim="@anim/slide_in_right">
 
         </action>
     </fragment>
@@ -45,7 +46,7 @@
     </fragment>
     <fragment
             android:id="@+id/noteFragment"
-            android:name="com.pixelart.notedock.fragment.NoteFragment"
+            android:name="com.pixelart.notedock.fragment.note.NoteFragment"
             tools:layout="@layout/fragment_note"
             android:label="Note">
 
