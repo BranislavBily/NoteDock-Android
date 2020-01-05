@@ -1,4 +1,4 @@
-package com.pixelart.notedock.viewModel
+package com.pixelart.notedock.viewModel.folder
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -44,7 +44,11 @@ class FoldersViewFragmentViewModel(
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe(
-                    { _newFolderCreated.postValue(CreateFolderEvent.Success(it)) },
+                    { _newFolderCreated.postValue(
+                        CreateFolderEvent.Success(
+                            it
+                        )
+                    ) },
                     { _newFolderCreated.postValue(CreateFolderEvent.Error) }
                 )
                 .addTo(bag)
@@ -57,7 +61,12 @@ class FoldersViewFragmentViewModel(
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe(
-                    { _isNameTaken.postValue(FolderNameTakenEvent.Success(it, folderName)) },
+                    { _isNameTaken.postValue(
+                        FolderNameTakenEvent.Success(
+                            it,
+                            folderName
+                        )
+                    ) },
                     { _isNameTaken.postValue(FolderNameTakenEvent.Error) }
                 )
                 .addTo(bag)

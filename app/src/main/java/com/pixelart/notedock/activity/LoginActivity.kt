@@ -5,13 +5,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import com.pixelart.notedock.R
 
-class MainActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_login)
     }
 
     override fun onSupportNavigateUp() =
-        findNavController(R.id.fragment).navigateUp()
+        findNavController(R.id.login_host_fragment).navigateUp()
 }

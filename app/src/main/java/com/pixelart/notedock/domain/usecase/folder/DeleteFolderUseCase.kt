@@ -2,7 +2,7 @@ package com.pixelart.notedock.domain.usecase.folder
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pixelart.notedock.domain.repository.FirebaseIDSRepository
-import com.pixelart.notedock.viewModel.FolderDeleteEvent
+import com.pixelart.notedock.viewModel.folder.FolderDeleteEvent
 import io.reactivex.Single
 
 interface DeleteFolderUseCase {

@@ -1,4 +1,4 @@
-package com.pixelart.notedock.viewModel
+package com.pixelart.notedock.viewModel.authentication
 
 import androidx.lifecycle.LiveData
 import com.pixelart.notedock.dataBinding.SingleLiveEvent

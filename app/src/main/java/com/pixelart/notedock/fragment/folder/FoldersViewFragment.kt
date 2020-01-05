@@ -1,6 +1,7 @@
-package com.pixelart.notedock.fragment
+package com.pixelart.notedock.fragment.folder
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.BR
 import com.pixelart.notedock.NavigationRouter
 import com.pixelart.notedock.R
@@ -20,16 +22,18 @@ import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.CreateFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogSuccessListener
 import com.pixelart.notedock.model.FolderModel
-import com.pixelart.notedock.viewModel.FABClickedEvent
-import com.pixelart.notedock.viewModel.FolderNameTakenEvent
-import com.pixelart.notedock.viewModel.CreateFolderEvent
-import com.pixelart.notedock.viewModel.FoldersViewFragmentViewModel
+import com.pixelart.notedock.viewModel.folder.FABClickedEvent
+import com.pixelart.notedock.viewModel.folder.FolderNameTakenEvent
+import com.pixelart.notedock.viewModel.folder.CreateFolderEvent
+import com.pixelart.notedock.viewModel.folder.FoldersViewFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_folders_view.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
 
     private val foldersViewFragmentViewModel: FoldersViewFragmentViewModel by viewModel()
+
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,9 +51,26 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
         super.onViewCreated(view, savedInstanceState)
 
 
+        auth = FirebaseAuth.getInstance()
+
         val foldersAdapter = FoldersAdapter(this)
         setupRecyclerView(foldersAdapter)
         observeLiveData(foldersAdapter)
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        val currentUser = auth.currentUser
+        currentUser?.let {
+            Log.i("FoldersViewFragment", "User is logged in")
+        } ?: run {
+            view?.let {
+                val action = FoldersViewFragmentDirections.actionFoldersViewFragmentToLoginNavGraph()
+                val navigationRouter = NavigationRouter(it)
+                navigationRouter.openAction(action)
+            }
+        }
     }
 
     private fun setupRecyclerView(foldersAdapter: FoldersAdapter) {
