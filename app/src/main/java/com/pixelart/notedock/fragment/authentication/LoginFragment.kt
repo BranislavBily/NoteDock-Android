@@ -15,6 +15,7 @@ import com.pixelart.notedock.BR
 import com.pixelart.notedock.R
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.viewModel.authentication.LoginButtonEvent
+import com.pixelart.notedock.viewModel.authentication.LoginEvent
 import com.pixelart.notedock.viewModel.authentication.LoginFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_login.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -57,6 +58,16 @@ class LoginFragment : Fragment() {
         loginFragmentViewModel.loginButtonEvent.observe(this, Observer { event ->
             when(event) {
                 is LoginButtonEvent.Pressed -> onLoginButtonPressed()
+            }
+        })
+
+        loginFragmentViewModel.loginCompleted.observe(this, Observer { event ->
+            when(event) {
+                is LoginEvent.Success -> Toast.makeText(context, "Logged in", Toast.LENGTH_SHORT).show()
+                is LoginEvent.InvalidEmail -> Toast.makeText(context, "Invalid email", Toast.LENGTH_SHORT).show()
+                is LoginEvent.BadCredentials -> Toast.makeText(context, "Bad credentials", Toast.LENGTH_SHORT).show()
+                is LoginEvent.NetworkError -> Toast.makeText(context, "Network error", Toast.LENGTH_SHORT).show()
+                is LoginEvent.UnknownError -> Toast.makeText(context, "Unknown error", Toast.LENGTH_SHORT).show()
             }
         })
     }
