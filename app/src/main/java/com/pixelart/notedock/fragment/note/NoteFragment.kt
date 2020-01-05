@@ -1,4 +1,4 @@
-package com.pixelart.notedock.fragment
+package com.pixelart.notedock.fragment.note
 
 
 import android.content.Context
