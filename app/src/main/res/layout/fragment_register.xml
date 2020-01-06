@@ -6,7 +6,7 @@
     <data>
         <variable
                 name="viewmodel"
-                type="com.pixelart.notedock.viewModel.authentication.ForgotPasswordFragmentViewModel" />
+                type="com.pixelart.notedock.viewModel.authentication.RegisterFragmentViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -14,7 +14,4 @@
             android:layout_height="match_parent">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
 </layout>

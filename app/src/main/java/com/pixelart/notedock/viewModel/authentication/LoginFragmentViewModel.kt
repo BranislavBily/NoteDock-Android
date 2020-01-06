@@ -29,6 +29,9 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository): Lifecy
     private val _forgotPassword = SingleLiveEvent<ForgotPasswordEvent>()
     val forgotPassword: LiveData<ForgotPasswordEvent> = _forgotPassword
 
+    private val _createAccount = SingleLiveEvent<CreateAccountEvent>()
+    val createAccount: LiveData<CreateAccountEvent> = _createAccount
+
     val loginEnabled: LiveData<Boolean> = MediatorLiveData<Boolean>().apply {
         addSource(email) {
             postValue(it.isNotEmpty() && password.value?.isNotEmpty() == true)
@@ -63,7 +66,7 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository): Lifecy
     }
 
     fun createAccount() {
-        Log.i("LoginViewModel", "Create account pressed")
+        _createAccount.postValue(CreateAccountEvent.Pressed())
     }
 
     private fun handleLoginError(throwable: Throwable?): LoginEvent {
@@ -85,6 +88,10 @@ sealed class LoginEvent : Event() {
     class BadCredentials : LoginEvent()
     class NetworkError : LoginEvent()
     class UnknownError : LoginEvent()
+}
+
+sealed class CreateAccountEvent: Event() {
+    class Pressed: CreateAccountEvent()
 }
 
 sealed class ForgotPasswordEvent: Event() {

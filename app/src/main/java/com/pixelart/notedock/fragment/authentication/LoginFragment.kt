@@ -18,6 +18,7 @@ import com.pixelart.notedock.activity.MainActivity
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.showAsSnackBar
+import com.pixelart.notedock.viewModel.authentication.CreateAccountEvent
 import com.pixelart.notedock.viewModel.authentication.ForgotPasswordEvent
 import com.pixelart.notedock.viewModel.authentication.LoginEvent
 import com.pixelart.notedock.viewModel.authentication.LoginFragmentViewModel
@@ -69,6 +70,14 @@ class LoginFragment : Fragment() {
         loginFragmentViewModel.forgotPassword.observe(this, SpecificEventObserver<ForgotPasswordEvent> {
             view?.let {view ->
                 val action = LoginFragmentDirections.actionLoginFragmentToForgotPasswordFragment()
+                val navigationRouter = NavigationRouter(view)
+                navigationRouter.openAction(action)
+            }
+        })
+
+        loginFragmentViewModel.createAccount.observe(this, SpecificEventObserver<CreateAccountEvent> {
+            view?.let {view ->
+                val action = LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
                 val navigationRouter = NavigationRouter(view)
                 navigationRouter.openAction(action)
             }
