@@ -11,12 +11,12 @@ import com.pixelart.notedock.BR
 
 import com.pixelart.notedock.R
 import com.pixelart.notedock.dataBinding.setupDataBinding
-import com.pixelart.notedock.viewModel.authentication.ForgotPasswordFragmentViewModel
+import com.pixelart.notedock.viewModel.authentication.ResetPasswordFragmentViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class ForgotPasswordFragment : Fragment() {
 
-    private val forgotPasswordViewModel: ForgotPasswordFragmentViewModel by viewModel()
+    private val resetPasswordViewModel: ResetPasswordFragmentViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -24,9 +24,9 @@ class ForgotPasswordFragment : Fragment() {
     ): View? {
         val dataBinding = setupDataBinding<ViewDataBinding>(
             R.layout.fragment_forgot_password,
-            BR.viewmodel to forgotPasswordViewModel
+            BR.viewmodel to resetPasswordViewModel
         )
-        forgotPasswordViewModel.lifecycleOwner = this
+        resetPasswordViewModel.lifecycleOwner = this
         return dataBinding.root
     }
 }
