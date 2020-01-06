@@ -69,7 +69,7 @@
                 app:onDone="@{() -> viewmodel.login()}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.502"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/editTextEmail"
                 app:layout_constraintVertical_bias="0.078" />
@@ -93,7 +93,7 @@
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Forgot password?"
+                android:text="@string/forgot_password"
                 app:layout_constraintTop_toBottomOf="@id/buttonLogin"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -106,7 +106,7 @@
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Do not have an accout?"
+                android:text="@string/do_not_have_an_account"
                 android:textColor="#000"
                 android:textSize="16sp"
                 app:onThrottledClick="@{() -> viewmodel.createAccount()}"
