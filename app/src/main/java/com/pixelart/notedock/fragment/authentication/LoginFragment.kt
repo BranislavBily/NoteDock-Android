@@ -69,7 +69,7 @@ class LoginFragment : Fragment() {
 
         loginFragmentViewModel.forgotPassword.observe(this, SpecificEventObserver<ForgotPasswordEvent> {
             view?.let { view ->
-                val action = LoginFragmentDirections.actionLoginFragmentToForgotPasswordFragment()
+                val action = LoginFragmentDirections.actionLoginFragmentToResetPasswordFragment()
                 val navigationRouter = NavigationRouter(view)
                 navigationRouter.openAction(action)
             }

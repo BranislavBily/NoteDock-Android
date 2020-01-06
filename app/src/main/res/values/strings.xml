@@ -31,4 +31,6 @@
     <string name="weak_password_message">Please enter stronger password</string>
     <string name="email_already_used_message">Account with this email already exists</string>
     <string name="passwords_do_not_match_message">Passwords do not match</string>
+    <string name="recover_account_message">You can recover your NoteDock account by clicking the button below</string>
+    <string name="recover_account">Recover account</string>
 </resources>
