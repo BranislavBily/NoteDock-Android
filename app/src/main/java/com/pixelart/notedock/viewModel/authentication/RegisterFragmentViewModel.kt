@@ -25,6 +25,9 @@ class RegisterFragmentViewModel(private val authRepository: AuthRepository) : Li
     private val _alreadyHaveAccount = MutableLiveData<ButtonPressedEvent>()
     val alreadyHaveAccount: LiveData<ButtonPressedEvent> = _alreadyHaveAccount
 
+    private val _loading = MutableLiveData<Boolean>().apply { postValue(false) }
+    val loading: LiveData<Boolean> = _loading
+
     val email = MutableLiveData<String>()
     val password = MutableLiveData<String>()
     val confirmPassword = MutableLiveData<String>()
@@ -60,6 +63,8 @@ class RegisterFragmentViewModel(private val authRepository: AuthRepository) : Li
                 authRepository.register(email, password)
                     .observeOn(Schedulers.io())
                     .subscribeOn(Schedulers.io())
+                    .doOnSubscribe { _loading.postValue(true) }
+                    .doAfterTerminate { _loading.postValue( false) }
                     .subscribe({
                         _register.postValue(RegisterEvent.Success())
                     }, { error ->

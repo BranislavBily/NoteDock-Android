@@ -19,6 +19,7 @@
                 android:background="#3000"
                 android:clickable="true"
                 android:focusable="true"
+                android:elevation="8dp"
                 app:visibleOrGone="@{viewmodel.loading}">
 
             <ProgressBar
