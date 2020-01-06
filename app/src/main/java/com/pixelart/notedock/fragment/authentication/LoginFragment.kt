@@ -68,7 +68,7 @@ class LoginFragment : Fragment() {
         })
 
         loginFragmentViewModel.forgotPassword.observe(this, SpecificEventObserver<ForgotPasswordEvent> {
-            view?.let {view ->
+            view?.let { view ->
                 val action = LoginFragmentDirections.actionLoginFragmentToForgotPasswordFragment()
                 val navigationRouter = NavigationRouter(view)
                 navigationRouter.openAction(action)
@@ -76,7 +76,7 @@ class LoginFragment : Fragment() {
         })
 
         loginFragmentViewModel.createAccount.observe(this, SpecificEventObserver<CreateAccountEvent> {
-            view?.let {view ->
+            view?.let { view ->
                 val action = LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
                 val navigationRouter = NavigationRouter(view)
                 navigationRouter.openAction(action)
