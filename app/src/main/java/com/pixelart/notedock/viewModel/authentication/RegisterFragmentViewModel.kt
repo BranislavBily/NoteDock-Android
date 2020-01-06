@@ -8,7 +8,6 @@ import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
-import com.pixelart.notedock.dataBinding.SingleLiveEvent
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
 import com.pixelart.notedock.domain.livedata.model.Event
 import com.pixelart.notedock.domain.repository.AuthRepository
@@ -17,11 +16,14 @@ import io.reactivex.schedulers.Schedulers
 
 class RegisterFragmentViewModel(private val authRepository: AuthRepository) : LifecycleViewModel() {
 
-    private val _register = SingleLiveEvent<RegisterEvent>()
+    private val _register = MutableLiveData<RegisterEvent>()
     val register: LiveData<RegisterEvent> = _register
 
-    private val _alreadyHaveAccount = SingleLiveEvent<AlreadyAccountEvent>()
-    val alreadyHaveAccount: LiveData<AlreadyAccountEvent> = _alreadyHaveAccount
+    private val _registerButtonPressed = MutableLiveData<ButtonPressedEvent>()
+    val registerButtonPressedEvent: LiveData<ButtonPressedEvent> = _registerButtonPressed
+
+    private val _alreadyHaveAccount = MutableLiveData<ButtonPressedEvent>()
+    val alreadyHaveAccount: LiveData<ButtonPressedEvent> = _alreadyHaveAccount
 
     val email = MutableLiveData<String>()
     val password = MutableLiveData<String>()
@@ -39,7 +41,12 @@ class RegisterFragmentViewModel(private val authRepository: AuthRepository) : Li
         }
     }
 
-    fun register() {
+    fun registerButtonPressed() {
+        _registerButtonPressed.postValue(ButtonPressedEvent.PressedEvent())
+        register()
+    }
+
+    private fun register() {
         val email = email.value
         val password = password.value
         val confirmPassword = confirmPassword.value
@@ -64,7 +71,7 @@ class RegisterFragmentViewModel(private val authRepository: AuthRepository) : Li
     }
 
     fun alreadyHaveAccount() {
-        _alreadyHaveAccount.postValue(AlreadyAccountEvent.Pressed())
+        _alreadyHaveAccount.postValue(ButtonPressedEvent.PressedEvent())
     }
 
     private fun handleRegisterError(throwable: Throwable?): RegisterEventError {
@@ -81,8 +88,8 @@ class RegisterFragmentViewModel(private val authRepository: AuthRepository) : Li
     }
 }
 
-sealed class AlreadyAccountEvent : Event() {
-    class Pressed : AlreadyAccountEvent()
+sealed class ButtonPressedEvent : Event() {
+    class PressedEvent : ButtonPressedEvent()
 }
 
 sealed class RegisterEvent : Event() {

@@ -98,7 +98,7 @@
                 android:enabled="@{viewmodel.registerEnabled}"
                 android:background="@{viewmodel.registerEnabled ? @drawable/main_button : @drawable/main_button_disabled}"
                 style="@style/buttonStyle"
-                app:onThrottledClick="@{() -> viewmodel.register()}"
+                app:onThrottledClick="@{() -> viewmodel.registerButtonPressed()}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
