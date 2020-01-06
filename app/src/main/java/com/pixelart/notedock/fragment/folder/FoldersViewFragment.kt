@@ -1,5 +1,6 @@
 package com.pixelart.notedock.fragment.folder
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.BR
 import com.pixelart.notedock.NavigationRouter
 import com.pixelart.notedock.R
+import com.pixelart.notedock.activity.LoginActivity
 import com.pixelart.notedock.adapter.FoldersAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.CreateFolderDialog
@@ -65,10 +67,11 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
         currentUser?.let {
             auth.signOut()
         } ?: run {
-            view?.let {
-                val action = FoldersViewFragmentDirections.actionFoldersViewFragmentToLoginNavGraph()
-                val navigationRouter = NavigationRouter(it)
-                navigationRouter.openAction(action)
+            context?.let { context ->
+                val intent = Intent(context, LoginActivity::class.java)
+//            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
+                startActivity(intent)
             }
         }
     }

@@ -23,7 +23,6 @@ import org.koin.android.viewmodel.ext.android.viewModel
 class LoginFragment : Fragment() {
 
     private val loginFragmentViewModel: LoginFragmentViewModel by viewModel()
-    private lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,7 +32,6 @@ class LoginFragment : Fragment() {
             R.layout.fragment_login,
             BR.viewmodel to loginFragmentViewModel
         )
-        auth = FirebaseAuth.getInstance()
         loginFragmentViewModel.lifecycleOwner = this
         return dataBinding.root
     }
@@ -42,15 +40,6 @@ class LoginFragment : Fragment() {
         super.onResume()
 
         observeLiveData()
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        val currentUser = auth.currentUser
-        currentUser?.let {
-            findNavController().popBackStack()
-        }
     }
 
 
