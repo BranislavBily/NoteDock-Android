@@ -1,6 +1,7 @@
 package com.pixelart.notedock.fragment.authentication
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.BR
 import com.pixelart.notedock.R
+import com.pixelart.notedock.activity.MainActivity
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.viewModel.authentication.LoginEvent
@@ -56,7 +58,13 @@ class LoginFragment : Fragment() {
         loginFragmentViewModel.loginCompleted.observe(this, Observer { event ->
             view?.let { view ->
                 when(event) {
-                    is LoginEvent.Success -> findNavController().popBackStack()
+                    is LoginEvent.Success -> {
+                        context?.let {
+                            val intent = Intent(it, MainActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                            startActivity(intent)
+                        }
+                    }
                     is LoginEvent.InvalidEmail -> R.string.invalid_email_message.showAsSnackBar(view)
                     is LoginEvent.BadCredentials -> R.string.invalid_credentials_message.showAsSnackBar(view)
                     is LoginEvent.NetworkError -> R.string.network_error_message.showAsSnackBar(view)
