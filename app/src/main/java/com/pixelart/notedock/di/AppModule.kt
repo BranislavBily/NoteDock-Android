@@ -32,7 +32,12 @@ val viewModelModule = module {
     viewModel { NoteFragmentViewModel(get(), get(), get())}
     viewModel { LoginFragmentViewModel(get()) }
     viewModel { ForgotPasswordFragmentViewModel() }
-    viewModel { RegisterFragmentViewModel() }
+    viewModel {
+        RegisterFragmentViewModel(
+            authRepository = get()
+        )
+    }
+
 }
 
 val firebaseModule = module {

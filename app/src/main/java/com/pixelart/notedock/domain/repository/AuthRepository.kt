@@ -6,6 +6,7 @@ import io.reactivex.Completable
 
 interface AuthRepository {
     fun login(email: String, password: String): Completable
+    fun register(email: String, password: String): Completable
 }
 
 class AuthRepositoryImpl(private val auth: FirebaseAuth): AuthRepository {
@@ -16,6 +17,18 @@ class AuthRepositoryImpl(private val auth: FirebaseAuth): AuthRepository {
                 return@create
             }
             auth.signInWithEmailAndPassword(email, password)
+                .addOnSuccessListener {
+                    emitter.onComplete()
+                }
+                .addOnFailureListener { error ->
+                    emitter.tryOnError(error)
+                }
+        }
+    }
+
+    override fun register(email: String, password: String): Completable {
+        return Completable.create { emitter ->
+            auth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener {
                     emitter.onComplete()
                 }
