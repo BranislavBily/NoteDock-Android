@@ -12,10 +12,13 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.BR
+import com.pixelart.notedock.NavigationRouter
 import com.pixelart.notedock.R
 import com.pixelart.notedock.activity.MainActivity
 import com.pixelart.notedock.dataBinding.setupDataBinding
+import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.showAsSnackBar
+import com.pixelart.notedock.viewModel.authentication.ForgotPasswordEvent
 import com.pixelart.notedock.viewModel.authentication.LoginEvent
 import com.pixelart.notedock.viewModel.authentication.LoginFragmentViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -44,6 +47,7 @@ class LoginFragment : Fragment() {
 
 
     private fun observeLiveData() {
+
         loginFragmentViewModel.loginCompleted.observe(this, Observer { event ->
             view?.let { view ->
                 when(event) {
@@ -61,6 +65,15 @@ class LoginFragment : Fragment() {
                 }
             }
         })
+
+        loginFragmentViewModel.forgotPassword.observe(this, SpecificEventObserver<ForgotPasswordEvent> {
+            view?.let {view ->
+                val action = LoginFragmentDirections.actionLoginFragmentToForgotPasswordFragment()
+                val navigationRouter = NavigationRouter(view)
+                navigationRouter.openAction(action)
+            }
+        })
+
     }
 }
 

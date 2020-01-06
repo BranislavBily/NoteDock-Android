@@ -18,13 +18,6 @@
                 app:popEnterAnim="@anim/slide_in_left"
                 app:popExitAnim="@anim/slide_out_right"/>
 
-        <action
-                android:id="@+id/action_foldersViewFragment_to_loginNavGraph"
-                app:destination="@+id/login_nav_graph"
-                app:launchSingleTop="true"
-                app:popExitAnim="@anim/slide_in_right">
-
-        </action>
     </fragment>
     <fragment
             android:id="@+id/folderFragment"
@@ -55,6 +48,5 @@
                 app:argType="string" />
 
     </fragment>
-    <include app:graph="@navigation/login_nav_graph" />
 
 </navigation>

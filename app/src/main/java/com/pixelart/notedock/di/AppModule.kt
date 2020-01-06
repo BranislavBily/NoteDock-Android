@@ -9,6 +9,7 @@ import com.pixelart.notedock.viewModel.folder.FolderFragmentViewModel
 import com.pixelart.notedock.viewModel.folder.FoldersViewFragmentViewModel
 import com.pixelart.notedock.viewModel.authentication.LoginFragmentViewModel
 import com.pixelart.notedock.viewModel.NoteFragmentViewModel
+import com.pixelart.notedock.viewModel.authentication.ForgotPasswordFragmentViewModel
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -22,13 +23,14 @@ val viewModelModule = module {
     }
     viewModel {
         FoldersViewFragmentViewModel(
-            get(),
-            get(),
-            get()
+            folderRepository = get(),
+            createFolderUseCase = get(),
+            folderNameTakenUseCase = get()
         )
     }
     viewModel { NoteFragmentViewModel(get(), get(), get())}
     viewModel { LoginFragmentViewModel(get()) }
+    viewModel { ForgotPasswordFragmentViewModel()}
 }
 
 val firebaseModule = module {

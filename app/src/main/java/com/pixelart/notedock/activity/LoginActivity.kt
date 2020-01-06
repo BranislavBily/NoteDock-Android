@@ -12,10 +12,6 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
     }
 
-    override fun overridePendingTransition(enterAnim: Int, exitAnim: Int) {
-        super.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-    }
-
     override fun onSupportNavigateUp() =
         findNavController(R.id.login_host_fragment).navigateUp()
 }

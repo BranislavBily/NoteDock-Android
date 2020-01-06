@@ -9,5 +9,18 @@
             android:id="@+id/loginFragment"
             android:name="com.pixelart.notedock.fragment.authentication.LoginFragment"
             tools:layout="@layout/fragment_login"
-            android:label="LoginFragment" />
+            android:label="LoginFragment" >
+        <action
+                android:id="@+id/action_loginFragment_to_forgotPasswordFragment"
+                app:destination="@id/forgotPasswordFragment"
+                app:enterAnim="@anim/slide_in_right"
+                app:exitAnim="@anim/slide_out_left"
+                app:popEnterAnim="@anim/slide_in_left"
+                app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+            android:id="@+id/forgotPasswordFragment"
+            android:name="com.pixelart.notedock.fragment.authentication.ForgotPasswordFragment"
+            android:label="fragment_forgot_password"
+            tools:layout="@layout/fragment_forgot_password" />
 </navigation>

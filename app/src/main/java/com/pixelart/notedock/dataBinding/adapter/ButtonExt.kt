@@ -20,6 +20,6 @@ class ThrottledClickListener(private val listener: View.OnClickListener): View.O
 }
 
 @BindingAdapter("onThrottledClick")
-fun Button.onTrottledClick(listener: View.OnClickListener) {
+fun View.onTrottledClick(listener: View.OnClickListener) {
     setOnClickListener(ThrottledClickListener(listener))
 }
