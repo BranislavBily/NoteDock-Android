@@ -11,6 +11,7 @@ import com.pixelart.notedock.viewModel.authentication.LoginFragmentViewModel
 import com.pixelart.notedock.viewModel.NoteFragmentViewModel
 import com.pixelart.notedock.viewModel.authentication.ResetPasswordFragmentViewModel
 import com.pixelart.notedock.viewModel.authentication.RegisterFragmentViewModel
+import com.pixelart.notedock.viewModel.settings.SettingsFragmentViewModel
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
@@ -46,6 +47,7 @@ val viewModelModule = module {
             authRepository = get()
         )
     }
+    viewModel { SettingsFragmentViewModel() }
 
 }
 
