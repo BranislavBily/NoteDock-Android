@@ -80,6 +80,15 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
         inflater.inflate(R.menu.folders_view_menu, menu)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.settings -> {
+
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun setupRecyclerView(foldersAdapter: FoldersAdapter) {
         recyclerViewFolders.layoutManager = LinearLayoutManager(context)
         recyclerViewFolders.adapter = foldersAdapter
