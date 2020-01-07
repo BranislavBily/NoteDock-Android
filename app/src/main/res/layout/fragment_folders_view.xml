@@ -16,7 +16,17 @@
         android:layout_height="match_parent"
         tools:context=".fragment.FoldersViewFragment">
 
+        <androidx.appcompat.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:elevation="8dp"
+                android:background="@color/colorPrimary"
+                app:titleTextColor="#FFF"
+                app:title="@string/folders"
+                app:menu="@menu/folders_view_menu" />
+
         <androidx.recyclerview.widget.RecyclerView
+                android:paddingTop="?attr/actionBarSize"
                 android:id="@+id/recyclerViewFolders"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

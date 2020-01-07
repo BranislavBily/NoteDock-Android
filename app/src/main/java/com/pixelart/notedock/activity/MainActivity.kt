@@ -11,14 +11,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        setupToolbar()
-    }
-
-    private fun setupToolbar() {
-        val toolbar = mainToolbar
-        toolbar.title = "Folders"
-        setSupportActionBar(toolbar)
     }
 
     override fun onSupportNavigateUp() =
