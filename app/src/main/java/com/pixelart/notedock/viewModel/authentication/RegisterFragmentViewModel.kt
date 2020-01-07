@@ -45,7 +45,7 @@ class RegisterFragmentViewModel(private val authRepository: AuthRepository) : Li
     }
 
     fun registerButtonPressed() {
-        _registerButtonPressed.postValue(ButtonPressedEvent.PressedEvent())
+        _registerButtonPressed.postValue(ButtonPressedEvent.Pressed())
         register()
     }
 
@@ -76,7 +76,7 @@ class RegisterFragmentViewModel(private val authRepository: AuthRepository) : Li
     }
 
     fun alreadyHaveAccount() {
-        _alreadyHaveAccount.postValue(ButtonPressedEvent.PressedEvent())
+        _alreadyHaveAccount.postValue(ButtonPressedEvent.Pressed())
     }
 
     private fun handleRegisterError(throwable: Throwable?): RegisterEventError {
@@ -94,7 +94,7 @@ class RegisterFragmentViewModel(private val authRepository: AuthRepository) : Li
 }
 
 sealed class ButtonPressedEvent : Event() {
-    class PressedEvent : ButtonPressedEvent()
+    class Pressed : ButtonPressedEvent()
 }
 
 sealed class RegisterEvent : Event() {

@@ -16,6 +16,7 @@ import com.pixelart.notedock.BR
 import com.pixelart.notedock.R
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
+import com.pixelart.notedock.ext.hideSoftKeyboard
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
 import com.pixelart.notedock.viewModel.authentication.RegisterEvent
@@ -56,7 +57,7 @@ class RegisterFragment : Fragment() {
             val view = view
             val context = context
             if(view != null && context != null) {
-                hideKeyboardFrom(context, view)
+                hideSoftKeyboard(context, view)
             }
         })
 
@@ -80,10 +81,5 @@ class RegisterFragment : Fragment() {
                 }
             }
         })
-    }
-
-    fun hideKeyboardFrom(context: Context, view: View) {
-        val imm: InputMethodManager = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }

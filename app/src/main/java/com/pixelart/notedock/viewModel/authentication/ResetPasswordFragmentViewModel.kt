@@ -1,14 +1,31 @@
 package com.pixelart.notedock.viewModel.authentication
 
+import android.util.Log
 import android.util.Patterns
+import android.widget.Button
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.FirebaseException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
+import com.pixelart.notedock.domain.livedata.model.Event
+import com.pixelart.notedock.domain.repository.AuthRepository
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.schedulers.Schedulers
 
-class ResetPasswordFragmentViewModel: LifecycleViewModel() {
+class ResetPasswordFragmentViewModel(private val authRepository: AuthRepository): LifecycleViewModel() {
 
     val email = MutableLiveData<String>()
+
+    private val _backToLogin = MutableLiveData<ButtonPressedEvent>()
+    val backToLogin: LiveData<ButtonPressedEvent> = _backToLogin
+
+    private val _recoverAccountPressed = MutableLiveData<ButtonPressedEvent>()
+    val recoverAccountPressed: LiveData<ButtonPressedEvent> = _recoverAccountPressed
+
+    private val _recoverAccount = MutableLiveData<RecoverAccountEvent>()
+    val recoverAccount: LiveData<RecoverAccountEvent> = _recoverAccount
 
     val recoverEnabled: LiveData<Boolean> = MediatorLiveData<Boolean>().apply {
         addSource(email) {
@@ -16,7 +33,51 @@ class ResetPasswordFragmentViewModel: LifecycleViewModel() {
         }
     }
 
-    fun recoverAccount() {
-
+    fun recoverAccountPressed() {
+        _recoverAccountPressed.postValue(ButtonPressedEvent.Pressed())
+        recoverAccount()
     }
+
+    private fun recoverAccount() {
+        val emailValue = email.value
+        emailValue?.let { email ->
+            startStopDisposeBag?.let { bag ->
+                authRepository.sendPasswordResetEmail(email)
+                    .observeOn(Schedulers.io())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({
+                        _recoverAccount.postValue(RecoverAccountEvent.Success())
+                    }, { error ->
+                        val errorEvent = handleRecoverError(error)
+                        _recoverAccount.postValue(RecoverAccountEvent.Error(errorEvent))
+                    }).addTo(bag)
+            }
+        }
+    }
+
+    fun goBackToLogin() {
+        _backToLogin.postValue(ButtonPressedEvent.Pressed())
+    }
+
+    private fun handleRecoverError(throwable: Throwable?): RecoverAccountEventError {
+        return when(throwable) {
+            is FirebaseAuthInvalidUserException -> RecoverAccountEventError.InvalidEmail()
+            is FirebaseException -> RecoverAccountEventError.NetworkError()
+            else -> {
+                Log.e("Register", "${throwable?.message}", throwable)
+                RecoverAccountEventError.UnknownError()
+            }
+        }
+    }
+}
+
+sealed class RecoverAccountEvent: Event() {
+    class Success: RecoverAccountEvent()
+    class Error(val error: RecoverAccountEventError): RecoverAccountEvent()
+}
+
+sealed class RecoverAccountEventError: Event() {
+    class InvalidEmail: RecoverAccountEventError()
+    class NetworkError: RecoverAccountEventError()
+    class UnknownError: RecoverAccountEventError()
 }

@@ -31,9 +31,13 @@ val viewModelModule = module {
     }
     viewModel { NoteFragmentViewModel(get(), get(), get())}
     viewModel { LoginFragmentViewModel(get()) }
-    viewModel { ResetPasswordFragmentViewModel() }
     viewModel {
         RegisterFragmentViewModel(
+            authRepository = get()
+        )
+    }
+    viewModel {
+        ResetPasswordFragmentViewModel(
             authRepository = get()
         )
     }

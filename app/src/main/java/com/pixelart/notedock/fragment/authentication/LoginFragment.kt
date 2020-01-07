@@ -82,7 +82,6 @@ class LoginFragment : Fragment() {
                 navigationRouter.openAction(action)
             }
         })
-
     }
 }
 

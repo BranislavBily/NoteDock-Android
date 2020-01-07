@@ -33,4 +33,6 @@
     <string name="passwords_do_not_match_message">Passwords do not match</string>
     <string name="recover_account_message">You can recover your NoteDock account by clicking the button below</string>
     <string name="recover_account">Recover account</string>
+    <string name="go_back_to_login">Go back to login</string>
+    <string name="recover_email_sent">Check your email for instructions</string>
 </resources>
