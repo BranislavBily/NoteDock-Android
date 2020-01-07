@@ -24,6 +24,9 @@ class ResetPasswordFragmentViewModel(private val authRepository: AuthRepository)
     private val _recoverAccountPressed = MutableLiveData<ButtonPressedEvent>()
     val recoverAccountPressed: LiveData<ButtonPressedEvent> = _recoverAccountPressed
 
+    private val _loading = MutableLiveData<Boolean>().apply { postValue(false) }
+    val loading: LiveData<Boolean> = _loading
+
     private val _recoverAccount = MutableLiveData<RecoverAccountEvent>()
     val recoverAccount: LiveData<RecoverAccountEvent> = _recoverAccount
 
@@ -45,6 +48,8 @@ class ResetPasswordFragmentViewModel(private val authRepository: AuthRepository)
                 authRepository.sendPasswordResetEmail(email)
                     .observeOn(Schedulers.io())
                     .subscribeOn(Schedulers.io())
+                    .doOnSubscribe { _loading.postValue(true) }
+                    .doOnTerminate { _loading.postValue(false) }
                     .subscribe({
                         _recoverAccount.postValue(RecoverAccountEvent.Success())
                     }, { error ->
