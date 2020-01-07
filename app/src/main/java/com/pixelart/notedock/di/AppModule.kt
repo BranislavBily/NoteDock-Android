@@ -47,7 +47,11 @@ val viewModelModule = module {
             authRepository = get()
         )
     }
-    viewModel { SettingsFragmentViewModel() }
+    viewModel {
+        SettingsFragmentViewModel(
+            auth = FirebaseAuth.getInstance()
+        )
+    }
 
 }
 
