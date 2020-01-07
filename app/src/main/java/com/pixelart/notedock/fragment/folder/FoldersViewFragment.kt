@@ -145,11 +145,11 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
         }
     }
 
-    override fun onFolderClick(uid: String?) {
-        uid?.let { uuid ->
-            val action = FoldersViewFragmentDirections.actionFoldersViewFragmentToFolderFragment(uuid)
-            val navigationRouter = NavigationRouter(view)
-            navigationRouter.openAction(action)
+    override fun onFolderClick(uid: String?, name: String?) {
+        if(uid != null && name != null) {
+                val action = FoldersViewFragmentDirections.actionFoldersViewFragmentToFolderFragment(uid, name)
+                val navigationRouter = NavigationRouter(view)
+                navigationRouter.openAction(action)
         }
     }
 }

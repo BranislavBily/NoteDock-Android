@@ -38,12 +38,12 @@ class FoldersAdapter(private val onFolderClickListener: OnFolderClickListener) :
             itemView.textViewNotesCount.text = folder.notesCount.toString()
 
             itemView.setOnClickListener {
-                onFolderClickListener.onFolderClick(folder.uid)
+                onFolderClickListener.onFolderClick(folder.uid, folder.name)
             }
         }
     }
 
     interface OnFolderClickListener {
-        fun onFolderClick(uid: String?)
+        fun onFolderClick(uid: String?, name: String?)
     }
 }

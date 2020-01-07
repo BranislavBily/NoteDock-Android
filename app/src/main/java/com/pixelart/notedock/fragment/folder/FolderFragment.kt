@@ -31,7 +31,7 @@ import org.koin.core.parameter.parametersOf
 class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
     private val args: FolderFragmentArgs by navArgs()
     private val folderFragmentViewModel: FolderFragmentViewModel by viewModel {
-        parametersOf(args.folderUUID)
+        parametersOf(args.folderUUID, args.folderName)
     }
 
 
@@ -51,7 +51,6 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         val notesAdapter = NotesAdapter(this)
         setupRecyclerView(notesAdapter)
@@ -128,7 +127,7 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
     }
 
     private fun navigateToNote(noteUUID: String) {
-        val action = FolderFragmentDirections.actionFolderFragmentToNoteFragment(args.folderUUID + " " + noteUUID)
+        val action = FolderFragmentDirections.actionFolderFragmentToNoteFragment(args.folderUUID, noteUUID)
         val navigationRouter = NavigationRouter(view)
         navigationRouter.openAction(action)
     }

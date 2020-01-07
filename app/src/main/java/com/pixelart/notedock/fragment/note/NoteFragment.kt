@@ -50,10 +50,6 @@ class NoteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val arguments = args.folderUUIDnoteUUID.split(" ")
-        folderUUID = arguments[0]
-        noteUUID = arguments[1]
-
         setupClosingOfKeyboard()
     }
 
@@ -99,7 +95,7 @@ class NoteFragment : Fragment() {
     }
 
     private fun observeLiveData() {
-        noteFragmentViewModel.loadNote(folderUUID, noteUUID)
+        noteFragmentViewModel.loadNote(args.folderUUID, args.noteUUID)
 
         noteFragmentViewModel.deleteNoteButtonClicked.observe(
             this,
@@ -135,7 +131,7 @@ class NoteFragment : Fragment() {
         fragmentManager?.let { fragmentManager ->
             val dialog = DeleteNoteDialog(object : NoteDialogDeleteSuccessListener {
                 override fun onDelete() {
-                    noteFragmentViewModel.deleteNote(folderUUID, noteUUID)
+                    noteFragmentViewModel.deleteNote(args.folderUUID, args.noteUUID)
                 }
             })
             dialog.show(fragmentManager, "Delete note dialog")
@@ -144,9 +140,9 @@ class NoteFragment : Fragment() {
 
     private fun saveNote() {
         val note = NoteModel()
-        note.uuid = noteUUID
+        note.uuid = args.noteUUID
         note.noteTitle = editTextNoteTitle.text.toString()
         note.noteDescription = editTextNoteDescription.text.toString()
-        noteFragmentViewModel.saveNote(folderUUID, note)
+        noteFragmentViewModel.saveNote(args.folderUUID, note)
     }
 }

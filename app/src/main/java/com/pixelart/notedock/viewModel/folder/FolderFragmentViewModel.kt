@@ -18,12 +18,13 @@ import io.reactivex.schedulers.Schedulers
 
 class FolderFragmentViewModel(
     private val folderUUID: String,
+    private val folderName: String,
     private val auth: FirebaseAuth,
     private val deleteFolderUseCase: DeleteFolderUseCase,
     private val createFolderUseCase: CreateNoteUseCase,
     private val notesRepository: NotesRepository
 ): LifecycleViewModel() {
-
+    val toolbarTitle: LiveData<String> = MutableLiveData<String>().apply { postValue(folderName) }
 
     private val _loadedNotes = MutableLiveData<ArrayList<NoteModel>>()
     val loadedNotes: LiveData<ArrayList<NoteModel>> = _loadedNotes

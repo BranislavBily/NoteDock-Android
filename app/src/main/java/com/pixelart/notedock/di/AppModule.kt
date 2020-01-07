@@ -16,9 +16,10 @@ import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
 
 val viewModelModule = module {
-    viewModel { (folderUUID: String) ->
+    viewModel { (folderUUID: String, folderName: String) ->
         FolderFragmentViewModel(
             folderUUID = folderUUID,
+            folderName = folderName,
             auth = FirebaseAuth.getInstance(),
             deleteFolderUseCase = get(),
             createFolderUseCase = get(),

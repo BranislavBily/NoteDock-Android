@@ -15,10 +15,20 @@
             android:layout_height="match_parent"
             tools:context=".fragment.folder.FolderFragment">
 
+        <androidx.appcompat.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:elevation="8dp"
+                android:background="@color/colorPrimary"
+                app:titleTextColor="#FFF"
+                app:title="@{viewmodel.toolbarTitle}"
+                app:menu="@menu/folders_view_menu" />
+
             <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewNotes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingTop="?attr/actionBarSize"
                     tools:listitem="@layout/note_list_item" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
