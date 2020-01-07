@@ -13,6 +13,8 @@ class NoteModelFromDocumentSnapshotImpl(private val firebaseIDSRepository: Fireb
 
     override fun getNote(document: DocumentSnapshot): NoteModel {
         val note = NoteModel()
+        note.uuid = document.id
+
         document.getString(firebaseIDSRepository.getNoteTitle())?.let {
             note.noteTitle = it
         }

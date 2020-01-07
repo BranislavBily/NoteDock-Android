@@ -3,10 +3,9 @@ package com.pixelart.notedock.fragment.folder
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.ViewDataBinding
@@ -46,6 +45,7 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
             R.layout.fragment_folders_view,
             BR.viewmodel to foldersViewFragmentViewModel
         )
+        setHasOptionsMenu(true)
         foldersViewFragmentViewModel.lifecycleOwner = this
         return dataBinding.root
     }
@@ -56,9 +56,27 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
 
         auth = FirebaseAuth.getInstance()
 
+        setupToolbar()
+
         val foldersAdapter = FoldersAdapter(this)
         setupRecyclerView(foldersAdapter)
         observeLiveData(foldersAdapter)
+    }
+
+    private fun setupToolbar() {
+        toolbarFoldersView?.setOnMenuItemClickListener { menuItem ->
+            when(menuItem.itemId) {
+                R.id.settings -> {
+                    val action = FoldersViewFragmentDirections.actionFoldersViewFragmentToSettingsFragment()
+                    val navigationRouter = NavigationRouter(view)
+                    navigationRouter.openAction(action)
+                    true
+                }
+                else -> {
+                    false
+                }
+            }
+        }
     }
 
     override fun onStart() {
@@ -74,6 +92,14 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
                 startActivity(intent)
             }
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.settings -> {
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun setupRecyclerView(foldersAdapter: FoldersAdapter) {
@@ -138,11 +164,11 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
         }
     }
 
-    override fun onFolderClick(uid: String?) {
-        uid?.let { uuid ->
-            val action = FoldersViewFragmentDirections.actionFoldersViewFragmentToFolderFragment(uuid)
-            val navigationRouter = NavigationRouter(view)
-            navigationRouter.openAction(action)
+    override fun onFolderClick(uid: String?, name: String?) {
+        if(uid != null && name != null) {
+                val action = FoldersViewFragmentDirections.actionFoldersViewFragmentToFolderFragment(uid, name)
+                val navigationRouter = NavigationRouter(view)
+                navigationRouter.openAction(action)
         }
     }
 }

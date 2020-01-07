@@ -3,15 +3,13 @@ package com.pixelart.notedock.fragment.folder
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
+import android.view.*
 import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pixelart.notedock.NavigationRouter
@@ -20,11 +18,13 @@ import com.pixelart.notedock.adapter.NotesAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogDeleteSuccessListener
-import com.pixelart.notedock.domain.livedata.observer.DataEventObserver
+import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
-import com.pixelart.notedock.viewModel.folder.*
+import com.pixelart.notedock.viewModel.folder.CreateNoteEvent
+import com.pixelart.notedock.viewModel.folder.FolderDeleteEvent
+import com.pixelart.notedock.viewModel.folder.FolderFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_folder.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -33,7 +33,7 @@ import org.koin.core.parameter.parametersOf
 class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
     private val args: FolderFragmentArgs by navArgs()
     private val folderFragmentViewModel: FolderFragmentViewModel by viewModel {
-        parametersOf(args.folderUUID)
+        parametersOf(args.folderUUID, args.folderName)
     }
 
 
@@ -45,6 +45,7 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
             R.layout.fragment_folder,
             BR.viewmodel to folderFragmentViewModel
         )
+        setHasOptionsMenu(true)
         folderFragmentViewModel.lifecycleOwner = this
         return dataBinding.root
     }
@@ -52,7 +53,6 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         val notesAdapter = NotesAdapter(this)
         setupRecyclerView(notesAdapter)
@@ -93,6 +93,10 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
             createNote()
         })
 
+        folderFragmentViewModel.onBackClicked.observe(this, EventObserver {
+            findNavController().popBackStack()
+        })
+
 
         folderFragmentViewModel.noteCreated.observe(
             this,
@@ -127,17 +131,12 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
 
     private fun navigateToNote(noteUUID: String) {
         val action =
-            FolderFragmentDirections.actionFolderFragmentToNoteFragment(args.folderUUID + " " + noteUUID)
+            FolderFragmentDirections.actionFolderFragmentToNoteFragment(args.folderUUID, noteUUID)
         val navigationRouter = NavigationRouter(view)
         navigationRouter.openAction(action)
     }
 
     override fun onNoteClick(noteUUID: String?) {
-        noteUUID?.let {
-            val action =
-                FolderFragmentDirections.actionFolderFragmentToNoteFragment(args.folderUUID + " " + noteUUID)
-            val navigationRouter = NavigationRouter(view)
-            navigationRouter.openAction(action)
-        }
+        noteUUID?.let { navigateToNote(it) }
     }
 }

@@ -1,30 +1,31 @@
 package com.pixelart.notedock.fragment.note
 
 
-import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
+import android.view.*
 import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.pixelart.notedock.R
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteNoteDialog
 import com.pixelart.notedock.dialog.NoteDialogDeleteSuccessListener
+import com.pixelart.notedock.domain.livedata.observer.DataEventObserver
+import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.hideSoftKeyboard
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.model.NoteModel
-import com.pixelart.notedock.viewModel.*
+import com.pixelart.notedock.viewModel.NoteDeletedEvent
+import com.pixelart.notedock.viewModel.NoteFragmentViewModel
+import com.pixelart.notedock.viewModel.SaveNoteEvent
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
 import kotlinx.android.synthetic.main.fragment_note.*
+import kotlinx.android.synthetic.main.fragment_note.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class NoteFragment : Fragment() {
@@ -32,8 +33,6 @@ class NoteFragment : Fragment() {
     private val noteFragmentViewModel: NoteFragmentViewModel by viewModel()
 
     private val args: NoteFragmentArgs by navArgs()
-    private var folderUUID: String = ""
-    private var noteUUID: String = ""
     //Please change this later
     private var deletingNote = false
 
@@ -45,6 +44,7 @@ class NoteFragment : Fragment() {
             R.layout.fragment_note,
             BR.viewmodel to noteFragmentViewModel
         )
+        setHasOptionsMenu(true)
         noteFragmentViewModel.lifecycleOwner = this
         return dataBinding.root
     }
@@ -52,22 +52,32 @@ class NoteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val arguments = args.folderUUIDnoteUUID.split(" ")
-        folderUUID = arguments[0]
-        noteUUID = arguments[1]
-
         setupClosingOfKeyboard()
+        setupToolbar()
+
+    }
+
+    private fun setupToolbar() {
+        view?.toolbar?.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.deleteNote -> {
+                    createDeleteNoteDialog()
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun setupClosingOfKeyboard() {
         context?.let { context ->
             editTextNoteTitle.setOnFocusChangeListener { view, hasFocus ->
-                if(!hasFocus) {
+                if (!hasFocus) {
                     hideSoftKeyboard(context, view)
                 }
             }
             editTextNoteDescription.setOnFocusChangeListener { view, hasFocus ->
-                if(!hasFocus) {
+                if (!hasFocus) {
                     hideSoftKeyboard(context, view)
                 }
             }
@@ -83,21 +93,35 @@ class NoteFragment : Fragment() {
     override fun onPause() {
         super.onPause()
 
-        if(!deletingNote) {
+        if (!deletingNote) {
             saveNote()
         }
     }
 
-    private fun observeLiveData() {
-        noteFragmentViewModel.loadNote(folderUUID, noteUUID)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.deleteNote -> createDeleteNoteDialog()
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
-        noteFragmentViewModel.deleteNoteButtonClicked.observe(this, SpecificEventObserver<ButtonPressedEvent> {
-            createDeleteNoteDialog()
+    private fun observeLiveData() {
+        //Cez onStartStop
+        noteFragmentViewModel.loadNote(args.folderUUID, args.noteUUID)
+
+        noteFragmentViewModel.deleteNoteButtonClicked.observe(
+            this,
+            SpecificEventObserver<ButtonPressedEvent> {
+                createDeleteNoteDialog()
+            })
+
+        noteFragmentViewModel.onBackClicked.observe(this, EventObserver {
+            findNavController().popBackStack()
         })
 
         noteFragmentViewModel.noteDeleted.observe(this, Observer { event ->
             view?.let { view ->
-                when(event) {
+                when (event) {
                     is NoteDeletedEvent.Success -> {
                         deletingNote = true
                         view.findNavController().popBackStack()
@@ -107,9 +131,9 @@ class NoteFragment : Fragment() {
             }
         })
 
-        noteFragmentViewModel.noteSaved.observe( this, Observer { event ->
+        noteFragmentViewModel.noteSaved.observe(this, Observer { event ->
             view?.let { view ->
-                when(event) {
+                when (event) {
                     is SaveNoteEvent.Success -> {
                         view.findNavController().popBackStack()
                     }
@@ -123,7 +147,7 @@ class NoteFragment : Fragment() {
         fragmentManager?.let { fragmentManager ->
             val dialog = DeleteNoteDialog(object : NoteDialogDeleteSuccessListener {
                 override fun onDelete() {
-                    noteFragmentViewModel.deleteNote(folderUUID, noteUUID)
+                    noteFragmentViewModel.deleteNote(args.folderUUID, args.noteUUID)
                 }
             })
             dialog.show(fragmentManager, "Delete note dialog")
@@ -132,9 +156,9 @@ class NoteFragment : Fragment() {
 
     private fun saveNote() {
         val note = NoteModel()
-        note.uuid = noteUUID
+        note.uuid = args.noteUUID
         note.noteTitle = editTextNoteTitle.text.toString()
         note.noteDescription = editTextNoteDescription.text.toString()
-        noteFragmentViewModel.saveNote(folderUUID, note)
+        noteFragmentViewModel.saveNote(args.folderUUID, note)
     }
 }
