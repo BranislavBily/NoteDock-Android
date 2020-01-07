@@ -91,6 +91,13 @@ class NoteFragment : Fragment() {
         inflater.inflate(R.menu.note_menu, menu)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.deleteNote -> createDeleteNoteDialog()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun observeLiveData() {
         noteFragmentViewModel.loadNote(folderUUID, noteUUID)
 
