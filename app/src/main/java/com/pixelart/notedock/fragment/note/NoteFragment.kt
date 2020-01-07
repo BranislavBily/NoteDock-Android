@@ -18,8 +18,12 @@ import com.pixelart.notedock.R
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteNoteDialog
 import com.pixelart.notedock.dialog.NoteDialogDeleteSuccessListener
+import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
+import com.pixelart.notedock.ext.hideSoftKeyboard
+import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.model.NoteModel
 import com.pixelart.notedock.viewModel.*
+import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
 import kotlinx.android.synthetic.main.fragment_note.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -56,14 +60,16 @@ class NoteFragment : Fragment() {
     }
 
     private fun setupClosingOfKeyboard() {
-        editTextNoteTitle.setOnFocusChangeListener { view, hasFocus ->
-            if(!hasFocus) {
-                hideKeyboard(view)
+        context?.let { context ->
+            editTextNoteTitle.setOnFocusChangeListener { view, hasFocus ->
+                if(!hasFocus) {
+                    hideSoftKeyboard(context, view)
+                }
             }
-        }
-        editTextNoteDescription.setOnFocusChangeListener { view, hasFocus ->
-            if(!hasFocus) {
-                hideKeyboard(view)
+            editTextNoteDescription.setOnFocusChangeListener { view, hasFocus ->
+                if(!hasFocus) {
+                    hideSoftKeyboard(context, view)
+                }
             }
         }
     }
@@ -85,28 +91,30 @@ class NoteFragment : Fragment() {
     private fun observeLiveData() {
         noteFragmentViewModel.loadNote(folderUUID, noteUUID)
 
-        noteFragmentViewModel.deleteNoteButtonClicked.observe(this, Observer { event ->
-            when(event) {
-                DeleteNoteButtonClickEvent.Clicked -> createDeleteNoteDialog()
-            }
+        noteFragmentViewModel.deleteNoteButtonClicked.observe(this, SpecificEventObserver<ButtonPressedEvent> {
+            createDeleteNoteDialog()
         })
 
         noteFragmentViewModel.noteDeleted.observe(this, Observer { event ->
-            when(event) {
-                NoteDeletedEvent.Success -> {
-                    deletingNote = true
-                    view?.findNavController()?.popBackStack()
+            view?.let { view ->
+                when(event) {
+                    is NoteDeletedEvent.Success -> {
+                        deletingNote = true
+                        view.findNavController().popBackStack()
+                    }
+                    is NoteDeletedEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
                 }
-                NoteDeletedEvent.Error -> Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
             }
         })
 
         noteFragmentViewModel.noteSaved.observe( this, Observer { event ->
-            when(event) {
-                SaveNoteEvent.Success -> {
-                    view?.findNavController()?.popBackStack()
+            view?.let { view ->
+                when(event) {
+                    is SaveNoteEvent.Success -> {
+                        view.findNavController().popBackStack()
+                    }
+                    is SaveNoteEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
                 }
-                SaveNoteEvent.Error -> Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -128,10 +136,5 @@ class NoteFragment : Fragment() {
         note.noteTitle = editTextNoteTitle.text.toString()
         note.noteDescription = editTextNoteDescription.text.toString()
         noteFragmentViewModel.saveNote(folderUUID, note)
-    }
-
-    private fun hideKeyboard(view: View) {
-        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-        imm?.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }

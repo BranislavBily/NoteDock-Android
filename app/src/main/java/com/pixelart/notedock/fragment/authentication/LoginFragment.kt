@@ -18,10 +18,7 @@ import com.pixelart.notedock.activity.MainActivity
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.showAsSnackBar
-import com.pixelart.notedock.viewModel.authentication.CreateAccountEvent
-import com.pixelart.notedock.viewModel.authentication.ForgotPasswordEvent
-import com.pixelart.notedock.viewModel.authentication.LoginEvent
-import com.pixelart.notedock.viewModel.authentication.LoginFragmentViewModel
+import com.pixelart.notedock.viewModel.authentication.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class LoginFragment : Fragment() {
@@ -67,7 +64,7 @@ class LoginFragment : Fragment() {
             }
         })
 
-        loginFragmentViewModel.forgotPassword.observe(this, SpecificEventObserver<ForgotPasswordEvent> {
+        loginFragmentViewModel.forgotPassword.observe(this, SpecificEventObserver<ButtonPressedEvent> {
             view?.let { view ->
                 val action = LoginFragmentDirections.actionLoginFragmentToResetPasswordFragment()
                 val navigationRouter = NavigationRouter(view)

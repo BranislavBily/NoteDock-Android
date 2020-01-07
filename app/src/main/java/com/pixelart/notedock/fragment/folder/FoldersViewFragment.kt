@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.ViewDataBinding
@@ -18,15 +17,17 @@ import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.BR
 import com.pixelart.notedock.NavigationRouter
 import com.pixelart.notedock.R
-import com.pixelart.notedock.activity.LoginActivity
+import com.pixelart.notedock.activity.SplashActivity
 import com.pixelart.notedock.adapter.FoldersAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.CreateFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogSuccessListener
+import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
+import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.model.FolderModel
-import com.pixelart.notedock.viewModel.folder.FABClickedEvent
-import com.pixelart.notedock.viewModel.folder.FolderNameTakenEvent
+import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
 import com.pixelart.notedock.viewModel.folder.CreateFolderEvent
+import com.pixelart.notedock.viewModel.folder.FolderNameTakenEvent
 import com.pixelart.notedock.viewModel.folder.FoldersViewFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_folders_view.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -68,8 +69,7 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
 
         } ?: run {
             context?.let { context ->
-                val intent = Intent(context, LoginActivity::class.java)
-//            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                val intent = Intent(context, SplashActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
                 startActivity(intent)
             }
@@ -88,31 +88,36 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
         })
 
         foldersViewFragmentViewModel.newFolderCreated.observe(this, Observer { event ->
-            when (event) {
-                is CreateFolderEvent.Success -> { }
-                is CreateFolderEvent.Error -> Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+            view?.let { view ->
+                when (event) {
+                    is CreateFolderEvent.Success -> { }
+                    is CreateFolderEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
+                }
+            } ?: run {
+                Log.e("FolderFragment", "View not found")
             }
         })
 
-        foldersViewFragmentViewModel.fabClicked.observe(this, Observer { event ->
-            when (event) {
-                FABClickedEvent.Clicked -> createFolderDialog()
-            }
+        foldersViewFragmentViewModel.fabClicked.observe(this, SpecificEventObserver<ButtonPressedEvent> {
+            createFolderDialog()
         })
 
         foldersViewFragmentViewModel.isNameTaken.observe(this, Observer { event ->
-            when (event) {
-                is FolderNameTakenEvent.Success -> {
-                    if (event.taken) {
-                        //Toast in weird place, maaybe deal with that
-                        Toast.makeText(context, "Folder with this name already exists", Toast.LENGTH_SHORT).show()
-                    } else {
-                        foldersViewFragmentViewModel.uploadFolderModel(FolderModel(event.folderName))
+            view?.let { view ->
+                when (event) {
+                    is FolderNameTakenEvent.Success -> {
+                        if (event.taken) {
+                            R.string.folder_name_already_exists.showAsSnackBar(view)
+                        } else {
+                            foldersViewFragmentViewModel.uploadFolderModel(FolderModel(event.folderName))
+                        }
+                    }
+                    is FolderNameTakenEvent.Error -> {
+                        R.string.error_occurred.showAsSnackBar(view)
                     }
                 }
-                is FolderNameTakenEvent.Error -> {
-                    Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
-                }
+            } ?: run {
+                Log.e("FolderFragment", "View not found")
             }
         })
     }
