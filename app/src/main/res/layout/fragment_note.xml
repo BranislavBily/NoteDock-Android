@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+                name="viewmodel"
+                type="com.pixelart.notedock.viewModel.NoteFragmentViewModel" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        tools:context=".fragment.note.NoteFragment">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="#E6FFFFFF"
+            android:elevation="8dp"
+            app:menu="@menu/note_menu"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:onBackClicked="@{() -> viewmodel.onBackPressed()}"
+            app:titleTextColor="@color/colorPrimary" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="?attr/actionBarSize">
+
+            <EditText
+                    android:id="@+id/editTextNoteTitle"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/note_hint_title"
+                    android:text="@{viewmodel.editTextNoteTitle}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.498"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.22" />
+
+            <EditText
+                    android:id="@+id/editTextNoteDescription"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/note_hint_description"
+                    android:text="@{viewmodel.editTextNoteDescription}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                    android:id="@+id/buttonDeleteNote"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{() -> viewmodel.onButtonDeleteNoteClick()}"
+                    android:text="Delete note"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.498"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.711" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </FrameLayout>
+
+</layout>
