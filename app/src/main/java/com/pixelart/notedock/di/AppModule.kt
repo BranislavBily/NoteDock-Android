@@ -25,6 +25,7 @@ val viewModelModule = module {
     viewModel {
         FoldersViewFragmentViewModel(
             folderRepository = get(),
+            auth = FirebaseAuth.getInstance(),
             createFolderUseCase = get(),
             folderNameTakenUseCase = get()
         )

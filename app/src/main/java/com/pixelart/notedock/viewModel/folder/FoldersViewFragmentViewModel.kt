@@ -2,6 +2,7 @@ package com.pixelart.notedock.viewModel.folder
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.EventListener
 import com.pixelart.notedock.dataBinding.SingleLiveEvent
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
@@ -14,6 +15,7 @@ import io.reactivex.schedulers.Schedulers
 
 class FoldersViewFragmentViewModel(
     private val folderRepository: FolderRepository,
+    private val auth: FirebaseAuth,
     private val createFolderUseCase: CreateFolderUseCase,
     private val folderNameTakenUseCase: FolderNameTakenUseCase
 ): LifecycleViewModel() {
@@ -34,42 +36,39 @@ class FoldersViewFragmentViewModel(
 
     private val _fabClicked = SingleLiveEvent<FABClickedEvent>()
     val fabClicked: LiveData<FABClickedEvent> = _fabClicked
+
     fun onFABClicked() {
         _fabClicked.postValue(FABClickedEvent.Clicked)
     }
 
     fun uploadFolderModel(folderModel: FolderModel) {
-        startStopDisposeBag?.let { bag ->
-            createFolderUseCase.createFolder(folderModel)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe(
-                    { _newFolderCreated.postValue(
-                        CreateFolderEvent.Success(
-                            it
-                        )
-                    ) },
-                    { _newFolderCreated.postValue(CreateFolderEvent.Error) }
-                )
-                .addTo(bag)
+        auth.currentUser?.let { user ->
+            startStopDisposeBag?.let { bag ->
+                createFolderUseCase.createFolder(user, folderModel)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .subscribe(
+                        { _newFolderCreated.postValue(CreateFolderEvent.Success(it)) },
+                        { _newFolderCreated.postValue(CreateFolderEvent.Error) }
+                    )
+                    .addTo(bag)
+            }
         }
+
     }
 
     fun isNameTaken(folderName: String) {
-        startStopDisposeBag?.let { bag ->
-            folderNameTakenUseCase.isNameTaken(folderName)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe(
-                    { _isNameTaken.postValue(
-                        FolderNameTakenEvent.Success(
-                            it,
-                            folderName
-                        )
-                    ) },
-                    { _isNameTaken.postValue(FolderNameTakenEvent.Error) }
-                )
-                .addTo(bag)
+        auth.currentUser?.let { user ->
+            startStopDisposeBag?.let { bag ->
+                folderNameTakenUseCase.isNameTaken(user, folderName)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .subscribe(
+                        { _isNameTaken.postValue(FolderNameTakenEvent.Success( it, folderName)) },
+                        { _isNameTaken.postValue(FolderNameTakenEvent.Error) }
+                    )
+                    .addTo(bag)
+            }
         }
     }
 }
