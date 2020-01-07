@@ -7,7 +7,7 @@
 
     <fragment
             android:id="@+id/foldersViewFragment"
-            android:name="com.pixelart.notedock.fragment.FoldersViewFragment"
+            android:name="com.pixelart.notedock.fragment.folder.FoldersViewFragment"
             android:label="NoteDock"
             tools:layout="@layout/fragment_folders_view" >
         <action
@@ -17,10 +17,11 @@
                 app:exitAnim="@anim/slide_out_left"
                 app:popEnterAnim="@anim/slide_in_left"
                 app:popExitAnim="@anim/slide_out_right"/>
+
     </fragment>
     <fragment
             android:id="@+id/folderFragment"
-            android:name="com.pixelart.notedock.fragment.FolderFragment"
+            android:name="com.pixelart.notedock.fragment.folder.FolderFragment"
             android:label="Notes"
             tools:layout="@layout/fragment_folder" >
 
@@ -38,7 +39,7 @@
     </fragment>
     <fragment
             android:id="@+id/noteFragment"
-            android:name="com.pixelart.notedock.fragment.NoteFragment"
+            android:name="com.pixelart.notedock.fragment.note.NoteFragment"
             tools:layout="@layout/fragment_note"
             android:label="Note">
 

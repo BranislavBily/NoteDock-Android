@@ -1,4 +1,4 @@
-package com.pixelart.notedock.fragment
+package com.pixelart.notedock.fragment.folder
 
 
 import android.os.Bundle
@@ -19,7 +19,7 @@ import com.pixelart.notedock.adapter.NotesAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogDeleteSuccessListener
-import com.pixelart.notedock.viewModel.*
+import com.pixelart.notedock.viewModel.folder.*
 import kotlinx.android.synthetic.main.fragment_folder.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -117,14 +117,20 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
     }
 
     private fun navigateToNote(noteUUID: String) {
-        val action = FolderFragmentDirections.actionFolderFragmentToNoteFragment(args.folderUUID + " " + noteUUID)
+        val action =
+            FolderFragmentDirections.actionFolderFragmentToNoteFragment(
+                args.folderUUID + " " + noteUUID
+            )
         val navigationRouter = NavigationRouter(view)
         navigationRouter.openAction(action)
     }
 
     override fun onNoteClick(noteUUID: String?) {
         noteUUID?.let {
-            val action = FolderFragmentDirections.actionFolderFragmentToNoteFragment(args.folderUUID + " " + noteUUID)
+            val action =
+                FolderFragmentDirections.actionFolderFragmentToNoteFragment(
+                    args.folderUUID + " " + noteUUID
+                )
             val navigationRouter = NavigationRouter(view)
             navigationRouter.openAction(action)
         }

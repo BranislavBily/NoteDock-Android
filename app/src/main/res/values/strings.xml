@@ -14,4 +14,25 @@
     <string name="delete_dialog">Delete</string>
     <string name="note_hint_title">Title</string>
     <string name="note_hint_description">Description</string>
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="passwordConfirm">Confirm Password</string>
+    <string name="notedockicon">NoteDock icon</string>
+    <string name="invalid_email_message">Invalid Email</string>
+    <string name="invalid_credentials_message">Invalid Credentials</string>
+    <string name="unknown_error_message">An error occurred. Try again</string>
+    <string name="network_error_message">Check your internet connection</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="do_not_have_an_account">Do not have an account?</string>
+    <string name="register">Register</string>
+    <string name="already_have_account">Already have an account?</string>
+    <string name="account_created">Your account has been created</string>
+    <string name="weak_password_message">Please enter stronger password</string>
+    <string name="email_already_used_message">Account with this email already exists</string>
+    <string name="passwords_do_not_match_message">Passwords do not match</string>
+    <string name="recover_account_message">You can recover your NoteDock account by clicking the button below</string>
+    <string name="recover_account">Recover account</string>
+    <string name="go_back_to_login">Go back to login</string>
+    <string name="recover_email_sent">Check your email for instructions</string>
 </resources>

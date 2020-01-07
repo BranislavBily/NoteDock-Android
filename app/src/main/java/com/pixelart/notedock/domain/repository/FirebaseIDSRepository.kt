@@ -2,6 +2,7 @@ package com.pixelart.notedock.domain.repository
 
 interface FirebaseIDSRepository {
     fun getCollectionFolders(): String
+    fun getCollectionUsers(): String
     fun getFolderName(): String
     fun getFolderNotesCount(): String
     fun getFolderAdded(): String
@@ -14,6 +15,10 @@ interface FirebaseIDSRepository {
 class FirebaseIDSImpl: FirebaseIDSRepository {
     override fun getCollectionFolders(): String {
         return "folders"
+    }
+
+    override fun getCollectionUsers(): String {
+        return "users"
     }
 
     override fun getFolderName(): String {

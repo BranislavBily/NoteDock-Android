@@ -1,25 +1,27 @@
 package com.pixelart.notedock.domain.usecase.note
 
-import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pixelart.notedock.domain.repository.FirebaseIDSRepository
 import io.reactivex.Single
-import java.util.*
 
 interface CreateNoteUseCase {
-    fun createNote(folderUUID: String): Single<String>
+    fun createNote(user: FirebaseUser, folderUUID: String): Single<String>
 }
 
 class CreateNoteImpl(private val firebaseIDSRepository: FirebaseIDSRepository,
                      private val firebaseInstance: FirebaseFirestore): CreateNoteUseCase {
-    override fun createNote(folderUUID: String): Single<String> {
+    override fun createNote(user: FirebaseUser, folderUUID: String): Single<String> {
         return Single.create<String> {emitter ->
             val data = hashMapOf(
                 firebaseIDSRepository.getNoteTitle() to "Untitled",
-                firebaseIDSRepository.getNoteAdded() to Timestamp(Date())
+                firebaseIDSRepository.getNoteAdded() to FieldValue.serverTimestamp()
             )
 
-            firebaseInstance.collection(firebaseIDSRepository.getCollectionFolders())
+            firebaseInstance.collection(firebaseIDSRepository.getCollectionUsers())
+                .document(user.uid)
+                .collection(firebaseIDSRepository.getCollectionFolders())
                 .document(folderUUID)
                 .collection(firebaseIDSRepository.getCollectionNotes())
                 .add(data)

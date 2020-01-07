@@ -2,6 +2,7 @@ package com.pixelart.notedock.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.dataBinding.SingleLiveEvent
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
 import com.pixelart.notedock.domain.repository.NotesRepository
@@ -12,6 +13,7 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 
 class NoteFragmentViewModel(private val notesRepository: NotesRepository,
+                            private val auth: FirebaseAuth,
                             private val deleteNoteUseCase: DeleteNoteUseCase,
                             private val updateNoteUseCase: UpdateNoteUseCase): LifecycleViewModel() {
 
@@ -31,37 +33,44 @@ class NoteFragmentViewModel(private val notesRepository: NotesRepository,
     val noteSaved: LiveData<SaveNoteEvent> = _noteSaved
 
     fun loadNote(folderUUID: String, noteUUID: String) {
-        startStopDisposeBag?.let { bag ->
-            notesRepository.loadNote(folderUUID, noteUUID)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe( { noteModel ->
-                    _editTextNoteTitle.postValue(noteModel.noteTitle)
-                    _editTextNoteDescription.postValue(noteModel.noteDescription)
-                }, {})
-                .addTo(bag)
+        auth.currentUser?.let { user ->
+            startStopDisposeBag?.let { bag ->
+                notesRepository.loadNote(user, folderUUID, noteUUID)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .subscribe( { noteModel ->
+                        _editTextNoteTitle.postValue(noteModel.noteTitle)
+                        _editTextNoteDescription.postValue(noteModel.noteDescription)
+                    }, {})
+                    .addTo(bag)
+            }
         }
     }
 
     fun deleteNote(folderUUID: String, noteUUID: String) {
-        startStopDisposeBag?.let { bag ->
-            deleteNoteUseCase.deleteNote(folderUUID, noteUUID)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe( { _noteDeleted.postValue(NoteDeletedEvent.Success)},
-                            { _noteDeleted.postValue(NoteDeletedEvent.Error)})
-                .addTo(bag)
+        auth.currentUser?.let { user ->
+            startStopDisposeBag?.let { bag ->
+                deleteNoteUseCase.deleteNote(user, folderUUID, noteUUID)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .subscribe( { _noteDeleted.postValue(NoteDeletedEvent.Success)},
+                        { _noteDeleted.postValue(NoteDeletedEvent.Error)})
+                    .addTo(bag)
+            }
         }
+
     }
 
     fun saveNote(folderUUID: String, noteModel: NoteModel) {
-        startStopDisposeBag?.let { bag ->
-            updateNoteUseCase.updateNote(folderUUID, noteModel)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe({ _noteSaved.postValue(SaveNoteEvent.Success)},
-                    { _noteSaved.postValue(SaveNoteEvent.Error)})
-                .addTo(bag)
+        auth.currentUser?.let { user ->
+            startStopDisposeBag?.let { bag ->
+                updateNoteUseCase.updateNote(user, folderUUID, noteModel)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .subscribe({ _noteSaved.postValue(SaveNoteEvent.Success)},
+                        { _noteSaved.postValue(SaveNoteEvent.Error)})
+                    .addTo(bag)
+            }
         }
     }
 
