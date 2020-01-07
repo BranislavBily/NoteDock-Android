@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.ViewDataBinding
@@ -55,9 +56,25 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
 
         auth = FirebaseAuth.getInstance()
 
+        setupToolbar()
+
         val foldersAdapter = FoldersAdapter(this)
         setupRecyclerView(foldersAdapter)
         observeLiveData(foldersAdapter)
+    }
+
+    private fun setupToolbar() {
+        toolbarFoldersView?.setOnMenuItemClickListener { menuItem ->
+            when(menuItem.itemId) {
+                R.id.settings -> {
+                    //Settings
+                    true
+                }
+                else -> {
+                    false
+                }
+            }
+        }
     }
 
     override fun onStart() {
