@@ -48,7 +48,7 @@ class FoldersViewFragmentViewModel(
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
                     .subscribe(
-                        { _newFolderCreated.postValue(CreateFolderEvent.Success(it)) },
+                        { _newFolderCreated.postValue(CreateFolderEvent.Success()) },
                         { _newFolderCreated.postValue(CreateFolderEvent.Error) }
                     )
                     .addTo(bag)
@@ -69,13 +69,15 @@ class FoldersViewFragmentViewModel(
                     )
                     .addTo(bag)
             }
+        } ?: run {
+            _isNameTaken.postValue(FolderNameTakenEvent.Error)
         }
     }
 }
 
 sealed class CreateFolderEvent {
     object Error : CreateFolderEvent()
-    class Success(val uuid: String): CreateFolderEvent()
+    class Success : CreateFolderEvent()
 }
 
 sealed class FABClickedEvent {
