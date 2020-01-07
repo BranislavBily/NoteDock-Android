@@ -17,6 +17,7 @@ import org.koin.dsl.module
 val viewModelModule = module {
     viewModel {
         FolderFragmentViewModel(
+            auth = FirebaseAuth.getInstance(),
             deleteFolderUseCase = get(),
             createFolderUseCase = get(),
             notesRepository = get()
@@ -30,7 +31,7 @@ val viewModelModule = module {
             folderNameTakenUseCase = get()
         )
     }
-    viewModel { NoteFragmentViewModel(get(), get(), get())}
+    viewModel { NoteFragmentViewModel(get(), FirebaseAuth.getInstance(), get(), get())}
     viewModel { LoginFragmentViewModel(get()) }
     viewModel {
         RegisterFragmentViewModel(

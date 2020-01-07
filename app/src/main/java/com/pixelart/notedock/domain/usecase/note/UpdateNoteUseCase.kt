@@ -1,5 +1,6 @@
 package com.pixelart.notedock.domain.usecase.note
 
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pixelart.notedock.domain.repository.FirebaseIDSRepository
 import com.pixelart.notedock.model.NoteModel
@@ -8,16 +9,18 @@ import io.reactivex.Single
 import java.lang.NullPointerException
 
 interface UpdateNoteUseCase {
-    fun updateNote(folderUUID: String, note: NoteModel): Single<SaveNoteEvent>
+    fun updateNote(user: FirebaseUser, folderUUID: String, note: NoteModel): Single<SaveNoteEvent>
 }
 
 class UpdateNoteImpl(private val firebaseIDSRepository: FirebaseIDSRepository,
                      private val firebaseInstance: FirebaseFirestore): UpdateNoteUseCase {
 
-    override fun updateNote(folderUUID: String, note: NoteModel): Single<SaveNoteEvent> {
+    override fun updateNote(user: FirebaseUser, folderUUID: String, note: NoteModel): Single<SaveNoteEvent> {
         return Single.create<SaveNoteEvent> { emitter ->
             note.uuid?.let { noteUID ->
-                firebaseInstance.collection(firebaseIDSRepository.getCollectionFolders())
+                firebaseInstance.collection(firebaseIDSRepository.getCollectionUsers())
+                    .document(user.uid)
+                    .collection(firebaseIDSRepository.getCollectionFolders())
                     .document(folderUUID)
                     .collection(firebaseIDSRepository.getCollectionNotes())
                     .document(noteUID)
