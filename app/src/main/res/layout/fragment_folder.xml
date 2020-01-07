@@ -19,8 +19,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:elevation="8dp"
-                android:background="@color/colorPrimary"
-                app:titleTextColor="#FFF"
+                android:background="#E6FFFFFF"
+                app:titleTextColor="@color/colorPrimary"
                 app:title="@{viewmodel.toolbarTitle}"
                 app:navigationIcon="@drawable/ic_arrow_back"
                 app:onBackClicked="@{() -> viewmodel.onBackClicked()}"
@@ -29,7 +29,9 @@
             <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewNotes"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:paddingBottom="60dp"
                     android:paddingTop="?attr/actionBarSize"
                     tools:listitem="@layout/note_list_item" />
 

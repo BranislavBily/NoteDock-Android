@@ -19,9 +19,19 @@
             android:focusableInTouchMode="true"
             android:focusable="true">
 
+        <androidx.appcompat.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:elevation="8dp"
+                android:background="#E6FFFFFF"
+                app:titleTextColor="@color/colorPrimary"
+                app:navigationIcon="@drawable/ic_arrow_back"
+                app:menu="@menu/folder_view_menu" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:paddingTop="?attr/actionBarSize">
 
             <EditText
                     android:id="@+id/editTextNoteTitle"
