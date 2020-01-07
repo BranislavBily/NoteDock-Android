@@ -3,9 +3,7 @@ package com.pixelart.notedock.fragment.folder
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
@@ -46,6 +44,7 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
             R.layout.fragment_folders_view,
             BR.viewmodel to foldersViewFragmentViewModel
         )
+        setHasOptionsMenu(true)
         foldersViewFragmentViewModel.lifecycleOwner = this
         return dataBinding.root
     }
@@ -74,6 +73,11 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
                 startActivity(intent)
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
+        inflater.inflate(R.menu.folders_view_menu, menu)
     }
 
     private fun setupRecyclerView(foldersAdapter: FoldersAdapter) {

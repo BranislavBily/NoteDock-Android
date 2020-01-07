@@ -3,10 +3,7 @@ package com.pixelart.notedock.fragment.folder
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
+import android.view.*
 import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
@@ -20,11 +17,12 @@ import com.pixelart.notedock.adapter.NotesAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogDeleteSuccessListener
-import com.pixelart.notedock.domain.livedata.observer.DataEventObserver
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
-import com.pixelart.notedock.viewModel.folder.*
+import com.pixelart.notedock.viewModel.folder.CreateNoteEvent
+import com.pixelart.notedock.viewModel.folder.FolderDeleteEvent
+import com.pixelart.notedock.viewModel.folder.FolderFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_folder.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -45,6 +43,7 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
             R.layout.fragment_folder,
             BR.viewmodel to folderFragmentViewModel
         )
+        setHasOptionsMenu(true)
         folderFragmentViewModel.lifecycleOwner = this
         return dataBinding.root
     }
@@ -62,6 +61,11 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
     private fun setupRecyclerView(notesAdapter: NotesAdapter) {
         recyclerViewNotes.layoutManager = LinearLayoutManager(context)
         recyclerViewNotes.adapter = notesAdapter
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
+        inflater.inflate(R.menu.folder_view_menu, menu)
     }
 
     private fun observeLiveData(notesAdapter: NotesAdapter) {
