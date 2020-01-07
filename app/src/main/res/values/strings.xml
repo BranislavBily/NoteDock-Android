@@ -35,4 +35,6 @@
     <string name="recover_account">Recover account</string>
     <string name="go_back_to_login">Go back to login</string>
     <string name="recover_email_sent">Check your email for instructions</string>
+    <string name="folder_name_already_exists">Folder name already taken</string>
+    <string name="error_occurred">An error occurred. Please try again</string>
 </resources>

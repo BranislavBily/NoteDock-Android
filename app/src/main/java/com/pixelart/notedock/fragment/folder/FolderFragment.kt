@@ -2,6 +2,7 @@ package com.pixelart.notedock.fragment.folder
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +20,7 @@ import com.pixelart.notedock.adapter.NotesAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogDeleteSuccessListener
+import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.viewModel.folder.*
 import kotlinx.android.synthetic.main.fragment_folder.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -67,15 +69,13 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
         })
 
         folderFragmentViewModel.folderDeleted.observe(this, Observer { event ->
-            when (event) {
-                is FolderDeleteEvent.Success -> {
-                    view?.findNavController()?.popBackStack()
+            view?.let { view ->
+                when (event) {
+                    is FolderDeleteEvent.Success -> {
+                        view.findNavController().popBackStack()
+                    }
+                    is FolderDeleteEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
                 }
-                is FolderDeleteEvent.Error -> Toast.makeText(
-                    context,
-                    "Error",
-                    Toast.LENGTH_SHORT
-                ).show()
             }
         })
 
@@ -90,13 +90,15 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
         })
 
         folderFragmentViewModel.noteCreated.observe(this, Observer { event ->
-            when (event) {
-                is CreateNoteEvent.Success -> navigateToNote(event.noteUUID)
-                is CreateNoteEvent.Error -> Toast.makeText(
-                    context,
-                    "Error",
-                    Toast.LENGTH_SHORT
-                ).show()
+            view?.let { view ->
+                when (event) {
+                    is CreateNoteEvent.Success -> navigateToNote(event.noteUUID)
+                    is CreateNoteEvent.Error -> {
+                        R.string.error_occurred.showAsSnackBar(view)
+                    }
+                }
+            } ?: run {
+                Log.e("FolderFragment", "View not found")
             }
         })
     }
@@ -118,9 +120,7 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
 
     private fun navigateToNote(noteUUID: String) {
         val action =
-            FolderFragmentDirections.actionFolderFragmentToNoteFragment(
-                args.folderUUID + " " + noteUUID
-            )
+            FolderFragmentDirections.actionFolderFragmentToNoteFragment(args.folderUUID + " " + noteUUID)
         val navigationRouter = NavigationRouter(view)
         navigationRouter.openAction(action)
     }
@@ -128,9 +128,7 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
     override fun onNoteClick(noteUUID: String?) {
         noteUUID?.let {
             val action =
-                FolderFragmentDirections.actionFolderFragmentToNoteFragment(
-                    args.folderUUID + " " + noteUUID
-                )
+                FolderFragmentDirections.actionFolderFragmentToNoteFragment(args.folderUUID + " " + noteUUID)
             val navigationRouter = NavigationRouter(view)
             navigationRouter.openAction(action)
         }

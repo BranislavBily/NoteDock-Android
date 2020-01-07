@@ -23,6 +23,7 @@ import com.pixelart.notedock.adapter.FoldersAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.CreateFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogSuccessListener
+import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.model.FolderModel
 import com.pixelart.notedock.viewModel.folder.FABClickedEvent
 import com.pixelart.notedock.viewModel.folder.FolderNameTakenEvent
@@ -88,9 +89,13 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
         })
 
         foldersViewFragmentViewModel.newFolderCreated.observe(this, Observer { event ->
-            when (event) {
-                is CreateFolderEvent.Success -> { }
-                is CreateFolderEvent.Error -> Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+            view?.let { view ->
+                when (event) {
+                    is CreateFolderEvent.Success -> { }
+                    is CreateFolderEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
+                }
+            } ?: run {
+                Log.e("FolderFragment", "View not found")
             }
         })
 
@@ -101,18 +106,21 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
         })
 
         foldersViewFragmentViewModel.isNameTaken.observe(this, Observer { event ->
-            when (event) {
-                is FolderNameTakenEvent.Success -> {
-                    if (event.taken) {
-                        //Toast in weird place, maaybe deal with that
-                        Toast.makeText(context, "Folder with this name already exists", Toast.LENGTH_SHORT).show()
-                    } else {
-                        foldersViewFragmentViewModel.uploadFolderModel(FolderModel(event.folderName))
+            view?.let { view ->
+                when (event) {
+                    is FolderNameTakenEvent.Success -> {
+                        if (event.taken) {
+                            R.string.folder_name_already_exists.showAsSnackBar(view)
+                        } else {
+                            foldersViewFragmentViewModel.uploadFolderModel(FolderModel(event.folderName))
+                        }
+                    }
+                    is FolderNameTakenEvent.Error -> {
+                        R.string.error_occurred.showAsSnackBar(view)
                     }
                 }
-                is FolderNameTakenEvent.Error -> {
-                    Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
-                }
+            } ?: run {
+                Log.e("FolderFragment", "View not found")
             }
         })
     }
