@@ -14,6 +14,7 @@ import com.pixelart.notedock.R
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteNoteDialog
 import com.pixelart.notedock.dialog.NoteDialogDeleteSuccessListener
+import com.pixelart.notedock.domain.livedata.observer.DataEventObserver
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.hideSoftKeyboard
@@ -24,8 +25,8 @@ import com.pixelart.notedock.viewModel.NoteFragmentViewModel
 import com.pixelart.notedock.viewModel.SaveNoteEvent
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
 import kotlinx.android.synthetic.main.fragment_note.*
+import kotlinx.android.synthetic.main.fragment_note.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
-import java.util.*
 
 class NoteFragment : Fragment() {
 
@@ -52,6 +53,20 @@ class NoteFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupClosingOfKeyboard()
+        setupToolbar()
+
+    }
+
+    private fun setupToolbar() {
+        view?.toolbar?.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.deleteNote -> {
+                    createDeleteNoteDialog()
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun setupClosingOfKeyboard() {
@@ -83,13 +98,8 @@ class NoteFragment : Fragment() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu.clear()
-        inflater.inflate(R.menu.note_menu, menu)
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
+        when (item.itemId) {
             R.id.deleteNote -> createDeleteNoteDialog()
         }
         return super.onOptionsItemSelected(item)
@@ -99,9 +109,11 @@ class NoteFragment : Fragment() {
         //Cez onStartStop
         noteFragmentViewModel.loadNote(args.folderUUID, args.noteUUID)
 
-        noteFragmentViewModel.deleteNoteButtonClicked.observe(this, SpecificEventObserver<ButtonPressedEvent> {
+        noteFragmentViewModel.deleteNoteButtonClicked.observe(
+            this,
+            SpecificEventObserver<ButtonPressedEvent> {
                 createDeleteNoteDialog()
-        })
+            })
 
         noteFragmentViewModel.onBackClicked.observe(this, EventObserver {
             findNavController().popBackStack()

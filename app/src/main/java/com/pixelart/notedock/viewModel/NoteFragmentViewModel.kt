@@ -3,8 +3,8 @@ package com.pixelart.notedock.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
-import com.pixelart.notedock.dataBinding.SingleLiveEvent
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
+import com.pixelart.notedock.domain.livedata.model.DataEvent
 import com.pixelart.notedock.domain.livedata.model.Event
 import com.pixelart.notedock.domain.repository.NotesRepository
 import com.pixelart.notedock.domain.usecase.note.DeleteNoteUseCase
@@ -13,6 +13,7 @@ import com.pixelart.notedock.model.NoteModel
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
+import java.util.*
 
 class NoteFragmentViewModel(
     private val notesRepository: NotesRepository,
