@@ -65,7 +65,7 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
 
         val currentUser = auth.currentUser
         currentUser?.let {
-            auth.signOut()
+
         } ?: run {
             context?.let { context ->
                 val intent = Intent(context, LoginActivity::class.java)
