@@ -10,8 +10,26 @@
                 type="com.pixelart.notedock.viewModel.settings.SettingsFragmentViewModel" />
     </data>
 
-    <TextView
+    <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Joo"/>
+            android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="#E6FFFFFF"
+                android:elevation="8dp"
+                app:navigationIcon="@drawable/ic_arrow_back"
+                app:onBackClicked="@{() -> viewmodel.onBackPressed()}"
+                app:titleTextColor="@color/colorPrimary" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="?attr/actionBarSize">
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 </layout>
