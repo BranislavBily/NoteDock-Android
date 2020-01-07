@@ -12,11 +12,13 @@ import com.pixelart.notedock.viewModel.NoteFragmentViewModel
 import com.pixelart.notedock.viewModel.authentication.ResetPasswordFragmentViewModel
 import com.pixelart.notedock.viewModel.authentication.RegisterFragmentViewModel
 import org.koin.android.viewmodel.dsl.viewModel
+import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
 
 val viewModelModule = module {
-    viewModel {
+    viewModel { (folderUUID: String) ->
         FolderFragmentViewModel(
+            folderUUID = folderUUID,
             auth = FirebaseAuth.getInstance(),
             deleteFolderUseCase = get(),
             createFolderUseCase = get(),
@@ -50,7 +52,7 @@ val firebaseModule = module {
     //Repository
     single { FirebaseIDSImpl() as FirebaseIDSRepository }
     single { FolderRepositoryImpl(get(), get(), get(), FirebaseFirestore.getInstance()) as FolderRepository }
-    single { NotesRepositoryImpl(get(), FirebaseFirestore.getInstance(), get(), get()) as NotesRepository }
+    single { NotesRepositoryImpl(get(), FirebaseFirestore.getInstance(), get()) as NotesRepository }
 
     //UseCase Folder
     single { FolderModelFromDocumentImpl(get()) as FolderModelFromDocumentUseCase }

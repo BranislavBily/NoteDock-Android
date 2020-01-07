@@ -27,13 +27,15 @@ import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
 import com.pixelart.notedock.viewModel.folder.*
 import kotlinx.android.synthetic.main.fragment_folder.*
 import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 
 class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
+    private val args: FolderFragmentArgs by navArgs()
+    private val folderFragmentViewModel: FolderFragmentViewModel by viewModel {
+        parametersOf(args.folderUUID)
+    }
 
-    private val folderFragmentViewModel: FolderFragmentViewModel by viewModel()
-
-    val args: FolderFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,7 +65,6 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
     }
 
     private fun observeLiveData(notesAdapter: NotesAdapter) {
-        folderFragmentViewModel.loadNotes(args.folderUUID)
 
         folderFragmentViewModel.folderButtonClicked.observe(
             this,
@@ -93,7 +94,9 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
         })
 
 
-        folderFragmentViewModel.noteCreated.observe(this, SpecificEventObserver<CreateNoteEvent> { event ->
+        folderFragmentViewModel.noteCreated.observe(
+            this,
+            SpecificEventObserver<CreateNoteEvent> { event ->
                 view?.let { view ->
                     when (event) {
                         is CreateNoteEvent.Success -> navigateToNote(event.noteUUID)
@@ -110,10 +113,10 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
     private fun createDeleteDialog() {
         fragmentManager?.let { fragmentManager ->
             val deleteFolderDialog = DeleteFolderDialog(object : FolderDialogDeleteSuccessListener {
-                    override fun onDelete() {
-                        folderFragmentViewModel.deleteFolderModel(args.folderUUID)
-                    }
-                })
+                override fun onDelete() {
+                    folderFragmentViewModel.deleteFolderModel(args.folderUUID)
+                }
+            })
             deleteFolderDialog.show(fragmentManager, "Delete Folder Dialog")
         }
     }

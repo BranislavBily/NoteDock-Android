@@ -1,8 +1,6 @@
 package com.pixelart.notedock.domain.repository
 
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.pixelart.notedock.domain.usecase.folder.FolderModelFromDocumentSnapshotUseCase
@@ -12,7 +10,6 @@ import io.reactivex.Observable
 import io.reactivex.Single
 
 interface FolderRepository {
-    fun getFolders(eventListener: EventListener<ArrayList<FolderModel>?>)
     fun getFolders(user: FirebaseUser): Observable<ArrayList<FolderModel>>
     fun getFolder(uid: String): Single<FolderModel>
 }
@@ -34,25 +31,6 @@ class FolderRepositoryImpl(
                     emitter.onSuccess(folder)
                 }
                 .addOnFailureListener { exception -> emitter.onError(exception) }
-        }
-    }
-
-    override fun getFolders(eventListener: EventListener<ArrayList<FolderModel>?>) {
-        FirebaseAuth.getInstance().currentUser?.let { user ->
-            val folders = ArrayList<FolderModel>()
-            firebaseInstance.collection(firebaseIDSRepository.getCollectionUsers())
-                .document(user.uid)
-                .collection(firebaseIDSRepository.getCollectionFolders())
-                .orderBy(firebaseIDSRepository.getFolderAdded(), Query.Direction.DESCENDING)
-                .addSnapshotListener { queryDocumentSnapshots, _ ->
-                    queryDocumentSnapshots?.let {
-                        folders.clear()
-                        for (documentSnapshot in it) {
-                            folders.add(folderModelFromDocumentUseCase.getModel(documentSnapshot))
-                        }
-                        eventListener.onEvent(folders, null)
-                    }
-                }
         }
     }
 

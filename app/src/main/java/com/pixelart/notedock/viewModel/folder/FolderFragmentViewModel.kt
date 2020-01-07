@@ -12,10 +12,12 @@ import com.pixelart.notedock.domain.usecase.folder.DeleteFolderUseCase
 import com.pixelart.notedock.domain.usecase.note.CreateNoteUseCase
 import com.pixelart.notedock.model.NoteModel
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 
 class FolderFragmentViewModel(
+    private val folderUUID: String,
     private val auth: FirebaseAuth,
     private val deleteFolderUseCase: DeleteFolderUseCase,
     private val createFolderUseCase: CreateNoteUseCase,
@@ -37,6 +39,12 @@ class FolderFragmentViewModel(
 
     private val _noteCreated = MutableLiveData<CreateNoteEvent>()
     val noteCreated: LiveData<CreateNoteEvent> = _noteCreated
+
+    override fun onStartStopObserve(disposeBag: CompositeDisposable) {
+        super.onStartStopObserve(disposeBag)
+
+        loadNotes(disposeBag)
+    }
 
     fun onDeleteFolderButtonClicked() {
         _buttonClicked.postValue(ButtonPressedEvent.Pressed())
@@ -76,12 +84,14 @@ class FolderFragmentViewModel(
         }
     }
 
-    fun loadNotes(folderUUID: String) {
+    private fun loadNotes(disposeBag: CompositeDisposable) {
         auth.currentUser?.let { user ->
-            notesRepository.loadNotes(user, folderUUID, EventListener { notes, _ ->
-                _loadedNotes.postValue(notes)
-            })
-        }
+            notesRepository.getNotes(user, folderUUID)
+                .observeOn(Schedulers.io())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ _loadedNotes.postValue(it) }, {})
+                .addTo(disposeBag)
+            }
     }
 }
 
