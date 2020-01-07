@@ -9,6 +9,7 @@ import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pixelart.notedock.NavigationRouter
@@ -17,6 +18,7 @@ import com.pixelart.notedock.adapter.NotesAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogDeleteSuccessListener
+import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
@@ -62,11 +64,6 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
         recyclerViewNotes.adapter = notesAdapter
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu.clear()
-        inflater.inflate(R.menu.folder_view_menu, menu)
-    }
-
     private fun observeLiveData(notesAdapter: NotesAdapter) {
 
         folderFragmentViewModel.folderButtonClicked.observe(
@@ -96,8 +93,14 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
             createNote()
         })
 
+        folderFragmentViewModel.onBackClicked.observe(this, EventObserver {
+            findNavController().popBackStack()
+        })
 
-        folderFragmentViewModel.noteCreated.observe(this, SpecificEventObserver<CreateNoteEvent> { event ->
+
+        folderFragmentViewModel.noteCreated.observe(
+            this,
+            SpecificEventObserver<CreateNoteEvent> { event ->
                 view?.let { view ->
                     when (event) {
                         is CreateNoteEvent.Success -> navigateToNote(event.noteUUID)
@@ -127,7 +130,8 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
     }
 
     private fun navigateToNote(noteUUID: String) {
-        val action = FolderFragmentDirections.actionFolderFragmentToNoteFragment(args.folderUUID, noteUUID)
+        val action =
+            FolderFragmentDirections.actionFolderFragmentToNoteFragment(args.folderUUID, noteUUID)
         val navigationRouter = NavigationRouter(view)
         navigationRouter.openAction(action)
     }

@@ -3,8 +3,6 @@ package com.pixelart.notedock.viewModel.folder
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.EventListener
-import com.pixelart.notedock.dataBinding.SingleLiveEvent
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
 import com.pixelart.notedock.domain.livedata.model.Event
 import com.pixelart.notedock.domain.repository.NotesRepository
@@ -29,6 +27,9 @@ class FolderFragmentViewModel(
     private val _loadedNotes = MutableLiveData<ArrayList<NoteModel>>()
     val loadedNotes: LiveData<ArrayList<NoteModel>> = _loadedNotes
 
+    private val _onBackClicked = MutableLiveData<ButtonPressedEvent>()
+    val onBackClicked: LiveData<ButtonPressedEvent> = _onBackClicked
+
     private val _buttonClicked = MutableLiveData<ButtonPressedEvent>()
     val folderButtonClicked: LiveData<ButtonPressedEvent> = _buttonClicked
 
@@ -51,6 +52,9 @@ class FolderFragmentViewModel(
         _buttonClicked.postValue(ButtonPressedEvent.Pressed())
     }
 
+    fun onBackClicked() {
+        _onBackClicked.postValue(ButtonPressedEvent.Pressed())
+    }
 
     fun onFABClicked() {
         _fabClicked.postValue(ButtonPressedEvent.Pressed())
