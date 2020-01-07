@@ -21,7 +21,7 @@ class DeleteNoteImpl(private val firebaseIDSRepository: FirebaseIDSRepository,
                 .collection(firebaseIDSRepository.getCollectionNotes())
                 .document(noteUUID)
                 .delete()
-                .addOnSuccessListener { emitter.onSuccess(NoteDeletedEvent.Success)}
+                .addOnSuccessListener { emitter.onSuccess(NoteDeletedEvent.Success())}
                 .addOnFailureListener { emitter.onError(it)}
         }
     }

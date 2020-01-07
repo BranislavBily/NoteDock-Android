@@ -28,7 +28,7 @@ class UpdateNoteImpl(private val firebaseIDSRepository: FirebaseIDSRepository,
                         firebaseIDSRepository.getNoteTitle() to note.noteTitle,
                         firebaseIDSRepository.getNoteDescription() to note.noteDescription
                     ))
-                    .addOnSuccessListener { emitter.onSuccess(SaveNoteEvent.Success) }
+                    .addOnSuccessListener { emitter.onSuccess(SaveNoteEvent.Success()) }
                     .addOnFailureListener { emitter.tryOnError(it)}
             } ?: emitter.tryOnError(NullPointerException("Note UUID is null!"))
         }

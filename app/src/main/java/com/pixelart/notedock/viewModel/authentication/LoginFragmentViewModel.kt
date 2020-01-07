@@ -17,7 +17,7 @@ import io.reactivex.schedulers.Schedulers
 
 class LoginFragmentViewModel(private val authRepository: AuthRepository): LifecycleViewModel() {
 
-    private val _loginCompleted = SingleLiveEvent<LoginEvent>()
+    private val _loginCompleted = MutableLiveData<LoginEvent>()
     val loginCompleted: LiveData<LoginEvent> = _loginCompleted
 
     val email = MutableLiveData<String>()
@@ -26,10 +26,10 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository): Lifecy
     private val _loading = MutableLiveData<Boolean>().apply { postValue(false) }
     val loading: LiveData<Boolean> = _loading
 
-    private val _forgotPassword = SingleLiveEvent<ForgotPasswordEvent>()
-    val forgotPassword: LiveData<ForgotPasswordEvent> = _forgotPassword
+    private val _forgotPassword = MutableLiveData<ButtonPressedEvent>()
+    val forgotPassword: LiveData<ButtonPressedEvent> = _forgotPassword
 
-    private val _createAccount = SingleLiveEvent<CreateAccountEvent>()
+    private val _createAccount = MutableLiveData<CreateAccountEvent>()
     val createAccount: LiveData<CreateAccountEvent> = _createAccount
 
     val loginEnabled: LiveData<Boolean> = MediatorLiveData<Boolean>().apply {
@@ -62,7 +62,7 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository): Lifecy
     }
 
     fun forgotPassword() {
-        _forgotPassword.postValue(ForgotPasswordEvent.Pressed())
+        _forgotPassword.postValue(ButtonPressedEvent.Pressed())
     }
 
     fun createAccount() {
@@ -92,8 +92,4 @@ sealed class LoginEvent : Event() {
 
 sealed class CreateAccountEvent: Event() {
     class Pressed: CreateAccountEvent()
-}
-
-sealed class ForgotPasswordEvent: Event() {
-    class Pressed: ForgotPasswordEvent()
 }

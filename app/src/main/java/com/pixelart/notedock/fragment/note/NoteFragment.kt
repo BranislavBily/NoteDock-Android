@@ -18,10 +18,12 @@ import com.pixelart.notedock.R
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteNoteDialog
 import com.pixelart.notedock.dialog.NoteDialogDeleteSuccessListener
+import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.hideSoftKeyboard
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.model.NoteModel
 import com.pixelart.notedock.viewModel.*
+import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
 import kotlinx.android.synthetic.main.fragment_note.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -89,20 +91,18 @@ class NoteFragment : Fragment() {
     private fun observeLiveData() {
         noteFragmentViewModel.loadNote(folderUUID, noteUUID)
 
-        noteFragmentViewModel.deleteNoteButtonClicked.observe(this, Observer { event ->
-            when(event) {
-                DeleteNoteButtonClickEvent.Clicked -> createDeleteNoteDialog()
-            }
+        noteFragmentViewModel.deleteNoteButtonClicked.observe(this, SpecificEventObserver<ButtonPressedEvent> {
+            createDeleteNoteDialog()
         })
 
         noteFragmentViewModel.noteDeleted.observe(this, Observer { event ->
             view?.let { view ->
                 when(event) {
-                    NoteDeletedEvent.Success -> {
+                    is NoteDeletedEvent.Success -> {
                         deletingNote = true
                         view.findNavController().popBackStack()
                     }
-                    NoteDeletedEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
+                    is NoteDeletedEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
                 }
             }
         })
@@ -110,10 +110,10 @@ class NoteFragment : Fragment() {
         noteFragmentViewModel.noteSaved.observe( this, Observer { event ->
             view?.let { view ->
                 when(event) {
-                    SaveNoteEvent.Success -> {
+                    is SaveNoteEvent.Success -> {
                         view.findNavController().popBackStack()
                     }
-                    SaveNoteEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
+                    is SaveNoteEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
                 }
             }
         })

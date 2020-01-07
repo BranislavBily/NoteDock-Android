@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.ViewDataBinding
@@ -18,16 +17,17 @@ import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.BR
 import com.pixelart.notedock.NavigationRouter
 import com.pixelart.notedock.R
-import com.pixelart.notedock.activity.LoginActivity
+import com.pixelart.notedock.activity.SplashActivity
 import com.pixelart.notedock.adapter.FoldersAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.CreateFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogSuccessListener
+import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.model.FolderModel
-import com.pixelart.notedock.viewModel.folder.FABClickedEvent
-import com.pixelart.notedock.viewModel.folder.FolderNameTakenEvent
+import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
 import com.pixelart.notedock.viewModel.folder.CreateFolderEvent
+import com.pixelart.notedock.viewModel.folder.FolderNameTakenEvent
 import com.pixelart.notedock.viewModel.folder.FoldersViewFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_folders_view.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -69,8 +69,7 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
 
         } ?: run {
             context?.let { context ->
-                val intent = Intent(context, LoginActivity::class.java)
-//            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                val intent = Intent(context, SplashActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
                 startActivity(intent)
             }
@@ -99,10 +98,8 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
             }
         })
 
-        foldersViewFragmentViewModel.fabClicked.observe(this, Observer { event ->
-            when (event) {
-                FABClickedEvent.Clicked -> createFolderDialog()
-            }
+        foldersViewFragmentViewModel.fabClicked.observe(this, SpecificEventObserver<ButtonPressedEvent> {
+            createFolderDialog()
         })
 
         foldersViewFragmentViewModel.isNameTaken.observe(this, Observer { event ->

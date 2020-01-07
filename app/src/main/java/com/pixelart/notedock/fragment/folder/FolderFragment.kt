@@ -20,7 +20,10 @@ import com.pixelart.notedock.adapter.NotesAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogDeleteSuccessListener
+import com.pixelart.notedock.domain.livedata.observer.DataEventObserver
+import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.showAsSnackBar
+import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
 import com.pixelart.notedock.viewModel.folder.*
 import kotlinx.android.synthetic.main.fragment_folder.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -62,11 +65,11 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
     private fun observeLiveData(notesAdapter: NotesAdapter) {
         folderFragmentViewModel.loadNotes(args.folderUUID)
 
-        folderFragmentViewModel.folderButtonClicked.observe(this, Observer { event ->
-            when (event) {
-                DeleteFolderButtonEvent.OnClick -> createDeleteDialog()
-            }
-        })
+        folderFragmentViewModel.folderButtonClicked.observe(
+            this,
+            SpecificEventObserver<ButtonPressedEvent> {
+                createDeleteDialog()
+            })
 
         folderFragmentViewModel.folderDeleted.observe(this, Observer { event ->
             view?.let { view ->
@@ -76,6 +79,8 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
                     }
                     is FolderDeleteEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
                 }
+            } ?: run {
+                Log.e("FolderFragment", "View not found")
             }
         })
 
@@ -83,24 +88,23 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
             notesAdapter.setNewData(notes)
         })
 
-        folderFragmentViewModel.fabClicked.observe(this, Observer { event ->
-            when (event) {
-                FABButtonEvent.Clicked -> createNote()
-            }
+        folderFragmentViewModel.fabClicked.observe(this, SpecificEventObserver<ButtonPressedEvent> {
+            createNote()
         })
 
-        folderFragmentViewModel.noteCreated.observe(this, Observer { event ->
-            view?.let { view ->
-                when (event) {
-                    is CreateNoteEvent.Success -> navigateToNote(event.noteUUID)
-                    is CreateNoteEvent.Error -> {
-                        R.string.error_occurred.showAsSnackBar(view)
+
+        folderFragmentViewModel.noteCreated.observe(this, SpecificEventObserver<CreateNoteEvent> { event ->
+                view?.let { view ->
+                    when (event) {
+                        is CreateNoteEvent.Success -> navigateToNote(event.noteUUID)
+                        is CreateNoteEvent.Error -> {
+                            R.string.error_occurred.showAsSnackBar(view)
+                        }
                     }
+                } ?: run {
+                    Log.e("FolderFragment", "View not found")
                 }
-            } ?: run {
-                Log.e("FolderFragment", "View not found")
-            }
-        })
+            })
     }
 
     private fun createDeleteDialog() {

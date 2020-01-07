@@ -21,7 +21,7 @@ class DeleteFolderImpl(private val firebaseIDSRepository: FirebaseIDSRepository,
                     .collection(firebaseIDSRepository.getCollectionFolders())
                     .document(folderUUID)
                     .delete()
-                    .addOnSuccessListener { emitter.onSuccess(FolderDeleteEvent.Success) }
+                    .addOnSuccessListener { emitter.onSuccess(FolderDeleteEvent.Success()) }
                     .addOnFailureListener { emitter.onError(it) }
             }
         }
