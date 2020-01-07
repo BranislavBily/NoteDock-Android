@@ -1,13 +1,8 @@
 package com.pixelart.notedock.fragment.note
 
 
-import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
+import android.view.*
 import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
@@ -22,7 +17,9 @@ import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.hideSoftKeyboard
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.model.NoteModel
-import com.pixelart.notedock.viewModel.*
+import com.pixelart.notedock.viewModel.NoteDeletedEvent
+import com.pixelart.notedock.viewModel.NoteFragmentViewModel
+import com.pixelart.notedock.viewModel.SaveNoteEvent
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
 import kotlinx.android.synthetic.main.fragment_note.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -45,6 +42,7 @@ class NoteFragment : Fragment() {
             R.layout.fragment_note,
             BR.viewmodel to noteFragmentViewModel
         )
+        setHasOptionsMenu(true)
         noteFragmentViewModel.lifecycleOwner = this
         return dataBinding.root
     }
@@ -62,12 +60,12 @@ class NoteFragment : Fragment() {
     private fun setupClosingOfKeyboard() {
         context?.let { context ->
             editTextNoteTitle.setOnFocusChangeListener { view, hasFocus ->
-                if(!hasFocus) {
+                if (!hasFocus) {
                     hideSoftKeyboard(context, view)
                 }
             }
             editTextNoteDescription.setOnFocusChangeListener { view, hasFocus ->
-                if(!hasFocus) {
+                if (!hasFocus) {
                     hideSoftKeyboard(context, view)
                 }
             }
@@ -83,21 +81,28 @@ class NoteFragment : Fragment() {
     override fun onPause() {
         super.onPause()
 
-        if(!deletingNote) {
+        if (!deletingNote) {
             saveNote()
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
+        inflater.inflate(R.menu.note_menu, menu)
     }
 
     private fun observeLiveData() {
         noteFragmentViewModel.loadNote(folderUUID, noteUUID)
 
-        noteFragmentViewModel.deleteNoteButtonClicked.observe(this, SpecificEventObserver<ButtonPressedEvent> {
-            createDeleteNoteDialog()
-        })
+        noteFragmentViewModel.deleteNoteButtonClicked.observe(
+            this,
+            SpecificEventObserver<ButtonPressedEvent> {
+                createDeleteNoteDialog()
+            })
 
         noteFragmentViewModel.noteDeleted.observe(this, Observer { event ->
             view?.let { view ->
-                when(event) {
+                when (event) {
                     is NoteDeletedEvent.Success -> {
                         deletingNote = true
                         view.findNavController().popBackStack()
@@ -107,9 +112,9 @@ class NoteFragment : Fragment() {
             }
         })
 
-        noteFragmentViewModel.noteSaved.observe( this, Observer { event ->
+        noteFragmentViewModel.noteSaved.observe(this, Observer { event ->
             view?.let { view ->
-                when(event) {
+                when (event) {
                     is SaveNoteEvent.Success -> {
                         view.findNavController().popBackStack()
                     }

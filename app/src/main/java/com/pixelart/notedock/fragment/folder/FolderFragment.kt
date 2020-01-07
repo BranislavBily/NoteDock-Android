@@ -98,9 +98,7 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
         })
 
 
-        folderFragmentViewModel.noteCreated.observe(
-            this,
-            SpecificEventObserver<CreateNoteEvent> { event ->
+        folderFragmentViewModel.noteCreated.observe(this, SpecificEventObserver<CreateNoteEvent> { event ->
                 view?.let { view ->
                     when (event) {
                         is CreateNoteEvent.Success -> navigateToNote(event.noteUUID)
@@ -130,18 +128,12 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
     }
 
     private fun navigateToNote(noteUUID: String) {
-        val action =
-            FolderFragmentDirections.actionFolderFragmentToNoteFragment(args.folderUUID + " " + noteUUID)
+        val action = FolderFragmentDirections.actionFolderFragmentToNoteFragment(args.folderUUID + " " + noteUUID)
         val navigationRouter = NavigationRouter(view)
         navigationRouter.openAction(action)
     }
 
     override fun onNoteClick(noteUUID: String?) {
-        noteUUID?.let {
-            val action =
-                FolderFragmentDirections.actionFolderFragmentToNoteFragment(args.folderUUID + " " + noteUUID)
-            val navigationRouter = NavigationRouter(view)
-            navigationRouter.openAction(action)
-        }
+        noteUUID?.let { navigateToNote(it) }
     }
 }
