@@ -38,4 +38,5 @@
     <string name="folder_name_already_exists">Folder name already taken</string>
     <string name="error_occurred">An error occurred. Please try again</string>
     <string name="folders">Folders</string>
+    <string name="log_out">Log out</string>
 </resources>
