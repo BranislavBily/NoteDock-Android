@@ -67,7 +67,9 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
         toolbarFoldersView?.setOnMenuItemClickListener { menuItem ->
             when(menuItem.itemId) {
                 R.id.settings -> {
-                    //Settings
+                    val action = FoldersViewFragmentDirections.actionFoldersViewFragmentToSettingsFragment()
+                    val navigationRouter = NavigationRouter(view)
+                    navigationRouter.openAction(action)
                     true
                 }
                 else -> {
