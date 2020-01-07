@@ -8,11 +8,13 @@ import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.pixelart.notedock.R
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteNoteDialog
 import com.pixelart.notedock.dialog.NoteDialogDeleteSuccessListener
+import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.hideSoftKeyboard
 import com.pixelart.notedock.ext.showAsSnackBar
@@ -23,14 +25,13 @@ import com.pixelart.notedock.viewModel.SaveNoteEvent
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
 import kotlinx.android.synthetic.main.fragment_note.*
 import org.koin.android.viewmodel.ext.android.viewModel
+import java.util.*
 
 class NoteFragment : Fragment() {
 
     private val noteFragmentViewModel: NoteFragmentViewModel by viewModel()
 
     private val args: NoteFragmentArgs by navArgs()
-    private var folderUUID: String = ""
-    private var noteUUID: String = ""
     //Please change this later
     private var deletingNote = false
 
@@ -95,13 +96,16 @@ class NoteFragment : Fragment() {
     }
 
     private fun observeLiveData() {
+        //Cez onStartStop
         noteFragmentViewModel.loadNote(args.folderUUID, args.noteUUID)
 
-        noteFragmentViewModel.deleteNoteButtonClicked.observe(
-            this,
-            SpecificEventObserver<ButtonPressedEvent> {
+        noteFragmentViewModel.deleteNoteButtonClicked.observe(this, SpecificEventObserver<ButtonPressedEvent> {
                 createDeleteNoteDialog()
-            })
+        })
+
+        noteFragmentViewModel.onBackClicked.observe(this, EventObserver {
+            findNavController().popBackStack()
+        })
 
         noteFragmentViewModel.noteDeleted.observe(this, Observer { event ->
             view?.let { view ->

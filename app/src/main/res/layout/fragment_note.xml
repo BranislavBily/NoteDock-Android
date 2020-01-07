@@ -26,6 +26,7 @@
                 android:background="#E6FFFFFF"
                 app:titleTextColor="@color/colorPrimary"
                 app:navigationIcon="@drawable/ic_arrow_back"
+                app:onBackClicked="@{() -> viewmodel.onBackPressed()}"
                 app:menu="@menu/folder_view_menu" />
 
         <androidx.constraintlayout.widget.ConstraintLayout

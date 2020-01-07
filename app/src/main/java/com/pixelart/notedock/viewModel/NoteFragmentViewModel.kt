@@ -24,6 +24,9 @@ class NoteFragmentViewModel(
     private val _editTextNoteTitle = MutableLiveData<String>()
     val editTextNoteTitle: LiveData<String> = _editTextNoteTitle
 
+    private val _onBackClicked = MutableLiveData<ButtonPressedEvent>()
+    val onBackClicked: LiveData<ButtonPressedEvent> = _onBackClicked
+
     private val _editTextNoteDescription = MutableLiveData<String>()
     val editTextNoteDescription: LiveData<String> = _editTextNoteDescription
 
@@ -36,6 +39,9 @@ class NoteFragmentViewModel(
     private val _noteSaved = MutableLiveData<SaveNoteEvent>()
     val noteSaved: LiveData<SaveNoteEvent> = _noteSaved
 
+    fun onBackPressed() {
+        _onBackClicked.postValue(ButtonPressedEvent.Pressed())
+    }
 
     fun loadNote(folderUUID: String, noteUUID: String) {
         auth.currentUser?.let { user ->
