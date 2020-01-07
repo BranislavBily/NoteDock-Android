@@ -51,15 +51,9 @@ class FolderFragmentViewModel(
                 createFolderUseCase.createNote(user, folderUUID)
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
-                    .subscribe( {
-                        _noteCreated.postValue(
-                            CreateNoteEvent.Success(
-                                it
-                            )
-                        )
-                    }, {
-                        _noteCreated.postValue(CreateNoteEvent.Error)
-                    })
+                    .subscribe( {_noteCreated.postValue(CreateNoteEvent.Success(it))},
+                                { _noteCreated.postValue(CreateNoteEvent.Error) }
+                    )
                     .addTo(bag)
             }
         }
