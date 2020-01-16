@@ -15,7 +15,8 @@ import com.pixelart.notedock.domain.repository.AuthRepository
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 
-class RegisterFragmentViewModel(private val authRepository: AuthRepository) : LifecycleViewModel() {
+class RegisterFragmentViewModel(private val authRepository: AuthRepository,
+                                private val auth: FirebaseAuth) : LifecycleViewModel() {
 
     private val _register = MutableLiveData<RegisterEvent>()
     val register: LiveData<RegisterEvent> = _register
@@ -67,6 +68,8 @@ class RegisterFragmentViewModel(private val authRepository: AuthRepository) : Li
                     .doOnSubscribe { _loading.postValue(true) }
                     .subscribe({
                         sendVerificationEmail()
+                        //Firebase logs in after registration, we do not want that
+                        auth.signOut()
                     }, { error ->
                         val eventError = handleRegisterError(error)
                         _register.postValue(RegisterEvent.Error(eventError))
@@ -77,7 +80,7 @@ class RegisterFragmentViewModel(private val authRepository: AuthRepository) : Li
 
     private fun sendVerificationEmail() {
         startStopDisposeBag?.let {bag ->
-            FirebaseAuth.getInstance().currentUser?.let { user ->
+            auth.currentUser?.let { user ->
                 authRepository.sendVerificationEmail(user)
                     .subscribeOn(Schedulers.io())
                     .doAfterTerminate { _loading.postValue( false) }

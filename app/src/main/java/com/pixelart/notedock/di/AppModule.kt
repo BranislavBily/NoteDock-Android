@@ -36,10 +36,16 @@ val viewModelModule = module {
         )
     }
     viewModel { NoteFragmentViewModel(get(), FirebaseAuth.getInstance(), get(), get())}
-    viewModel { LoginFragmentViewModel(get()) }
+    viewModel {
+        LoginFragmentViewModel(
+            authRepository = get(),
+            auth = FirebaseAuth.getInstance()
+            )
+    }
     viewModel {
         RegisterFragmentViewModel(
-            authRepository = get()
+            authRepository = get(),
+            auth = FirebaseAuth.getInstance()
         )
     }
     viewModel {
