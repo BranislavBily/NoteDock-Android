@@ -65,7 +65,6 @@ class RegisterFragmentViewModel(private val authRepository: AuthRepository) : Li
                     .observeOn(Schedulers.io())
                     .subscribeOn(Schedulers.io())
                     .doOnSubscribe { _loading.postValue(true) }
-                    .doAfterTerminate { _loading.postValue( false) }
                     .subscribe({
                         sendVerificationEmail()
                     }, { error ->
@@ -81,6 +80,7 @@ class RegisterFragmentViewModel(private val authRepository: AuthRepository) : Li
             FirebaseAuth.getInstance().currentUser?.let { user ->
                 authRepository.sendVerificationEmail(user)
                     .subscribeOn(Schedulers.io())
+                    .doAfterTerminate { _loading.postValue( false) }
                     .subscribe({
                         _register.postValue(RegisterEvent.Success())
                     }, { error ->
