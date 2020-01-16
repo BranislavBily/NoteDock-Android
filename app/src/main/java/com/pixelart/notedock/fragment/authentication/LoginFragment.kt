@@ -60,6 +60,7 @@ class LoginFragment : Fragment() {
                     is LoginEvent.BadCredentials -> R.string.invalid_credentials_message.showAsSnackBar(view)
                     is LoginEvent.NetworkError -> R.string.network_error_message.showAsSnackBar(view)
                     is LoginEvent.UnknownError -> R.string.unknown_error_message.showAsSnackBar(view)
+                    is LoginEvent.UserEmailNotVerified -> R.string.email_not_verified.showAsSnackBar(view)
                 }
             }
         })

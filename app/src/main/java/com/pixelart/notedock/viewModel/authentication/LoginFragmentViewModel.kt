@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.FirebaseException
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.pixelart.notedock.dataBinding.SingleLiveEvent
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
@@ -15,7 +16,8 @@ import com.pixelart.notedock.viewModel.authentication.LoginEvent.*
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 
-class LoginFragmentViewModel(private val authRepository: AuthRepository): LifecycleViewModel() {
+class LoginFragmentViewModel(private val authRepository: AuthRepository,
+                             private val auth: FirebaseAuth): LifecycleViewModel() {
 
     private val _loginCompleted = MutableLiveData<LoginEvent>()
     val loginCompleted: LiveData<LoginEvent> = _loginCompleted
@@ -53,10 +55,20 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository): Lifecy
                     .doOnSubscribe { _loading.postValue(true) }
                     .doAfterTerminate { _loading.postValue(false) }
                     .subscribe({
-                        _loginCompleted.postValue(Success())
+                        isUserVerified()
                     }, {
                         _loginCompleted.postValue(handleLoginError(it))
                     }).addTo(bag)
+            }
+        }
+    }
+
+    private fun isUserVerified() {
+        auth.currentUser?.let { user ->
+            if (user.isEmailVerified) {
+                _loginCompleted.postValue(Success())
+            } else {
+                _loginCompleted.postValue(UserEmailNotVerified())
             }
         }
     }
@@ -87,6 +99,7 @@ sealed class LoginEvent : Event() {
     class InvalidEmail : LoginEvent()
     class BadCredentials : LoginEvent()
     class NetworkError : LoginEvent()
+    class UserEmailNotVerified : LoginEvent()
     class UnknownError : LoginEvent()
 }
 
