@@ -35,7 +35,14 @@ val viewModelModule = module {
             folderNameTakenUseCase = get()
         )
     }
-    viewModel { NoteFragmentViewModel(get(), FirebaseAuth.getInstance(), get(), get())}
+    viewModel {
+        NoteFragmentViewModel(
+            notesRepository = get(),
+            auth = FirebaseAuth.getInstance(),
+            deleteNoteUseCase = get(),
+            updateNoteUseCase = get()
+        )
+    }
     viewModel {
         LoginFragmentViewModel(
             authRepository = get(),
@@ -64,22 +71,85 @@ val viewModelModule = module {
 val firebaseModule = module {
     //Repository
     single { FirebaseIDSImpl() as FirebaseIDSRepository }
-    single { FolderRepositoryImpl(get(), get(), get(), FirebaseFirestore.getInstance()) as FolderRepository }
-    single { NotesRepositoryImpl(get(), FirebaseFirestore.getInstance(), get()) as NotesRepository }
+    single {
+        FolderRepositoryImpl(
+            firebaseIDSRepository = get(),
+            folderModelFromDocumentSnapshotUseCase = get(),
+            folderModelFromDocumentUseCase = get(),
+            firebaseInstance = FirebaseFirestore.getInstance()
+            ) as FolderRepository
+    }
+    single {
+        NotesRepositoryImpl(
+            firebaseIDSRepository = get(),
+            firebaseInstance = FirebaseFirestore.getInstance(),
+            noteModelFromDocumentSnapshotUseCase = get()
+        ) as NotesRepository
+    }
 
     //UseCase Folder
-    single { FolderModelFromDocumentImpl(get()) as FolderModelFromDocumentUseCase }
-    single { FolderModelFromDocumentSnapshotImpl(get()) as FolderModelFromDocumentSnapshotUseCase }
-    single { CreateFolderImpl(get(), FirebaseFirestore.getInstance()) as CreateFolderUseCase }
-    single { DeleteFolderImpl(get(), FirebaseFirestore.getInstance()) as DeleteFolderUseCase }
-    single { FolderNameTakenImpl(FirebaseFirestore.getInstance(), get()) as FolderNameTakenUseCase }
+    single {
+        FolderModelFromDocumentImpl(
+            firebaseIDSRepository = get()
+        ) as FolderModelFromDocumentUseCase
+    }
+    single {
+        FolderModelFromDocumentSnapshotImpl(
+            firebaseIDSRepository = get()
+        ) as FolderModelFromDocumentSnapshotUseCase
+    }
+    single {
+        CreateFolderImpl(
+            firebaseIDSRepository = get(),
+            firebaseInstance = FirebaseFirestore.getInstance()
+        ) as CreateFolderUseCase
+    }
+    single {
+        DeleteFolderImpl(
+            firebaseIDSRepository = get(),
+            firebaseInstance = FirebaseFirestore.getInstance()
+        ) as DeleteFolderUseCase
+    }
+    single {
+        FolderNameTakenImpl(
+            firebaseFirestore = FirebaseFirestore.getInstance(),
+            firebaseIDSRepository = get()
+        ) as FolderNameTakenUseCase
+    }
     //Note
-    single { CreateNoteImpl(get(), FirebaseFirestore.getInstance()) as CreateNoteUseCase }
-    single { DeleteNoteImpl(get(), FirebaseFirestore.getInstance()) as DeleteNoteUseCase }
-    single { NoteModelFromQueryDocumentSnapshotImpl(get()) as NoteModelFromQueryDocumentSnapshotUseCase }
-    single { NoteModelFromDocumentSnapshotImpl(get()) as NoteModelFromDocumentSnapshotUseCase }
-    single { UpdateNoteImpl(get(), FirebaseFirestore.getInstance()) as UpdateNoteUseCase }
+    single {
+        CreateNoteImpl(
+            firebaseIDSRepository = get(),
+            firebaseInstance = FirebaseFirestore.getInstance()
+        ) as CreateNoteUseCase
+    }
+    single {
+        DeleteNoteImpl(
+            firebaseIDSRepository = get(),
+            firebaseInstance = FirebaseFirestore.getInstance()
+        ) as DeleteNoteUseCase
+    }
+    single {
+        NoteModelFromQueryDocumentSnapshotImpl(
+            firebaseIDSRepository = get()
+        ) as NoteModelFromQueryDocumentSnapshotUseCase
+    }
+    single {
+        NoteModelFromDocumentSnapshotImpl(
+            firebaseIDSRepository = get()
+        ) as NoteModelFromDocumentSnapshotUseCase
+    }
+    single {
+        UpdateNoteImpl(
+            firebaseIDSRepository = get(),
+            firebaseInstance = FirebaseFirestore.getInstance()
+        ) as UpdateNoteUseCase
+    }
 
     //Authentication
-    single { AuthRepositoryImpl(FirebaseAuth.getInstance()) as AuthRepository}
+    single {
+        AuthRepositoryImpl(
+            auth = FirebaseAuth.getInstance()
+        ) as AuthRepository
+    }
 }
