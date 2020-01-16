@@ -17,7 +17,11 @@ import com.pixelart.notedock.BR
 import com.pixelart.notedock.NavigationRouter
 import com.pixelart.notedock.R
 import com.pixelart.notedock.activity.MainActivity
+import com.pixelart.notedock.dataBinding.SingleLiveEvent
 import com.pixelart.notedock.dataBinding.setupDataBinding
+import com.pixelart.notedock.domain.livedata.model.DataEvent
+import com.pixelart.notedock.domain.livedata.observer.DataEventObserver
+import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.viewModel.authentication.*
@@ -42,22 +46,31 @@ class LoginFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
+        FirebaseAuth.getInstance().currentUser?.let { user ->
+            user.reload().addOnSuccessListener {
+                if(user.isEmailVerified) {
+                    goToMainActivity()
+                }
+            }
+        }
         observeLiveData()
+    }
+
+    private fun goToMainActivity() {
+        context?.let {
+            val intent = Intent(it, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(intent)
+        }
     }
 
 
     private fun observeLiveData() {
 
-        loginFragmentViewModel.loginCompleted.observe(this, Observer { event ->
+        loginFragmentViewModel.loginCompleted.observe(this, SpecificEventObserver { event ->
             view?.let { view ->
                 when(event) {
-                    is LoginEvent.Success -> {
-                        context?.let {
-                            val intent = Intent(it, MainActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                            startActivity(intent)
-                        }
-                    }
+                    is LoginEvent.Success -> goToMainActivity()
                     is LoginEvent.InvalidEmail -> R.string.invalid_email_message.showAsSnackBar(view)
                     is LoginEvent.BadCredentials -> R.string.invalid_credentials_message.showAsSnackBar(view)
                     is LoginEvent.NetworkError -> R.string.network_error_message.showAsSnackBar(view)
@@ -67,7 +80,7 @@ class LoginFragment : Fragment() {
             }
         })
 
-        loginFragmentViewModel.forgotPassword.observe(this, SpecificEventObserver<ButtonPressedEvent> {
+        loginFragmentViewModel.forgotPassword.observe(this, SpecificEventObserver {
             view?.let { view ->
                 val action = LoginFragmentDirections.actionLoginFragmentToResetPasswordFragment()
                 val navigationRouter = NavigationRouter(view)
@@ -75,7 +88,7 @@ class LoginFragment : Fragment() {
             }
         })
 
-        loginFragmentViewModel.createAccount.observe(this, SpecificEventObserver<CreateAccountEvent> {
+        loginFragmentViewModel.createAccount.observe(this, SpecificEventObserver {
             view?.let { view ->
                 val action = LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
                 val navigationRouter = NavigationRouter(view)
@@ -83,7 +96,7 @@ class LoginFragment : Fragment() {
             }
         })
 
-        loginFragmentViewModel.sendEmail.observe(this, Observer { event ->
+        loginFragmentViewModel.sendEmail.observe(this, SpecificEventObserver { event ->
             view?.let { view ->
                 when(event) {
                     is SendEmailEvent.Success -> R.string.verification_email_sent.showAsSnackBar(view)
@@ -91,6 +104,8 @@ class LoginFragment : Fragment() {
                 }
             }
         })
+
+
     }
 
     private fun showEmailNotVerifiedSnackbar() {
