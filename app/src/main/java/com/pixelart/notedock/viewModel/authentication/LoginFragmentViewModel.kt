@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.pixelart.notedock.dataBinding.SingleLiveEvent
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
 import com.pixelart.notedock.domain.livedata.model.Event
@@ -87,7 +88,6 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository,
             if (user.isEmailVerified) {
                 _loginCompleted.postValue(Success())
             } else {
-                auth.signOut()
                 _loginCompleted.postValue(UserEmailNotVerified())
             }
         }
@@ -104,8 +104,9 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository,
     private fun handleLoginError(throwable: Throwable?): LoginEvent {
         return when (throwable) {
             is InvalidEmailException -> InvalidEmail()
-            is FirebaseException -> NetworkError()
+            is FirebaseAuthInvalidUserException -> BadCredentials()
             is FirebaseAuthInvalidCredentialsException -> BadCredentials()
+            is FirebaseException -> NetworkError()
             else -> {
                 Log.e("Login", "${throwable?.message}", throwable)
                 UnknownError()
