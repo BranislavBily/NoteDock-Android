@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.FirebaseException
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
@@ -65,6 +66,21 @@ class RegisterFragmentViewModel(private val authRepository: AuthRepository) : Li
                     .subscribeOn(Schedulers.io())
                     .doOnSubscribe { _loading.postValue(true) }
                     .doAfterTerminate { _loading.postValue( false) }
+                    .subscribe({
+                        sendVerificationEmail()
+                    }, { error ->
+                        val eventError = handleRegisterError(error)
+                        _register.postValue(RegisterEvent.Error(eventError))
+                    }).addTo(bag)
+            }
+        }
+    }
+
+    private fun sendVerificationEmail() {
+        startStopDisposeBag?.let {bag ->
+            FirebaseAuth.getInstance().currentUser?.let { user ->
+                authRepository.sendVerificationEmail(user)
+                    .subscribeOn(Schedulers.io())
                     .subscribe({
                         _register.postValue(RegisterEvent.Success())
                     }, { error ->
