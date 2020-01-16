@@ -28,6 +28,9 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository,
     private val _loading = MutableLiveData<Boolean>().apply { postValue(false) }
     val loading: LiveData<Boolean> = _loading
 
+    private val _sendEmail = MutableLiveData<SendEmailEvent>()
+    val sendEmail: LiveData<SendEmailEvent> = _sendEmail
+
     private val _forgotPassword = MutableLiveData<ButtonPressedEvent>()
     val forgotPassword: LiveData<ButtonPressedEvent> = _forgotPassword
 
@@ -63,11 +66,28 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository,
         }
     }
 
+    fun sendVerificationEmail() {
+        startStopDisposeBag?.let {bag ->
+            auth.currentUser?.let { user ->
+                authRepository.sendVerificationEmail(user)
+                    .subscribeOn(Schedulers.io())
+                    .doAfterTerminate { _loading.postValue( false) }
+                    .subscribe({
+                        _sendEmail.postValue(SendEmailEvent.Success())
+                    }, { error ->
+                        Log.e("SendEmail", error.printStackTrace().toString())
+                        _sendEmail.postValue(SendEmailEvent.UnknownError())
+                    }).addTo(bag)
+            }
+        }
+    }
+
     private fun isUserVerified() {
         auth.currentUser?.let { user ->
             if (user.isEmailVerified) {
                 _loginCompleted.postValue(Success())
             } else {
+                auth.signOut()
                 _loginCompleted.postValue(UserEmailNotVerified())
             }
         }
@@ -92,6 +112,12 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository,
             }
         }
     }
+}
+
+sealed class SendEmailEvent : Event() {
+    class Success : SendEmailEvent()
+    class UnknownError : SendEmailEvent()
+    class NetworkError: SendEmailEvent()
 }
 
 sealed class LoginEvent : Event() {

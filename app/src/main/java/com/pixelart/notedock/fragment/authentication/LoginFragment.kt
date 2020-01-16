@@ -3,6 +3,7 @@ package com.pixelart.notedock.fragment.authentication
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.BR
 import com.pixelart.notedock.NavigationRouter
@@ -60,7 +62,7 @@ class LoginFragment : Fragment() {
                     is LoginEvent.BadCredentials -> R.string.invalid_credentials_message.showAsSnackBar(view)
                     is LoginEvent.NetworkError -> R.string.network_error_message.showAsSnackBar(view)
                     is LoginEvent.UnknownError -> R.string.unknown_error_message.showAsSnackBar(view)
-                    is LoginEvent.UserEmailNotVerified -> R.string.email_not_verified.showAsSnackBar(view)
+                    is LoginEvent.UserEmailNotVerified -> showEmailNotVerifiedSnackbar()
                 }
             }
         })
@@ -80,6 +82,24 @@ class LoginFragment : Fragment() {
                 navigationRouter.openAction(action)
             }
         })
+
+        loginFragmentViewModel.sendEmail.observe(this, Observer { event ->
+            view?.let { view ->
+                when(event) {
+                    is SendEmailEvent.Success -> R.string.verification_email_sent.showAsSnackBar(view)
+                    is SendEmailEvent.UnknownError -> R.string.error_occurred.showAsSnackBar(view)
+                }
+            }
+        })
+    }
+
+    private fun showEmailNotVerifiedSnackbar() {
+        view?.let { view ->
+            Snackbar.make(view, R.string.email_not_verified, Snackbar.LENGTH_SHORT)
+                .setAction(R.string.send) {
+                    loginFragmentViewModel.sendVerificationEmail()
+                }.show()
+        }
     }
 }
 

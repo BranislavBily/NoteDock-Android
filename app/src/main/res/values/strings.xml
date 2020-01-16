@@ -40,4 +40,6 @@
     <string name="folders">Folders</string>
     <string name="log_out">Log out</string>
     <string name="email_not_verified">Your email is not validated</string>
+    <string name="send">Send</string>
+    <string name="verification_email_sent">Verification email sent</string>
 </resources>
