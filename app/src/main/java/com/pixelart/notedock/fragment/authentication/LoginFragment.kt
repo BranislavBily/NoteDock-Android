@@ -25,6 +25,7 @@ import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.viewModel.authentication.*
+import kotlinx.android.synthetic.main.fragment_login.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class LoginFragment : Fragment() {
@@ -46,14 +47,13 @@ class LoginFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        FirebaseAuth.getInstance().currentUser?.let { user ->
-            user.reload().addOnSuccessListener {
-                if(user.isEmailVerified) {
-                    goToMainActivity()
-                }
-            }
-        }
         observeLiveData()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        editTextPassword.setText("")
     }
 
     private fun goToMainActivity() {
@@ -63,7 +63,6 @@ class LoginFragment : Fragment() {
             startActivity(intent)
         }
     }
-
 
     private fun observeLiveData() {
 
@@ -104,8 +103,6 @@ class LoginFragment : Fragment() {
                 }
             }
         })
-
-
     }
 
     private fun showEmailNotVerifiedSnackbar() {
