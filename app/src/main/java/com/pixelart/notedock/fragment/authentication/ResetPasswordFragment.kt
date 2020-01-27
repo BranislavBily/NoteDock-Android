@@ -68,13 +68,11 @@ class ResetPasswordFragment : Fragment() {
                         when(event.error) {
                             is RecoverAccountEventError.InvalidEmail -> R.string.invalid_email_message.showAsSnackBar(view)
                             is RecoverAccountEventError.NetworkError -> R.string.network_error_message.showAsSnackBar(view)
-                            is RecoverAccountEventError.UnknownError -> R.string.unknown_error_message.showAsSnackBar(view)
+                            is RecoverAccountEventError.UnknownError -> R.string.error_occurred.showAsSnackBar(view)
                         }
                     }
                 }
             }
         })
     }
-
-
 }
