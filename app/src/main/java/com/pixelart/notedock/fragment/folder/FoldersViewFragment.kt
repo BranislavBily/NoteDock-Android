@@ -55,7 +55,6 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
 
 
         auth = FirebaseAuth.getInstance()
-
         setupToolbar()
 
         val foldersAdapter = FoldersAdapter(this)

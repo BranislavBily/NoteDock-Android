@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import com.crashlytics.android.Crashlytics
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
@@ -60,8 +61,9 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository,
                     .doAfterTerminate { _loading.postValue(false) }
                     .subscribe({
                         isUserVerified()
-                    }, {
-                        _loginCompleted.postValue(handleLoginError(it))
+                    }, {error ->
+                        Crashlytics.logException(error)
+                        _loginCompleted.postValue(handleLoginError(error))
                     }).addTo(bag)
             }
         }
@@ -76,7 +78,7 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository,
                     .subscribe({
                         _sendEmail.postValue(SendEmailEvent.Success())
                     }, { error ->
-                        Log.e("SendEmail", error.printStackTrace().toString())
+                        Crashlytics.logException(error)
                         _sendEmail.postValue(SendEmailEvent.UnknownError())
                     }).addTo(bag)
             }
@@ -108,7 +110,6 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository,
             is FirebaseAuthInvalidCredentialsException -> BadCredentials()
             is FirebaseException -> NetworkError()
             else -> {
-                Log.e("Login", "${throwable?.message}", throwable)
                 UnknownError()
             }
         }
