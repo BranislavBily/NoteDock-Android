@@ -3,10 +3,8 @@ package com.pixelart.notedock.fragment.note
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.core.view.get
 import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
@@ -56,16 +54,12 @@ class NoteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupClosingOfKeyboard()
         setupToolbar()
-        setupEditTextFocusListeners()
-    }
-
-    private fun setupEditTextFocusListeners() {
-//        editTextNoteDescription.focus
+        setupClosingOfKeyboard()
     }
 
     private fun setupToolbar() {
+        view?.toolbar?.menu?.getItem(1)?.isVisible = false
         view?.toolbar?.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.deleteNote -> {
@@ -82,15 +76,20 @@ class NoteFragment : Fragment() {
     }
 
     private fun setupClosingOfKeyboard() {
-        context?.let { context ->
-            editTextNoteTitle.setOnFocusChangeListener { view, hasFocus ->
-                if (!hasFocus) {
-                    hideSoftKeyboard(context, view)
+        view?.let { parentView ->
+            context?.let { context ->
+                editTextNoteTitle.setOnFocusChangeListener { view, hasFocus ->
+                    Log.i("ID", R.id.doneNote.toString())
+                    parentView.toolbar?.menu?.getItem(1)?.isVisible = true
+                    if (!hasFocus) {
+                        hideSoftKeyboard(context, view)
+                    }
                 }
-            }
-            editTextNoteDescription.setOnFocusChangeListener { view, hasFocus ->
-                if (!hasFocus) {
-                    hideSoftKeyboard(context, view)
+                editTextNoteDescription.setOnFocusChangeListener { view, hasFocus ->
+                    parentView.toolbar?.menu?.getItem(1)?.isVisible = true
+                    if (!hasFocus) {
+                        hideSoftKeyboard(context, view)
+                    }
                 }
             }
         }
@@ -114,12 +113,6 @@ class NoteFragment : Fragment() {
         //Cez onStartStop
         noteFragmentViewModel.loadNote(args.folderUUID, args.noteUUID)
 
-        noteFragmentViewModel.deleteNoteButtonClicked.observe(
-            this,
-            SpecificEventObserver<ButtonPressedEvent> {
-                createDeleteNoteDialog()
-            })
-
         noteFragmentViewModel.onBackClicked.observe(this, EventObserver {
             findNavController().popBackStack()
         })
@@ -137,12 +130,11 @@ class NoteFragment : Fragment() {
             }
         })
 
+
         noteFragmentViewModel.noteSaved.observe(this, Observer { event ->
             view?.let { view ->
                 when (event) {
-                    is SaveNoteEvent.Success -> {
-//                        view.findNavController().popBackStack()
-                    }
+                    is SaveNoteEvent.Success -> {}
                     is SaveNoteEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
                     is SaveNoteEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)//Go to login somehow
                 }
@@ -177,6 +169,8 @@ class NoteFragment : Fragment() {
             view?.let { view ->
                 hideSoftKeyboard(context, view)
                 view.requestFocus()
+                //Hides done menu item
+                toolbar?.menu?.getItem(1)?.isVisible = false
             }
         }
 
