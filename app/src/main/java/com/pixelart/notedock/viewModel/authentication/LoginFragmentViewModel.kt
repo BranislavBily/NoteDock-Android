@@ -62,7 +62,7 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository,
                     .doAfterTerminate { _loading.postValue(false) }
                     .subscribe({
                         isUserVerified()
-                    }, {error ->
+                    }, { error ->
                         _loginCompleted.postValue(handleLoginError(error))
                     }).addTo(bag)
             }
