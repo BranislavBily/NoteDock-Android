@@ -27,7 +27,7 @@ class NotesRepositoryImpl(
                 .collection(firebaseIDSRepository.getCollectionFolders())
                 .document(folderUUID)
                 .collection(firebaseIDSRepository.getCollectionNotes())
-                .orderBy(firebaseIDSRepository.getNoteAdded(), Query.Direction.DESCENDING)
+                .orderBy(firebaseIDSRepository.getNoteUpdated(), Query.Direction.DESCENDING)
                 .addSnapshotListener { queryDocumentSnapshots, error ->
                     queryDocumentSnapshots?.let {querySnapshot ->
                         notes.clear()
