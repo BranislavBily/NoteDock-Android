@@ -1,15 +1,16 @@
 package com.pixelart.notedock.viewModel.authentication
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.crashlytics.android.Crashlytics
 import com.google.firebase.FirebaseException
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
-import com.pixelart.notedock.dataBinding.SingleLiveEvent
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
 import com.pixelart.notedock.domain.livedata.model.Event
 import com.pixelart.notedock.domain.repository.AuthRepository
@@ -62,7 +63,6 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository,
                     .subscribe({
                         isUserVerified()
                     }, {error ->
-                        Crashlytics.logException(error)
                         _loginCompleted.postValue(handleLoginError(error))
                     }).addTo(bag)
             }
@@ -78,8 +78,7 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository,
                     .subscribe({
                         _sendEmail.postValue(SendEmailEvent.Success())
                     }, { error ->
-                        Crashlytics.logException(error)
-                        _sendEmail.postValue(SendEmailEvent.UnknownError())
+                        _sendEmail.postValue(handleEmailError(error))
                     }).addTo(bag)
             }
         }
@@ -110,7 +109,19 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository,
             is FirebaseAuthInvalidCredentialsException -> BadCredentials()
             is FirebaseException -> NetworkError()
             else -> {
+                Crashlytics.logException(throwable)
                 UnknownError()
+            }
+        }
+    }
+
+    private fun handleEmailError(throwable: Throwable?): SendEmailEvent {
+        return when(throwable) {
+            is FirebaseNetworkException -> SendEmailEvent.NetworkError()
+            is FirebaseTooManyRequestsException -> SendEmailEvent.TooManyRequests()
+            else -> {
+                Crashlytics.logException(throwable)
+                SendEmailEvent.UnknownError()
             }
         }
     }
@@ -120,6 +131,7 @@ sealed class SendEmailEvent : Event() {
     class Success : SendEmailEvent()
     class UnknownError : SendEmailEvent()
     class NetworkError: SendEmailEvent()
+    class TooManyRequests: SendEmailEvent()
 }
 
 sealed class LoginEvent : Event() {
