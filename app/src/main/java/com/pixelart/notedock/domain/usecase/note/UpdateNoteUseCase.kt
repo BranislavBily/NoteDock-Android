@@ -1,6 +1,7 @@
 package com.pixelart.notedock.domain.usecase.note
 
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pixelart.notedock.domain.repository.FirebaseIDSRepository
 import com.pixelart.notedock.model.NoteModel
@@ -26,7 +27,8 @@ class UpdateNoteImpl(private val firebaseIDSRepository: FirebaseIDSRepository,
                     .document(noteUID)
                     .update(mapOf(
                         firebaseIDSRepository.getNoteTitle() to note.noteTitle,
-                        firebaseIDSRepository.getNoteDescription() to note.noteDescription
+                        firebaseIDSRepository.getNoteDescription() to note.noteDescription,
+                        firebaseIDSRepository.getNoteUpdated() to FieldValue.serverTimestamp()
                     ))
                     .addOnSuccessListener { emitter.onSuccess(SaveNoteEvent.Success()) }
                     .addOnFailureListener { emitter.tryOnError(it)}

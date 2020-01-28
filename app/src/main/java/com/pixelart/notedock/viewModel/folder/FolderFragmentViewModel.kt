@@ -2,6 +2,7 @@ package com.pixelart.notedock.viewModel.folder
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.crashlytics.android.Crashlytics
 import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
 import com.pixelart.notedock.domain.livedata.model.Event
@@ -21,11 +22,11 @@ class FolderFragmentViewModel(
     private val deleteFolderUseCase: DeleteFolderUseCase,
     private val createFolderUseCase: CreateNoteUseCase,
     private val notesRepository: NotesRepository
-): LifecycleViewModel() {
+) : LifecycleViewModel() {
     val toolbarTitle: LiveData<String> = MutableLiveData<String>().apply { postValue(folderName) }
 
-    private val _loadedNotes = MutableLiveData<ArrayList<NoteModel>>()
-    val loadedNotes: LiveData<ArrayList<NoteModel>> = _loadedNotes
+    private val _loadedNotes = MutableLiveData<LoadNotesEvent>()
+    val loadedNotes: LiveData<LoadNotesEvent> = _loadedNotes
 
     private val _onBackClicked = MutableLiveData<ButtonPressedEvent>()
     val onBackClicked: LiveData<ButtonPressedEvent> = _onBackClicked
@@ -66,11 +67,15 @@ class FolderFragmentViewModel(
                 createFolderUseCase.createNote(user, folderUUID)
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
-                    .subscribe( {_noteCreated.postValue(CreateNoteEvent.Success(it))},
-                                { _noteCreated.postValue(CreateNoteEvent.Error()) }
+                    .subscribe({ _noteCreated.postValue(CreateNoteEvent.Success(it)) },
+                        { error ->
+                            Crashlytics.logException(error)
+                            _noteCreated.postValue(CreateNoteEvent.Error()) }
                     )
                     .addTo(bag)
             }
+        } ?: run {
+            _noteCreated.postValue(CreateNoteEvent.NoUserFound())
         }
     }
 
@@ -82,10 +87,15 @@ class FolderFragmentViewModel(
                     .observeOn(Schedulers.io())
                     .subscribe(
                         { _folderDeleted.postValue(FolderDeleteEvent.Success()) },
-                        { _folderDeleted.postValue(FolderDeleteEvent.Error()) }
+                        { error ->
+                            Crashlytics.logException(error)
+                            _folderDeleted.postValue(FolderDeleteEvent.Error())
+                        }
                     )
                     .addTo(bag)
             }
+        } ?: run {
+            _folderDeleted.postValue(FolderDeleteEvent.NoUserFound())
         }
     }
 
@@ -94,18 +104,32 @@ class FolderFragmentViewModel(
             notesRepository.getNotes(user, folderUUID)
                 .observeOn(Schedulers.io())
                 .subscribeOn(Schedulers.io())
-                .subscribe({ _loadedNotes.postValue(it) }, {})
+                .subscribe({ _loadedNotes.postValue(LoadNotesEvent.Success(it)) },
+                    { error ->
+                        Crashlytics.logException(error)
+                        _loadedNotes.postValue(LoadNotesEvent.Error())
+                    })
                 .addTo(disposeBag)
-            }
+        } ?: run {
+            _loadedNotes.postValue(LoadNotesEvent.NoUserFoundError())
+        }
     }
 }
 
-sealed class CreateNoteEvent: Event() {
-    class Success(val noteUUID: String): CreateNoteEvent()
-    class Error: CreateNoteEvent()
-}
+    sealed class CreateNoteEvent : Event() {
+        class Success(val noteUUID: String) : CreateNoteEvent()
+        class Error : CreateNoteEvent()
+        class NoUserFound : CreateNoteEvent()
+    }
 
-sealed class FolderDeleteEvent: Event() {
-    class Error: FolderDeleteEvent()
-    class Success: FolderDeleteEvent()
-}
+    sealed class FolderDeleteEvent : Event() {
+        class Error : FolderDeleteEvent()
+        class Success : FolderDeleteEvent()
+        class NoUserFound : FolderDeleteEvent()
+    }
+
+    sealed class LoadNotesEvent : Event() {
+        class Success(val notes: ArrayList<NoteModel>) : LoadNotesEvent()
+        class Error : LoadNotesEvent()
+        class NoUserFoundError : LoadNotesEvent()
+    }

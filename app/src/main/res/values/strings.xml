@@ -41,4 +41,6 @@
     <string name="email_not_verified">Your email is not validated</string>
     <string name="send">Send</string>
     <string name="verification_email_sent">Verification email sent</string>
+    <string name="no_user_found">No user found</string>
+    <string name="too_many_requests">Too many requests. Try again later</string>
 </resources>

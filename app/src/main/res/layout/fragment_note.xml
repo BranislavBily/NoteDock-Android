@@ -30,50 +30,28 @@
             app:onBackClicked="@{() -> viewmodel.onBackPressed()}"
             app:titleTextColor="@color/colorPrimary" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:orientation="vertical"
                 android:paddingTop="?attr/actionBarSize">
 
             <EditText
                     android:id="@+id/editTextNoteTitle"
-                    android:layout_width="150dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
                     android:hint="@string/note_hint_title"
-                    android:text="@{viewmodel.editTextNoteTitle}"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.498"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.22" />
+                    android:text="@{viewmodel.editTextNoteTitle}" />
 
             <EditText
                     android:id="@+id/editTextNoteDescription"
-                    android:layout_width="200dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
                     android:hint="@string/note_hint_description"
-                    android:text="@{viewmodel.editTextNoteDescription}"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
-                    android:id="@+id/buttonDeleteNote"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="@{() -> viewmodel.onButtonDeleteNoteClick()}"
-                    android:text="Delete note"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.498"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.711" />
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:text="@{viewmodel.editTextNoteDescription}" />
+        </LinearLayout>
 
 
     </FrameLayout>

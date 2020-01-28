@@ -25,6 +25,7 @@ import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
 import com.pixelart.notedock.viewModel.folder.CreateNoteEvent
 import com.pixelart.notedock.viewModel.folder.FolderDeleteEvent
 import com.pixelart.notedock.viewModel.folder.FolderFragmentViewModel
+import com.pixelart.notedock.viewModel.folder.LoadNotesEvent
 import kotlinx.android.synthetic.main.fragment_folder.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -79,14 +80,21 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
                         view.findNavController().popBackStack()
                     }
                     is FolderDeleteEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
+                    is FolderDeleteEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
                 }
             } ?: run {
                 Log.e("FolderFragment", "View not found")
             }
         })
 
-        folderFragmentViewModel.loadedNotes.observe(this, Observer { notes ->
-            notesAdapter.setNewData(notes)
+        folderFragmentViewModel.loadedNotes.observe(this, Observer { event ->
+            view?.let { view ->
+                when(event) {
+                    is LoadNotesEvent.Success -> notesAdapter.setNewData(event.notes)
+                    is LoadNotesEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
+                    is LoadNotesEvent.NoUserFoundError -> R.string.no_user_found.showAsSnackBar(view)
+                }
+            }
         })
 
         folderFragmentViewModel.fabClicked.observe(this, SpecificEventObserver<ButtonPressedEvent> {
@@ -107,6 +115,7 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
                         is CreateNoteEvent.Error -> {
                             R.string.error_occurred.showAsSnackBar(view)
                         }
+                        is CreateNoteEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
                     }
                 } ?: run {
                     Log.e("FolderFragment", "View not found")
@@ -115,7 +124,7 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
     }
 
     private fun createDeleteDialog() {
-        fragmentManager?.let { fragmentManager ->
+        activity?.supportFragmentManager?.let { fragmentManager ->
             val deleteFolderDialog = DeleteFolderDialog(object : FolderDialogDeleteSuccessListener {
                 override fun onDelete() {
                     folderFragmentViewModel.deleteFolderModel(args.folderUUID)

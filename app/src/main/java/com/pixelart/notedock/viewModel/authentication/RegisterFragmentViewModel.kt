@@ -1,9 +1,9 @@
 package com.pixelart.notedock.viewModel.authentication
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import com.crashlytics.android.Crashlytics
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
@@ -105,7 +105,7 @@ class RegisterFragmentViewModel(private val authRepository: AuthRepository,
             is FirebaseAuthUserCollisionException -> RegisterEventError.EmailAlreadyUsed()
             is FirebaseException -> RegisterEventError.NetworkError()
             else -> {
-                Log.e("Register", "${throwable?.message}", throwable)
+                Crashlytics.logException(throwable)
                 RegisterEventError.UnknownError()
             }
         }

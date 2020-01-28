@@ -28,6 +28,7 @@ import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
 import com.pixelart.notedock.viewModel.folder.CreateFolderEvent
 import com.pixelart.notedock.viewModel.folder.FolderNameTakenEvent
 import com.pixelart.notedock.viewModel.folder.FoldersViewFragmentViewModel
+import com.pixelart.notedock.viewModel.folder.LoadFoldersEvent
 import kotlinx.android.synthetic.main.fragment_folders_view.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -55,7 +56,6 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
 
 
         auth = FirebaseAuth.getInstance()
-
         setupToolbar()
 
         val foldersAdapter = FoldersAdapter(this)
@@ -109,8 +109,14 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
 
 
     private fun observeLiveData(foldersAdapter: FoldersAdapter) {
-        foldersViewFragmentViewModel.loadFolders.observe(this, Observer { folders ->
-            foldersAdapter.setNewData(folders)
+        foldersViewFragmentViewModel.loadFolders.observe(this, Observer { event ->
+            view?.let { view ->
+                when (event) {
+                    is LoadFoldersEvent.Success -> foldersAdapter.setNewData(event.folders)
+                    is LoadFoldersEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
+                    is LoadFoldersEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
+                }
+            }
         })
 
         foldersViewFragmentViewModel.newFolderCreated.observe(this, Observer { event ->
@@ -118,6 +124,7 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
                 when (event) {
                     is CreateFolderEvent.Success -> { }
                     is CreateFolderEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
+                    is CreateFolderEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
                 }
             } ?: run {
                 Log.e("FolderFragment", "View not found")
@@ -141,6 +148,7 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
                     is FolderNameTakenEvent.Error -> {
                         R.string.error_occurred.showAsSnackBar(view)
                     }
+                    is FolderNameTakenEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
                 }
             } ?: run {
                 Log.e("FolderFragment", "View not found")

@@ -100,6 +100,7 @@ class LoginFragment : Fragment() {
                 when(event) {
                     is SendEmailEvent.Success -> R.string.verification_email_sent.showAsSnackBar(view)
                     is SendEmailEvent.UnknownError -> R.string.error_occurred.showAsSnackBar(view)
+                    is SendEmailEvent.TooManyRequests -> R.string.too_many_requests.showAsSnackBar(view)
                 }
             }
         })

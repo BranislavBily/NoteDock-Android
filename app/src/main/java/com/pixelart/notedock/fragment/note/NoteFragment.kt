@@ -2,7 +2,9 @@ package com.pixelart.notedock.fragment.note
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import androidx.core.view.get
 import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
@@ -14,12 +16,12 @@ import com.pixelart.notedock.R
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteNoteDialog
 import com.pixelart.notedock.dialog.NoteDialogDeleteSuccessListener
-import com.pixelart.notedock.domain.livedata.observer.DataEventObserver
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.hideSoftKeyboard
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.model.NoteModel
+import com.pixelart.notedock.viewModel.LoadNoteEvent
 import com.pixelart.notedock.viewModel.NoteDeletedEvent
 import com.pixelart.notedock.viewModel.NoteFragmentViewModel
 import com.pixelart.notedock.viewModel.SaveNoteEvent
@@ -52,16 +54,20 @@ class NoteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupClosingOfKeyboard()
         setupToolbar()
-
+        setupClosingOfKeyboard()
     }
 
     private fun setupToolbar() {
+        view?.toolbar?.menu?.getItem(1)?.isVisible = false
         view?.toolbar?.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.deleteNote -> {
                     createDeleteNoteDialog()
+                    true
+                }
+                R.id.doneNote -> {
+                    saveNote()
                     true
                 }
                 else -> false
@@ -70,15 +76,20 @@ class NoteFragment : Fragment() {
     }
 
     private fun setupClosingOfKeyboard() {
-        context?.let { context ->
-            editTextNoteTitle.setOnFocusChangeListener { view, hasFocus ->
-                if (!hasFocus) {
-                    hideSoftKeyboard(context, view)
+        view?.let { parentView ->
+            context?.let { context ->
+                editTextNoteTitle.setOnFocusChangeListener { view, hasFocus ->
+                    Log.i("ID", R.id.doneNote.toString())
+                    parentView.toolbar?.menu?.getItem(1)?.isVisible = true
+                    if (!hasFocus) {
+                        hideSoftKeyboard(context, view)
+                    }
                 }
-            }
-            editTextNoteDescription.setOnFocusChangeListener { view, hasFocus ->
-                if (!hasFocus) {
-                    hideSoftKeyboard(context, view)
+                editTextNoteDescription.setOnFocusChangeListener { view, hasFocus ->
+                    parentView.toolbar?.menu?.getItem(1)?.isVisible = true
+                    if (!hasFocus) {
+                        hideSoftKeyboard(context, view)
+                    }
                 }
             }
         }
@@ -98,22 +109,9 @@ class NoteFragment : Fragment() {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.deleteNote -> createDeleteNoteDialog()
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
     private fun observeLiveData() {
         //Cez onStartStop
         noteFragmentViewModel.loadNote(args.folderUUID, args.noteUUID)
-
-        noteFragmentViewModel.deleteNoteButtonClicked.observe(
-            this,
-            SpecificEventObserver<ButtonPressedEvent> {
-                createDeleteNoteDialog()
-            })
 
         noteFragmentViewModel.onBackClicked.observe(this, EventObserver {
             findNavController().popBackStack()
@@ -127,24 +125,35 @@ class NoteFragment : Fragment() {
                         view.findNavController().popBackStack()
                     }
                     is NoteDeletedEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
+                    is NoteDeletedEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
                 }
             }
         })
+
 
         noteFragmentViewModel.noteSaved.observe(this, Observer { event ->
             view?.let { view ->
                 when (event) {
-                    is SaveNoteEvent.Success -> {
-                        view.findNavController().popBackStack()
-                    }
+                    is SaveNoteEvent.Success -> {}
                     is SaveNoteEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
+                    is SaveNoteEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)//Go to login somehow
                 }
             }
+        })
+
+        noteFragmentViewModel.noteLoad.observe(this, SpecificEventObserver<LoadNoteEvent> { event ->
+            view?.let { view ->
+                when(event) {
+                    is LoadNoteEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
+                    is LoadNoteEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
+                }
+            }
+
         })
     }
 
     private fun createDeleteNoteDialog() {
-        fragmentManager?.let { fragmentManager ->
+        activity?.supportFragmentManager?.let { fragmentManager ->
             val dialog = DeleteNoteDialog(object : NoteDialogDeleteSuccessListener {
                 override fun onDelete() {
                     noteFragmentViewModel.deleteNote(args.folderUUID, args.noteUUID)
@@ -155,6 +164,17 @@ class NoteFragment : Fragment() {
     }
 
     private fun saveNote() {
+        //Hide keyboard
+        context?.let { context ->
+            view?.let { view ->
+                hideSoftKeyboard(context, view)
+                view.requestFocus()
+                //Hides done menu item
+                toolbar?.menu?.getItem(1)?.isVisible = false
+            }
+        }
+
+        //Get note values
         val note = NoteModel()
         note.uuid = args.noteUUID
         note.noteTitle = editTextNoteTitle.text.toString()
