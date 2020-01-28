@@ -159,7 +159,7 @@ class NoteFragment : Fragment() {
     }
 
     private fun createDeleteNoteDialog() {
-        fragmentManager?.let { fragmentManager ->
+        activity?.supportFragmentManager?.let { fragmentManager ->
             val dialog = DeleteNoteDialog(object : NoteDialogDeleteSuccessListener {
                 override fun onDelete() {
                     noteFragmentViewModel.deleteNote(args.folderUUID, args.noteUUID)
