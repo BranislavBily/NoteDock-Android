@@ -6,6 +6,7 @@ import android.widget.Button
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import com.crashlytics.android.Crashlytics
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
@@ -69,7 +70,7 @@ class ResetPasswordFragmentViewModel(private val authRepository: AuthRepository)
             is FirebaseAuthInvalidUserException -> RecoverAccountEventError.InvalidEmail()
             is FirebaseException -> RecoverAccountEventError.NetworkError()
             else -> {
-                Log.e("Register", "${throwable?.message}", throwable)
+                Crashlytics.logException(throwable)
                 RecoverAccountEventError.UnknownError()
             }
         }
