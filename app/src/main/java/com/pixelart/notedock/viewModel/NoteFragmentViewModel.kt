@@ -30,9 +30,6 @@ class NoteFragmentViewModel(
     private val _editTextNoteDescription = MutableLiveData<String>()
     val editTextNoteDescription: LiveData<String> = _editTextNoteDescription
 
-    private val _deleteButtonClicked = MutableLiveData<ButtonPressedEvent>()
-    val deleteNoteButtonClicked: LiveData<ButtonPressedEvent> = _deleteButtonClicked
-
     private val _noteDeleted = MutableLiveData<NoteDeletedEvent>()
     val noteDeleted: LiveData<NoteDeletedEvent> = _noteDeleted
 
@@ -101,10 +98,6 @@ class NoteFragmentViewModel(
         } ?: run {
             _noteSaved.postValue(SaveNoteEvent.NoUserFound())
         }
-    }
-
-    fun onButtonDeleteNoteClick() {
-        _deleteButtonClicked.postValue(ButtonPressedEvent.Pressed())
     }
 }
 
