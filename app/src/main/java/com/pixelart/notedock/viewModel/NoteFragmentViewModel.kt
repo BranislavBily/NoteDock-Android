@@ -2,9 +2,9 @@ package com.pixelart.notedock.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.crashlytics.android.Crashlytics
 import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
-import com.pixelart.notedock.domain.livedata.model.DataEvent
 import com.pixelart.notedock.domain.livedata.model.Event
 import com.pixelart.notedock.domain.repository.NotesRepository
 import com.pixelart.notedock.domain.usecase.note.DeleteNoteUseCase
@@ -13,7 +13,6 @@ import com.pixelart.notedock.model.NoteModel
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
-import java.util.*
 
 class NoteFragmentViewModel(
     private val notesRepository: NotesRepository,
@@ -37,6 +36,9 @@ class NoteFragmentViewModel(
     private val _noteDeleted = MutableLiveData<NoteDeletedEvent>()
     val noteDeleted: LiveData<NoteDeletedEvent> = _noteDeleted
 
+    private val _noteLoad = MutableLiveData<LoadNoteEvent>()
+    val noteLoad: LiveData<LoadNoteEvent> = _noteLoad
+
     private val _noteSaved = MutableLiveData<SaveNoteEvent>()
     val noteSaved: LiveData<SaveNoteEvent> = _noteSaved
 
@@ -53,9 +55,14 @@ class NoteFragmentViewModel(
                     .subscribe({ noteModel ->
                         _editTextNoteTitle.postValue(noteModel.noteTitle)
                         _editTextNoteDescription.postValue(noteModel.noteDescription)
-                    }, {})
+                    }, { error ->
+                        Crashlytics.logException(error)
+                        _noteLoad.postValue(LoadNoteEvent.Error())
+                    })
                     .addTo(bag)
             }
+        } ?: run {
+            _noteLoad.postValue(LoadNoteEvent.NoUserFound())
         }
     }
 
@@ -66,20 +73,33 @@ class NoteFragmentViewModel(
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
                     .subscribe({ _noteDeleted.postValue(NoteDeletedEvent.Success()) },
-                        { _noteDeleted.postValue(NoteDeletedEvent.Error()) })
+                        { error ->
+                            Crashlytics.logException(error)
+                            _noteDeleted.postValue(NoteDeletedEvent.Error())
+                        })
                     .addTo(bag)
             }
+        } ?: run {
+            _noteDeleted.postValue(NoteDeletedEvent.NoUserFound())
         }
 
     }
 
     fun saveNote(folderUUID: String, noteModel: NoteModel) {
         auth.currentUser?.let { user ->
-            updateNoteUseCase.updateNote(user, folderUUID, noteModel)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe({ _noteSaved.postValue(SaveNoteEvent.Success()) },
-                           { _noteSaved.postValue(SaveNoteEvent.Error()) })
+            startStopDisposeBag?.let { bag ->
+                updateNoteUseCase.updateNote(user, folderUUID, noteModel)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .subscribe({ _noteSaved.postValue(SaveNoteEvent.Success()) },
+                        { error ->
+                            Crashlytics.logException(error)
+                            _noteSaved.postValue(SaveNoteEvent.Error())
+                        })
+                    .addTo(bag)
+            }
+        } ?: run {
+            _noteSaved.postValue(SaveNoteEvent.NoUserFound())
         }
     }
 
@@ -91,9 +111,16 @@ class NoteFragmentViewModel(
 sealed class NoteDeletedEvent : Event() {
     class Success : NoteDeletedEvent()
     class Error : NoteDeletedEvent()
+    class NoUserFound: NoteDeletedEvent()
+}
+
+sealed class LoadNoteEvent: Event() {
+    class Error: LoadNoteEvent()
+    class NoUserFound: LoadNoteEvent()
 }
 
 sealed class SaveNoteEvent : Event() {
     class Success : SaveNoteEvent()
     class Error : SaveNoteEvent()
+    class NoUserFound : SaveNoteEvent()
 }

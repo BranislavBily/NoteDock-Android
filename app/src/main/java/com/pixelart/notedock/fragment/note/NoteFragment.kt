@@ -2,7 +2,10 @@ package com.pixelart.notedock.fragment.note
 
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
@@ -14,12 +17,12 @@ import com.pixelart.notedock.R
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteNoteDialog
 import com.pixelart.notedock.dialog.NoteDialogDeleteSuccessListener
-import com.pixelart.notedock.domain.livedata.observer.DataEventObserver
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.hideSoftKeyboard
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.model.NoteModel
+import com.pixelart.notedock.viewModel.LoadNoteEvent
 import com.pixelart.notedock.viewModel.NoteDeletedEvent
 import com.pixelart.notedock.viewModel.NoteFragmentViewModel
 import com.pixelart.notedock.viewModel.SaveNoteEvent
@@ -127,6 +130,7 @@ class NoteFragment : Fragment() {
                         view.findNavController().popBackStack()
                     }
                     is NoteDeletedEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
+                    is NoteDeletedEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
                 }
             }
         })
@@ -138,8 +142,19 @@ class NoteFragment : Fragment() {
                         view.findNavController().popBackStack()
                     }
                     is SaveNoteEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
+                    is SaveNoteEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)//Go to login somehow
                 }
             }
+        })
+
+        noteFragmentViewModel.noteLoad.observe(this, SpecificEventObserver<LoadNoteEvent> { event ->
+            view?.let { view ->
+                when(event) {
+                    is LoadNoteEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
+                    is LoadNoteEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
+                }
+            }
+
         })
     }
 
