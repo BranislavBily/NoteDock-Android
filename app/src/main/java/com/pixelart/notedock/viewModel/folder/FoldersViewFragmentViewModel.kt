@@ -71,7 +71,10 @@ class FoldersViewFragmentViewModel(
                     .observeOn(Schedulers.io())
                     .subscribe(
                         { _newFolderCreated.postValue(CreateFolderEvent.Success()) },
-                        { _newFolderCreated.postValue(CreateFolderEvent.Error()) }
+                        { error ->
+                            Crashlytics.logException(error)
+                            _newFolderCreated.postValue(CreateFolderEvent.Error())
+                        }
                     )
                     .addTo(bag)
             }
@@ -89,7 +92,10 @@ class FoldersViewFragmentViewModel(
                     .observeOn(Schedulers.io())
                     .subscribe(
                         { _isNameTaken.postValue(FolderNameTakenEvent.Success(it, folderName)) },
-                        { _isNameTaken.postValue(FolderNameTakenEvent.Error()) }
+                        { error ->
+                            Crashlytics.logException(error)
+                            _isNameTaken.postValue(FolderNameTakenEvent.Error())
+                        }
                     )
                     .addTo(bag)
             }
