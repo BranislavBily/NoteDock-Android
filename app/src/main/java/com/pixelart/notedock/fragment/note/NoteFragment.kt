@@ -2,6 +2,7 @@ package com.pixelart.notedock.fragment.note
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -57,7 +58,11 @@ class NoteFragment : Fragment() {
 
         setupClosingOfKeyboard()
         setupToolbar()
+        setupEditTextFocusListeners()
+    }
 
+    private fun setupEditTextFocusListeners() {
+//        editTextNoteDescription.focus
     }
 
     private fun setupToolbar() {
@@ -65,6 +70,10 @@ class NoteFragment : Fragment() {
             when (menuItem.itemId) {
                 R.id.deleteNote -> {
                     createDeleteNoteDialog()
+                    true
+                }
+                R.id.doneNote -> {
+                    saveNote()
                     true
                 }
                 else -> false
@@ -101,13 +110,6 @@ class NoteFragment : Fragment() {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.deleteNote -> createDeleteNoteDialog()
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
     private fun observeLiveData() {
         //Cez onStartStop
         noteFragmentViewModel.loadNote(args.folderUUID, args.noteUUID)
@@ -139,7 +141,7 @@ class NoteFragment : Fragment() {
             view?.let { view ->
                 when (event) {
                     is SaveNoteEvent.Success -> {
-                        view.findNavController().popBackStack()
+//                        view.findNavController().popBackStack()
                     }
                     is SaveNoteEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
                     is SaveNoteEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)//Go to login somehow
@@ -170,6 +172,15 @@ class NoteFragment : Fragment() {
     }
 
     private fun saveNote() {
+        //Hide keyboard
+        context?.let { context ->
+            view?.let { view ->
+                hideSoftKeyboard(context, view)
+                view.requestFocus()
+            }
+        }
+
+        //Get note values
         val note = NoteModel()
         note.uuid = args.noteUUID
         note.noteTitle = editTextNoteTitle.text.toString()
