@@ -13,7 +13,7 @@ class DeleteNoteImpl(private val firebaseIDSRepository: FirebaseIDSRepository,
                      private val firebaseInstance: FirebaseFirestore): DeleteNoteUseCase {
     override fun deleteNote(user: FirebaseUser, folderUUID: String, noteUUID: String): Completable {
         return Completable.create { emitter ->
-            firebaseInstance.collection(firebaseIDSRepository.getCollectionUsers())
+            val listener = firebaseInstance.collection(firebaseIDSRepository.getCollectionUsers())
                 .document(user.uid)
                 .collection(firebaseIDSRepository.getCollectionFolders())
                 .document(folderUUID)
@@ -27,6 +27,7 @@ class DeleteNoteImpl(private val firebaseIDSRepository: FirebaseIDSRepository,
                     documentSnapshot?.reference?.delete()
                     emitter.onComplete()
                 }
+            return@create listener.remove()
         }
     }
 }
