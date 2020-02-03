@@ -3,26 +3,30 @@ package com.pixelart.notedock.domain.usecase.note
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pixelart.notedock.domain.repository.FirebaseIDSRepository
-import com.pixelart.notedock.viewModel.NoteDeletedEvent
-import io.reactivex.Single
+import io.reactivex.Completable
 
 interface DeleteNoteUseCase {
-    fun deleteNote(user: FirebaseUser, folderUUID: String, noteUUID: String): Single<NoteDeletedEvent>
+    fun deleteNote(user: FirebaseUser, folderUUID: String, noteUUID: String): Completable
 }
 
 class DeleteNoteImpl(private val firebaseIDSRepository: FirebaseIDSRepository,
                      private val firebaseInstance: FirebaseFirestore): DeleteNoteUseCase {
-    override fun deleteNote(user: FirebaseUser, folderUUID: String, noteUUID: String): Single<NoteDeletedEvent> {
-        return Single.create<NoteDeletedEvent> { emitter ->
+    override fun deleteNote(user: FirebaseUser, folderUUID: String, noteUUID: String): Completable {
+        return Completable.create { emitter ->
             firebaseInstance.collection(firebaseIDSRepository.getCollectionUsers())
                 .document(user.uid)
                 .collection(firebaseIDSRepository.getCollectionFolders())
                 .document(folderUUID)
                 .collection(firebaseIDSRepository.getCollectionNotes())
                 .document(noteUUID)
-                .delete()
-                .addOnSuccessListener { emitter.onSuccess(NoteDeletedEvent.Success())}
-                .addOnFailureListener { emitter.onError(it)}
+                .addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
+                    firebaseFirestoreException?.let {
+                        emitter.tryOnError(it)
+                    }
+
+                    documentSnapshot?.reference?.delete()
+                    emitter.onComplete()
+                }
         }
     }
 }
