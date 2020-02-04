@@ -67,9 +67,7 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
 
     private fun observeLiveData(notesAdapter: NotesAdapter) {
 
-        folderFragmentViewModel.folderButtonClicked.observe(
-            this,
-            SpecificEventObserver<ButtonPressedEvent> {
+        folderFragmentViewModel.folderButtonClicked.observe(viewLifecycleOwner, SpecificEventObserver<ButtonPressedEvent> {
                 createDeleteDialog()
             })
 
@@ -106,9 +104,7 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
         })
 
 
-        folderFragmentViewModel.noteCreated.observe(
-            this,
-            SpecificEventObserver<CreateNoteEvent> { event ->
+        folderFragmentViewModel.noteCreated.observe(viewLifecycleOwner, SpecificEventObserver<CreateNoteEvent> { event ->
                 view?.let { view ->
                     when (event) {
                         is CreateNoteEvent.Success -> navigateToNote(event.noteUUID)

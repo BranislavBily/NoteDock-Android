@@ -4,8 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.crashlytics.android.Crashlytics
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.EventListener
-import com.pixelart.notedock.dataBinding.SingleLiveEvent
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
 import com.pixelart.notedock.domain.livedata.model.Event
 import com.pixelart.notedock.domain.repository.FolderRepository
@@ -13,7 +11,6 @@ import com.pixelart.notedock.domain.usecase.folder.CreateFolderUseCase
 import com.pixelart.notedock.domain.usecase.folder.FolderNameTakenUseCase
 import com.pixelart.notedock.model.FolderModel
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
-import io.fabric.sdk.android.services.common.Crash
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
@@ -31,9 +28,6 @@ class FoldersViewFragmentViewModel(
 
     private val _newFolderCreated = MutableLiveData<CreateFolderEvent>()
     val newFolderCreated: LiveData<CreateFolderEvent> = _newFolderCreated
-
-    private val _isNameTaken = MutableLiveData<FolderNameTakenEvent>()
-    val isNameTaken: LiveData<FolderNameTakenEvent> = _isNameTaken
 
     private val _fabClicked = MutableLiveData<ButtonPressedEvent>()
     val fabClicked: LiveData<ButtonPressedEvent> = _fabClicked
@@ -63,10 +57,10 @@ class FoldersViewFragmentViewModel(
         }
     }
 
-    fun uploadFolderModel(folderModel: FolderModel) {
+    private fun uploadFolderModel(folderName: String) {
         auth.currentUser?.let { user ->
             startStopDisposeBag?.let { bag ->
-                createFolderUseCase.createFolder(user, folderModel)
+                createFolderUseCase.createFolder(user, folderName)
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
                     .subscribe(
@@ -90,17 +84,17 @@ class FoldersViewFragmentViewModel(
                 folderNameTakenUseCase.isNameTaken(user, folderName)
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
-                    .subscribe(
-                        { _isNameTaken.postValue(FolderNameTakenEvent.Success(it, folderName)) },
-                        { error ->
-                            Crashlytics.logException(error)
-                            _isNameTaken.postValue(FolderNameTakenEvent.Error())
-                        }
-                    )
+                    .subscribe({ nameTaken ->
+                        if(nameTaken) _newFolderCreated.postValue(CreateFolderEvent.FolderNameTaken())
+                        else this.uploadFolderModel(folderName)
+                    }, { error ->
+                        Crashlytics.logException(error)
+                        _newFolderCreated.postValue(CreateFolderEvent.Error())
+                    })
                     .addTo(bag)
             }
         } ?: run {
-            _isNameTaken.postValue(FolderNameTakenEvent.NoUserFound())
+            _newFolderCreated.postValue(CreateFolderEvent.NoUserFound())
         }
     }
 }
@@ -115,10 +109,5 @@ sealed class CreateFolderEvent : Event() {
     class Error : CreateFolderEvent()
     class Success : CreateFolderEvent()
     class NoUserFound: CreateFolderEvent()
-}
-
-sealed class FolderNameTakenEvent : Event() {
-    class Success(val taken: Boolean, val folderName: String) : FolderNameTakenEvent()
-    class Error : FolderNameTakenEvent()
-    class NoUserFound: FolderNameTakenEvent()
+    class FolderNameTaken: CreateFolderEvent()
 }
