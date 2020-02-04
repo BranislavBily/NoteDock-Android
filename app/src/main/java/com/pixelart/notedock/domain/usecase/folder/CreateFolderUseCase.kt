@@ -1,13 +1,11 @@
 package com.pixelart.notedock.domain.usecase.folder
 
-import android.util.Log
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pixelart.notedock.domain.repository.FirebaseIDSRepository
 import com.pixelart.notedock.model.FolderModel
 import io.reactivex.Completable
-import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import java.util.*
 
@@ -39,6 +37,7 @@ class CreateFolderImpl(
                         emitter.onComplete()
                     }
                 }
+
             emitter.setDisposable(object : Disposable {
                 override fun isDisposed(): Boolean {
                     return isDisposed

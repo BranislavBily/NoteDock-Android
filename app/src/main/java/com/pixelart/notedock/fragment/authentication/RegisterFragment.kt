@@ -49,11 +49,11 @@ class RegisterFragment : Fragment() {
 
     private fun observeLiveData() {
 
-        registerFragmentViewModel.alreadyHaveAccount.observe(this, SpecificEventObserver<ButtonPressedEvent> {
+        registerFragmentViewModel.alreadyHaveAccount.observe(viewLifecycleOwner, SpecificEventObserver<ButtonPressedEvent> {
             findNavController().popBackStack()
         })
 
-        registerFragmentViewModel.registerButtonPressedEvent.observe(this, SpecificEventObserver<ButtonPressedEvent> {
+        registerFragmentViewModel.registerButtonPressedEvent.observe(viewLifecycleOwner, SpecificEventObserver<ButtonPressedEvent> {
             val view = view
             val context = context
             if(view != null && context != null) {
@@ -61,7 +61,7 @@ class RegisterFragment : Fragment() {
             }
         })
 
-        registerFragmentViewModel.register.observe(this, Observer { event ->
+        registerFragmentViewModel.register.observe(viewLifecycleOwner, Observer { event ->
             view?.let { view ->
                 when(event) {
                     is RegisterEvent.Success -> {

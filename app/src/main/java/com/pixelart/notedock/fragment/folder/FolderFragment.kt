@@ -73,7 +73,7 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
                 createDeleteDialog()
             })
 
-        folderFragmentViewModel.folderDeleted.observe(this, Observer { event ->
+        folderFragmentViewModel.folderDeleted.observe(viewLifecycleOwner, Observer { event ->
             view?.let { view ->
                 when (event) {
                     is FolderDeleteEvent.Success -> {
@@ -87,7 +87,7 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
             }
         })
 
-        folderFragmentViewModel.loadedNotes.observe(this, Observer { event ->
+        folderFragmentViewModel.loadedNotes.observe(viewLifecycleOwner, Observer { event ->
             view?.let { view ->
                 when(event) {
                     is LoadNotesEvent.Success -> notesAdapter.setNewData(event.notes)
@@ -97,11 +97,11 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
             }
         })
 
-        folderFragmentViewModel.fabClicked.observe(this, SpecificEventObserver<ButtonPressedEvent> {
+        folderFragmentViewModel.fabClicked.observe(viewLifecycleOwner, SpecificEventObserver<ButtonPressedEvent> {
             createNote()
         })
 
-        folderFragmentViewModel.onBackClicked.observe(this, EventObserver {
+        folderFragmentViewModel.onBackClicked.observe(viewLifecycleOwner, EventObserver {
             findNavController().popBackStack()
         })
 
