@@ -1,0 +1,44 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory app:title="@string/account">
+
+        <Preference
+                app:key="@string/account"
+                app:title="@string/account">
+                <intent
+                        android:targetPackage="com.pixelart.notedock"
+                        android:targetClass="com.pixelart.notedock.activity.settings.AccountSettingsActivity"
+                        />
+        </Preference>
+
+        <Preference
+                app:key="@string/changePassword"
+                app:title="@string/changePassword"
+                />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/help">
+
+        <Preference
+                app:key="@string/rateUs"
+                app:title="@string/rateUs"
+                />
+
+        <Preference
+                app:key="@string/helpAndSupport"
+                app:title="@string/helpAndSupport"
+                />
+    </PreferenceCategory>
+
+    <PreferenceCategory>
+
+        <Preference
+                app:key="@string/log_out"
+                app:title="@string/log_out"
+                />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
