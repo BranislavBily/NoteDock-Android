@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pixelart.notedock.domain.repository.FirebaseIDSRepository
 import io.reactivex.Completable
+import io.reactivex.disposables.Disposable
 
 interface DeleteNoteUseCase {
     fun deleteNote(user: FirebaseUser, folderUUID: String, noteUUID: String): Completable
@@ -27,7 +28,16 @@ class DeleteNoteImpl(private val firebaseIDSRepository: FirebaseIDSRepository,
                     documentSnapshot?.reference?.delete()
                     emitter.onComplete()
                 }
-            return@create listener.remove()
+
+            emitter.setDisposable(object : Disposable {
+                override fun isDisposed(): Boolean {
+                    return isDisposed
+                }
+
+                override fun dispose() {
+                    listener.remove()
+                }
+            })
         }
     }
 }
