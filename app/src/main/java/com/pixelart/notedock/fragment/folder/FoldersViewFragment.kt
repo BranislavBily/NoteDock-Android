@@ -109,7 +109,7 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
 
 
     private fun observeLiveData(foldersAdapter: FoldersAdapter) {
-        foldersViewFragmentViewModel.loadFolders.observe(this, Observer { event ->
+        foldersViewFragmentViewModel.loadFolders.observe(viewLifecycleOwner, Observer { event ->
             view?.let { view ->
                 when (event) {
                     is LoadFoldersEvent.Success -> foldersAdapter.setNewData(event.folders)
@@ -119,7 +119,7 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
             }
         })
 
-        foldersViewFragmentViewModel.newFolderCreated.observe(this, Observer { event ->
+        foldersViewFragmentViewModel.newFolderCreated.observe(viewLifecycleOwner, Observer { event ->
             view?.let { view ->
                 when (event) {
                     is CreateFolderEvent.Success -> { }
@@ -131,11 +131,11 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
             }
         })
 
-        foldersViewFragmentViewModel.fabClicked.observe(this, SpecificEventObserver<ButtonPressedEvent> {
+        foldersViewFragmentViewModel.fabClicked.observe(viewLifecycleOwner, SpecificEventObserver<ButtonPressedEvent> {
             createFolderDialog()
         })
 
-        foldersViewFragmentViewModel.isNameTaken.observe(this, Observer { event ->
+        foldersViewFragmentViewModel.isNameTaken.observe(viewLifecycleOwner, Observer { event ->
             view?.let { view ->
                 when (event) {
                     is FolderNameTakenEvent.Success -> {

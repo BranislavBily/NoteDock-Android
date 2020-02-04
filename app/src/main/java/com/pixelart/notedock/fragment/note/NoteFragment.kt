@@ -113,11 +113,11 @@ class NoteFragment : Fragment() {
         //Cez onStartStop
         noteFragmentViewModel.loadNote(args.folderUUID, args.noteUUID)
 
-        noteFragmentViewModel.onBackClicked.observe(this, EventObserver {
+        noteFragmentViewModel.onBackClicked.observe(viewLifecycleOwner, EventObserver {
             findNavController().popBackStack()
         })
 
-        noteFragmentViewModel.noteDeleted.observe(this, Observer { event ->
+        noteFragmentViewModel.noteDeleted.observe(viewLifecycleOwner, Observer { event ->
             view?.let { view ->
                 when (event) {
                     is NoteDeletedEvent.Success -> {
@@ -131,7 +131,7 @@ class NoteFragment : Fragment() {
         })
 
 
-        noteFragmentViewModel.noteSaved.observe(this, Observer { event ->
+        noteFragmentViewModel.noteSaved.observe(viewLifecycleOwner, Observer { event ->
             view?.let { view ->
                 when (event) {
                     is SaveNoteEvent.Success -> {}
@@ -141,7 +141,7 @@ class NoteFragment : Fragment() {
             }
         })
 
-        noteFragmentViewModel.noteLoad.observe(this, SpecificEventObserver<LoadNoteEvent> { event ->
+        noteFragmentViewModel.noteLoad.observe(viewLifecycleOwner, SpecificEventObserver<LoadNoteEvent> { event ->
             view?.let { view ->
                 when(event) {
                     is LoadNoteEvent.Error -> R.string.error_occurred.showAsSnackBar(view)

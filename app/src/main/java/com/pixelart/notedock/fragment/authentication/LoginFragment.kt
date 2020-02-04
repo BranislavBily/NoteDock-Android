@@ -66,7 +66,7 @@ class LoginFragment : Fragment() {
 
     private fun observeLiveData() {
 
-        loginFragmentViewModel.loginCompleted.observe(this, SpecificEventObserver { event ->
+        loginFragmentViewModel.loginCompleted.observe(viewLifecycleOwner, SpecificEventObserver { event ->
             view?.let { view ->
                 when(event) {
                     is LoginEvent.Success -> goToMainActivity()
@@ -79,7 +79,7 @@ class LoginFragment : Fragment() {
             }
         })
 
-        loginFragmentViewModel.forgotPassword.observe(this, SpecificEventObserver {
+        loginFragmentViewModel.forgotPassword.observe(viewLifecycleOwner, SpecificEventObserver {
             view?.let { view ->
                 val action = LoginFragmentDirections.actionLoginFragmentToResetPasswordFragment()
                 val navigationRouter = NavigationRouter(view)
@@ -87,7 +87,7 @@ class LoginFragment : Fragment() {
             }
         })
 
-        loginFragmentViewModel.createAccount.observe(this, SpecificEventObserver {
+        loginFragmentViewModel.createAccount.observe(viewLifecycleOwner, SpecificEventObserver {
             view?.let { view ->
                 val action = LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
                 val navigationRouter = NavigationRouter(view)
@@ -95,7 +95,7 @@ class LoginFragment : Fragment() {
             }
         })
 
-        loginFragmentViewModel.sendEmail.observe(this, SpecificEventObserver { event ->
+        loginFragmentViewModel.sendEmail.observe(viewLifecycleOwner, SpecificEventObserver { event ->
             view?.let { view ->
                 when(event) {
                     is SendEmailEvent.Success -> R.string.verification_email_sent.showAsSnackBar(view)

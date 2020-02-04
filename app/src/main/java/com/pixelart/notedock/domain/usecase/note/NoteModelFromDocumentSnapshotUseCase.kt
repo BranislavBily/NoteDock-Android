@@ -23,6 +23,10 @@ class NoteModelFromDocumentSnapshotImpl(private val firebaseIDSRepository: Fireb
             note.noteDescription = it
         }
 
+        document.getBoolean(firebaseIDSRepository.getNotePinned())?.let {
+            note.pinned = it
+        }
+
         return note
     }
 }

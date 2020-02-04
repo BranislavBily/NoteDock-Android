@@ -10,6 +10,7 @@ interface FirebaseIDSRepository {
     fun getNoteTitle(): String
     fun getNoteDescription(): String
     fun getNoteUpdated(): String
+    fun getNotePinned(): String
 }
 
 class FirebaseIDSImpl: FirebaseIDSRepository {
@@ -47,6 +48,10 @@ class FirebaseIDSImpl: FirebaseIDSRepository {
 
     override fun getNoteUpdated(): String {
         return "updated"
+    }
+
+    override fun getNotePinned(): String {
+        return "pinned"
     }
 
 }

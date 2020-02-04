@@ -45,11 +45,11 @@ class ResetPasswordFragment : Fragment() {
     }
 
     private fun observeLiveData() {
-        resetPasswordViewModel.backToLogin.observe(this, SpecificEventObserver<ButtonPressedEvent> {
+        resetPasswordViewModel.backToLogin.observe(viewLifecycleOwner, SpecificEventObserver<ButtonPressedEvent> {
             findNavController().popBackStack()
         })
 
-        resetPasswordViewModel.recoverAccountPressed.observe(this, SpecificEventObserver<ButtonPressedEvent> {
+        resetPasswordViewModel.recoverAccountPressed.observe(viewLifecycleOwner, SpecificEventObserver<ButtonPressedEvent> {
             val view = view
             val context = context
             if(view != null && context != null) {
@@ -57,7 +57,7 @@ class ResetPasswordFragment : Fragment() {
             }
         })
 
-        resetPasswordViewModel.recoverAccount.observe(this, Observer { event ->
+        resetPasswordViewModel.recoverAccount.observe(viewLifecycleOwner, Observer { event ->
             view?.let { view ->
                 when(event) {
                     is RecoverAccountEvent.Success -> {
