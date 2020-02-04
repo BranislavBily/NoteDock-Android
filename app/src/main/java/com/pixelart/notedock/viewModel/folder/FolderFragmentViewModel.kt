@@ -1,6 +1,7 @@
 package com.pixelart.notedock.viewModel.folder
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.crashlytics.android.Crashlytics
 import com.google.firebase.auth.FirebaseAuth
@@ -28,6 +29,14 @@ class FolderFragmentViewModel(
     private val _loadedNotes = MutableLiveData<LoadNotesEvent>()
     val loadedNotes: LiveData<LoadNotesEvent> = _loadedNotes
 
+    val thereArePinnedNotes: LiveData<Boolean> = MediatorLiveData<Boolean>().apply {
+        addSource(pinnedNotes) {
+            postValue(it.isNotEmpty())
+        }
+    }
+
+    private val pinnedNotes = MutableLiveData<ArrayList<NoteModel>>()
+
     private val _onBackClicked = MutableLiveData<ButtonPressedEvent>()
     val onBackClicked: LiveData<ButtonPressedEvent> = _onBackClicked
 
@@ -47,10 +56,6 @@ class FolderFragmentViewModel(
         super.onStartStopObserve(disposeBag)
 
         loadNotes(disposeBag)
-    }
-
-    fun onDeleteFolderButtonClicked() {
-        _buttonClicked.postValue(ButtonPressedEvent.Pressed())
     }
 
     fun onBackClicked() {
@@ -99,12 +104,25 @@ class FolderFragmentViewModel(
         }
     }
 
+    private fun separateNotes(notes: ArrayList<NoteModel>) {
+        val pinnedNotesList = ArrayList<NoteModel>()
+        val unpinnedNotesList = ArrayList<NoteModel>()
+        for(note in notes) {
+            note.pinned?.let { pinned ->
+                if(pinned) pinnedNotesList.add(note)
+                else unpinnedNotesList.add(note)
+            }
+        }
+        pinnedNotes.value = pinnedNotesList
+        _loadedNotes.postValue(LoadNotesEvent.Success(pinnedNotesList, unpinnedNotesList))
+    }
+
     private fun loadNotes(disposeBag: CompositeDisposable) {
         auth.currentUser?.let { user ->
             notesRepository.getNotes(user, folderUUID)
                 .observeOn(Schedulers.io())
                 .subscribeOn(Schedulers.io())
-                .subscribe({ _loadedNotes.postValue(LoadNotesEvent.Success(it)) },
+                .subscribe({ separateNotes(it) },
                     { error ->
                         Crashlytics.logException(error)
                         _loadedNotes.postValue(LoadNotesEvent.Error())
@@ -129,7 +147,7 @@ class FolderFragmentViewModel(
     }
 
     sealed class LoadNotesEvent : Event() {
-        class Success(val notes: ArrayList<NoteModel>) : LoadNotesEvent()
+        class Success(val pinnedNotes: ArrayList<NoteModel>, val unPinnedNotes: ArrayList<NoteModel>) : LoadNotesEvent()
         class Error : LoadNotesEvent()
         class NoUserFoundError : LoadNotesEvent()
     }

@@ -3,7 +3,9 @@ package com.pixelart.notedock.fragment.folder
 
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
@@ -14,7 +16,8 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pixelart.notedock.NavigationRouter
 import com.pixelart.notedock.R
-import com.pixelart.notedock.adapter.NotesAdapter
+import com.pixelart.notedock.adapter.PinnedNotesAdapter
+import com.pixelart.notedock.adapter.UnPinnedNotesAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogDeleteSuccessListener
@@ -31,11 +34,18 @@ import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 
-class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
+class FolderFragment : Fragment(),
+    PinnedNotesAdapter.OnNoteClickListener,
+    PinnedNotesAdapter.OnImageClickListener,
+    UnPinnedNotesAdapter.OnNoteClickListener,
+    UnPinnedNotesAdapter.OnImageClickListener {
     private val args: FolderFragmentArgs by navArgs()
     private val folderFragmentViewModel: FolderFragmentViewModel by viewModel {
         parametersOf(args.folderUUID, args.folderName)
     }
+
+    private var pinnedNotesAdapter: PinnedNotesAdapter? = null
+    private var unpinnedNotesAdapter: UnPinnedNotesAdapter? = null
 
 
     override fun onCreateView(
@@ -55,17 +65,23 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val notesAdapter = NotesAdapter(this)
-        setupRecyclerView(notesAdapter)
-        observeLiveData(notesAdapter)
+        pinnedNotesAdapter = PinnedNotesAdapter(this, this)
+        unpinnedNotesAdapter = UnPinnedNotesAdapter(this, this)
+
+        setupRecyclerView()
+        observeLiveData()
     }
 
-    private fun setupRecyclerView(notesAdapter: NotesAdapter) {
-        recyclerViewNotes.layoutManager = LinearLayoutManager(context)
-        recyclerViewNotes.adapter = notesAdapter
+    private fun setupRecyclerView() {
+        recyclerViewPinnedNotes.layoutManager = LinearLayoutManager(context)
+        recyclerViewPinnedNotes.adapter = pinnedNotesAdapter
+        recyclerViewPinnedNotes.isNestedScrollingEnabled = false
+        recyclerViewUnPinnedNotes.layoutManager = LinearLayoutManager(context)
+        recyclerViewUnPinnedNotes.adapter = unpinnedNotesAdapter
+        recyclerViewUnPinnedNotes.isNestedScrollingEnabled = false
     }
 
-    private fun observeLiveData(notesAdapter: NotesAdapter) {
+    private fun observeLiveData() {
 
         folderFragmentViewModel.folderButtonClicked.observe(viewLifecycleOwner, SpecificEventObserver<ButtonPressedEvent> {
                 createDeleteDialog()
@@ -88,7 +104,10 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
         folderFragmentViewModel.loadedNotes.observe(viewLifecycleOwner, Observer { event ->
             view?.let { view ->
                 when(event) {
-                    is LoadNotesEvent.Success -> notesAdapter.setNewData(event.notes)
+                    is LoadNotesEvent.Success -> {
+                        pinnedNotesAdapter?.setNewData(event.pinnedNotes)
+                        unpinnedNotesAdapter?.setNewData(event.unPinnedNotes)
+                    }
                     is LoadNotesEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
                     is LoadNotesEvent.NoUserFoundError -> R.string.no_user_found.showAsSnackBar(view)
                 }
@@ -143,5 +162,9 @@ class FolderFragment : Fragment(), NotesAdapter.OnNoteClickListener {
 
     override fun onNoteClick(noteUUID: String?) {
         noteUUID?.let { navigateToNote(it) }
+    }
+
+    override fun onImageClick(noteUUID: String?) {
+        noteUUID?.let { Log.i("ViewClicked", "ImageView")}
     }
 }

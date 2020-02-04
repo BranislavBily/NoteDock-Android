@@ -37,6 +37,7 @@ class NotesAdapter(private val onNoteClickListener: OnNoteClickListener) : Recyc
             itemView.editTextNoteTitle.text = note.noteTitle
             itemView.textViewNotePreview.text = note.noteDescription
 
+
             itemView.setOnClickListener {
                 onNoteClickListener.onNoteClick(note.uuid)
             }

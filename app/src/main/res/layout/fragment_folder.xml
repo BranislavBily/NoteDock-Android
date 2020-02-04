@@ -26,15 +26,38 @@
                 app:onBackClicked="@{() -> viewmodel.onBackClicked()}"
                 app:menu="@menu/folder_view_menu" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerViewNotes"
+        <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:paddingTop="0dp"
+                android:layout_height="match_parent">
+
+            <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:clipToPadding="false"
-                    android:paddingBottom="60dp"
-                    android:paddingTop="?attr/actionBarSize"
-                    tools:listitem="@layout/note_list_item" />
+                    android:orientation="vertical">
 
+                <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerViewPinnedNotes"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clipToPadding="false"
+                        android:paddingTop="?attr/actionBarSize"
+                        tools:listitem="@layout/note_list_item" />
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerViewUnPinnedNotes"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clipToPadding="false"
+                        android:paddingTop="?attr/actionBarSize"
+                        android:paddingBottom="60dp"
+                        tools:listitem="@layout/note_list_item" />
+
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
         <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fabAddNote"
                 android:layout_width="wrap_content"
