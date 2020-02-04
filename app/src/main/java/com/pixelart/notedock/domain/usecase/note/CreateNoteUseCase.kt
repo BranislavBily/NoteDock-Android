@@ -18,7 +18,7 @@ class CreateNoteImpl(private val firebaseIDSRepository: FirebaseIDSRepository,
             val data = hashMapOf(
                 firebaseIDSRepository.getNoteTitle() to "Untitled",
                 firebaseIDSRepository.getNoteDescription() to "",
-                firebaseIDSRepository.getNotePinned() to false,
+                firebaseIDSRepository.getNoteMarked() to false,
                 firebaseIDSRepository.getNoteUpdated() to FieldValue.serverTimestamp()
             )
 

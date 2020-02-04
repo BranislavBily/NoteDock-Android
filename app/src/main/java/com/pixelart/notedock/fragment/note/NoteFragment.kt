@@ -4,7 +4,6 @@ package com.pixelart.notedock.fragment.note
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import androidx.core.view.get
 import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
@@ -25,7 +24,6 @@ import com.pixelart.notedock.viewModel.LoadNoteEvent
 import com.pixelart.notedock.viewModel.NoteDeletedEvent
 import com.pixelart.notedock.viewModel.NoteFragmentViewModel
 import com.pixelart.notedock.viewModel.SaveNoteEvent
-import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
 import kotlinx.android.synthetic.main.fragment_note.*
 import kotlinx.android.synthetic.main.fragment_note.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -78,7 +76,7 @@ class NoteFragment : Fragment() {
     private fun setupClosingOfKeyboard() {
         view?.let { parentView ->
             context?.let { context ->
-                editTextNoteTitle.setOnFocusChangeListener { view, hasFocus ->
+                textViewNoteTitle.setOnFocusChangeListener { view, hasFocus ->
                     Log.i("ID", R.id.doneNote.toString())
                     parentView.toolbar?.menu?.getItem(1)?.isVisible = true
                     if (!hasFocus) {
@@ -177,7 +175,7 @@ class NoteFragment : Fragment() {
         //Get note values
         val note = NoteModel()
         note.uuid = args.noteUUID
-        note.noteTitle = editTextNoteTitle.text.toString()
+        note.noteTitle = textViewNoteTitle.text.toString()
         note.noteDescription = editTextNoteDescription.text.toString()
         noteFragmentViewModel.saveNote(args.folderUUID, note)
     }

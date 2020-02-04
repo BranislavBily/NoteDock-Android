@@ -22,6 +22,7 @@ val viewModelModule = module {
             auth = FirebaseAuth.getInstance(),
             deleteFolderUseCase = get(),
             createFolderUseCase = get(),
+            markNoteUseCase = get(),
             notesRepository = get()
         )
     }
@@ -136,6 +137,13 @@ val firebaseModule = module {
             firebaseIDSRepository = get(),
             firebaseInstance = FirebaseFirestore.getInstance()
         ) as UpdateNoteUseCase
+    }
+
+    single {
+        MarkNoteImpl(
+            firebaseIDSRepository = get(),
+            firebaseInstance = FirebaseFirestore.getInstance()
+        ) as MarkNoteUseCase
     }
 
     //Authentication

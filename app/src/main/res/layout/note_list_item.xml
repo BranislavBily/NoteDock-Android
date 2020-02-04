@@ -12,20 +12,34 @@
 
 
     <TextView
-            android:id="@+id/editTextNoteTitle"
+            android:id="@+id/textViewNoteTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:layout_margin="8dp"
-            android:textAlignment="viewStart"
-            android:singleLine="true"
             android:ellipsize="end"
+            android:tag="textView"
+            android:lines="1"
+            android:singleLine="true"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.087"
+            app:layout_constraintEnd_toStartOf="@+id/imageViewPinned"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.1" />
+
+    <ImageView
+            android:id="@+id/imageViewPinned"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/marked"
+            android:tag="imageView"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.978"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.22" />
 
     <TextView
             android:id="@+id/textViewNotePreview"
@@ -34,6 +48,7 @@
             android:layout_margin="8dp"
             android:ellipsize="end"
             android:lines="1"
+            android:tag="textView"
             android:textAlignment="viewStart"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             app:layout_constraintBottom_toBottomOf="parent"
