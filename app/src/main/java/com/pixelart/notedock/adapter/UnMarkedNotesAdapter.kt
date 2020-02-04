@@ -8,8 +8,8 @@ import com.pixelart.notedock.R
 import com.pixelart.notedock.model.NoteModel
 import kotlinx.android.synthetic.main.note_list_item.view.*
 
-class UnPinnedNotesAdapter(private val onNoteClickListener: OnNoteClickListener,
-                         private val onImageClickListener: OnImageClickListener) : RecyclerView.Adapter<UnPinnedNotesAdapter.NotesHolder>() {
+class UnMarkedNotesAdapter(private val onNoteClickListener: OnNoteClickListener,
+                           private val onImageClickListener: OnImageClickListener) : RecyclerView.Adapter<UnMarkedNotesAdapter.NotesHolder>() {
 
     private var notes = ArrayList<NoteModel>()
 
