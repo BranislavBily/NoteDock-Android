@@ -16,10 +16,7 @@ import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.hideSoftKeyboard
 import com.pixelart.notedock.ext.showAsSnackBar
-import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
-import com.pixelart.notedock.viewModel.authentication.RecoverAccountEvent
-import com.pixelart.notedock.viewModel.authentication.RecoverAccountEventError
-import com.pixelart.notedock.viewModel.authentication.ResetPasswordFragmentViewModel
+import com.pixelart.notedock.viewModel.authentication.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class ResetPasswordFragment : Fragment() {
@@ -68,6 +65,7 @@ class ResetPasswordFragment : Fragment() {
                         when(event.error) {
                             is RecoverAccountEventError.InvalidEmail -> R.string.invalid_email_message.showAsSnackBar(view)
                             is RecoverAccountEventError.NetworkError -> R.string.network_error_message.showAsSnackBar(view)
+                            is RecoverAccountEventError.TooManyRequests -> R.string.too_many_requests.showAsSnackBar(view)
                             is RecoverAccountEventError.UnknownError -> R.string.error_occurred.showAsSnackBar(view)
                         }
                     }

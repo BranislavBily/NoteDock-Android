@@ -75,6 +75,7 @@ class RegisterFragment : Fragment() {
                             is RegisterEventError.NetworkError -> { R.string.network_error_message.showAsSnackBar(view) }
                             is RegisterEventError.InvalidEmail -> { R.string.invalid_email_message.showAsSnackBar(view) }
                             is RegisterEventError.WeakPassword -> { R.string.weak_password_message.showAsSnackBar(view) }
+                            is RegisterEventError.TooManyRequests -> { R.string.too_many_requests.showAsSnackBar(view) }
                             is RegisterEventError.UnknownError -> { R.string.error_occurred.showAsSnackBar(view) }
                         }
                     }
