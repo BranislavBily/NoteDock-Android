@@ -13,7 +13,6 @@ import com.pixelart.notedock.viewModel.authentication.ResetPasswordFragmentViewM
 import com.pixelart.notedock.viewModel.authentication.RegisterFragmentViewModel
 import com.pixelart.notedock.viewModel.settings.SettingsFragmentViewModel
 import org.koin.android.viewmodel.dsl.viewModel
-import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
 
 val viewModelModule = module {
@@ -24,6 +23,7 @@ val viewModelModule = module {
             auth = FirebaseAuth.getInstance(),
             deleteFolderUseCase = get(),
             createFolderUseCase = get(),
+            markNoteUseCase = get(),
             notesRepository = get()
         )
     }
@@ -144,6 +144,13 @@ val firebaseModule = module {
             firebaseIDSRepository = get(),
             firebaseInstance = FirebaseFirestore.getInstance()
         ) as UpdateNoteUseCase
+    }
+
+    single {
+        MarkNoteImpl(
+            firebaseIDSRepository = get(),
+            firebaseInstance = FirebaseFirestore.getInstance()
+        ) as MarkNoteUseCase
     }
 
     //Authentication

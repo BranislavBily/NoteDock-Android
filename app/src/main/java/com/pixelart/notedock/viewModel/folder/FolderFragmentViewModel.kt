@@ -1,7 +1,6 @@
 package com.pixelart.notedock.viewModel.folder
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.crashlytics.android.Crashlytics
 import com.google.firebase.auth.FirebaseAuth
@@ -10,6 +9,7 @@ import com.pixelart.notedock.domain.livedata.model.Event
 import com.pixelart.notedock.domain.repository.NotesRepository
 import com.pixelart.notedock.domain.usecase.folder.DeleteFolderUseCase
 import com.pixelart.notedock.domain.usecase.note.CreateNoteUseCase
+import com.pixelart.notedock.domain.usecase.note.MarkNoteUseCase
 import com.pixelart.notedock.model.NoteModel
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
 import io.reactivex.disposables.CompositeDisposable
@@ -22,20 +22,13 @@ class FolderFragmentViewModel(
     private val auth: FirebaseAuth,
     private val deleteFolderUseCase: DeleteFolderUseCase,
     private val createFolderUseCase: CreateNoteUseCase,
+    private val markNoteUseCase: MarkNoteUseCase,
     private val notesRepository: NotesRepository
 ) : LifecycleViewModel() {
     val toolbarTitle: LiveData<String> = MutableLiveData<String>().apply { postValue(folderName) }
 
     private val _loadedNotes = MutableLiveData<LoadNotesEvent>()
     val loadedNotes: LiveData<LoadNotesEvent> = _loadedNotes
-
-    val thereArePinnedNotes: LiveData<Boolean> = MediatorLiveData<Boolean>().apply {
-        addSource(pinnedNotes) {
-            postValue(it.isNotEmpty())
-        }
-    }
-
-    private val pinnedNotes = MutableLiveData<ArrayList<NoteModel>>()
 
     private val _onBackClicked = MutableLiveData<ButtonPressedEvent>()
     val onBackClicked: LiveData<ButtonPressedEvent> = _onBackClicked
@@ -51,6 +44,9 @@ class FolderFragmentViewModel(
 
     private val _noteCreated = MutableLiveData<CreateNoteEvent>()
     val noteCreated: LiveData<CreateNoteEvent> = _noteCreated
+
+    private val _markNote = MutableLiveData<MarkNoteEvent>()
+    val markNote: LiveData<MarkNoteEvent> = _markNote
 
     override fun onStartStopObserve(disposeBag: CompositeDisposable) {
         super.onStartStopObserve(disposeBag)
@@ -75,7 +71,8 @@ class FolderFragmentViewModel(
                     .subscribe({ _noteCreated.postValue(CreateNoteEvent.Success(it)) },
                         { error ->
                             Crashlytics.logException(error)
-                            _noteCreated.postValue(CreateNoteEvent.Error()) }
+                            _noteCreated.postValue(CreateNoteEvent.Error())
+                        }
                     )
                     .addTo(bag)
             }
@@ -104,17 +101,34 @@ class FolderFragmentViewModel(
         }
     }
 
-    private fun separateNotes(notes: ArrayList<NoteModel>) {
-        val pinnedNotesList = ArrayList<NoteModel>()
-        val unpinnedNotesList = ArrayList<NoteModel>()
-        for(note in notes) {
-            note.pinned?.let { pinned ->
-                if(pinned) pinnedNotesList.add(note)
-                else unpinnedNotesList.add(note)
+    fun markNote(folderUUID: String, note: NoteModel) {
+        auth.currentUser?.let { user ->
+            startStopDisposeBag?.let { bag ->
+                markNoteUseCase.markNote(user, folderUUID, note)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .subscribe(
+                        { _markNote.postValue(MarkNoteEvent.Success()) },
+                        { error ->
+                            Crashlytics.logException(error)
+                            _markNote.postValue(MarkNoteEvent.Error())
+                        }
+                    )
+                    .addTo(bag)
             }
         }
-        pinnedNotes.postValue(pinnedNotesList)
-        _loadedNotes.postValue(LoadNotesEvent.Success(pinnedNotesList, unpinnedNotesList))
+    }
+
+    private fun separateNotes(notes: ArrayList<NoteModel>) {
+        val markedNotes = ArrayList<NoteModel>()
+        val unmarkedNotes = ArrayList<NoteModel>()
+        for (note in notes) {
+            note.marked?.let { marked ->
+                if (marked) markedNotes.add(note)
+                else unmarkedNotes.add(note)
+            }
+        }
+        _loadedNotes.postValue(LoadNotesEvent.Success(markedNotes, unmarkedNotes))
     }
 
     private fun loadNotes(disposeBag: CompositeDisposable) {
@@ -134,20 +148,26 @@ class FolderFragmentViewModel(
     }
 }
 
-    sealed class CreateNoteEvent : Event() {
-        class Success(val noteUUID: String) : CreateNoteEvent()
-        class Error : CreateNoteEvent()
-        class NoUserFound : CreateNoteEvent()
-    }
+sealed class CreateNoteEvent : Event() {
+    class Success(val noteUUID: String) : CreateNoteEvent()
+    class Error : CreateNoteEvent()
+    class NoUserFound : CreateNoteEvent()
+}
 
-    sealed class FolderDeleteEvent : Event() {
-        class Error : FolderDeleteEvent()
-        class Success : FolderDeleteEvent()
-        class NoUserFound : FolderDeleteEvent()
-    }
+sealed class FolderDeleteEvent : Event() {
+    class Error : FolderDeleteEvent()
+    class Success : FolderDeleteEvent()
+    class NoUserFound : FolderDeleteEvent()
+}
 
-    sealed class LoadNotesEvent : Event() {
-        class Success(val pinnedNotes: ArrayList<NoteModel>, val unPinnedNotes: ArrayList<NoteModel>) : LoadNotesEvent()
-        class Error : LoadNotesEvent()
-        class NoUserFoundError : LoadNotesEvent()
-    }
+sealed class LoadNotesEvent : Event() {
+    class Success(val markedNotes: ArrayList<NoteModel>, val unmarkedNotes: ArrayList<NoteModel>) :
+        LoadNotesEvent()
+    class Error : LoadNotesEvent()
+    class NoUserFoundError : LoadNotesEvent()
+}
+
+sealed class MarkNoteEvent: Event() {
+    class Success: MarkNoteEvent()
+    class Error: MarkNoteEvent()
+}

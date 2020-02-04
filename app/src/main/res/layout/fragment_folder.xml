@@ -41,7 +41,7 @@
                         android:orientation="vertical">
 
                     <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/recyclerViewPinnedNotes"
+                            android:id="@+id/recyclerViewMarkedNotes"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:clipToPadding="false"
@@ -50,7 +50,7 @@
 
 
                     <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/recyclerViewUnPinnedNotes"
+                            android:id="@+id/recyclerViewUnMarkedNotes"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:clipToPadding="false"

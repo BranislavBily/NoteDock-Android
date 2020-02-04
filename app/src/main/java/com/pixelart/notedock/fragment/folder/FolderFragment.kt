@@ -16,36 +16,34 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pixelart.notedock.NavigationRouter
 import com.pixelart.notedock.R
-import com.pixelart.notedock.adapter.PinnedNotesAdapter
-import com.pixelart.notedock.adapter.UnPinnedNotesAdapter
+import com.pixelart.notedock.adapter.MarkedNotesAdapter
+import com.pixelart.notedock.adapter.UnMarkedNotesAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogDeleteSuccessListener
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.showAsSnackBar
+import com.pixelart.notedock.model.NoteModel
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
-import com.pixelart.notedock.viewModel.folder.CreateNoteEvent
-import com.pixelart.notedock.viewModel.folder.FolderDeleteEvent
-import com.pixelart.notedock.viewModel.folder.FolderFragmentViewModel
-import com.pixelart.notedock.viewModel.folder.LoadNotesEvent
+import com.pixelart.notedock.viewModel.folder.*
 import kotlinx.android.synthetic.main.fragment_folder.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 
 class FolderFragment : Fragment(),
-    PinnedNotesAdapter.OnNoteClickListener,
-    PinnedNotesAdapter.OnImageClickListener,
-    UnPinnedNotesAdapter.OnNoteClickListener,
-    UnPinnedNotesAdapter.OnImageClickListener {
+    MarkedNotesAdapter.OnNoteClickListener,
+    MarkedNotesAdapter.OnImageClickListener,
+    UnMarkedNotesAdapter.OnNoteClickListener,
+    UnMarkedNotesAdapter.OnImageClickListener {
     private val args: FolderFragmentArgs by navArgs()
     private val folderFragmentViewModel: FolderFragmentViewModel by viewModel {
         parametersOf(args.folderUUID, args.folderName)
     }
 
-    private var pinnedNotesAdapter: PinnedNotesAdapter? = null
-    private var unpinnedNotesAdapter: UnPinnedNotesAdapter? = null
+    private var markedNotesAdapter: MarkedNotesAdapter? = null
+    private var unmarkedNotesAdapter: UnMarkedNotesAdapter? = null
 
 
     override fun onCreateView(
@@ -65,20 +63,20 @@ class FolderFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        pinnedNotesAdapter = PinnedNotesAdapter(this, this)
-        unpinnedNotesAdapter = UnPinnedNotesAdapter(this, this)
+        markedNotesAdapter = MarkedNotesAdapter(this, this)
+        unmarkedNotesAdapter = UnMarkedNotesAdapter(this, this)
 
         setupRecyclerView()
         observeLiveData()
     }
 
     private fun setupRecyclerView() {
-        recyclerViewPinnedNotes.layoutManager = LinearLayoutManager(context)
-        recyclerViewPinnedNotes.adapter = pinnedNotesAdapter
-        recyclerViewPinnedNotes.isNestedScrollingEnabled = false
-        recyclerViewUnPinnedNotes.layoutManager = LinearLayoutManager(context)
-        recyclerViewUnPinnedNotes.adapter = unpinnedNotesAdapter
-        recyclerViewUnPinnedNotes.isNestedScrollingEnabled = false
+        recyclerViewMarkedNotes.layoutManager = LinearLayoutManager(context)
+        recyclerViewMarkedNotes.adapter = markedNotesAdapter
+        recyclerViewMarkedNotes.isNestedScrollingEnabled = false
+        recyclerViewUnMarkedNotes.layoutManager = LinearLayoutManager(context)
+        recyclerViewUnMarkedNotes.adapter = unmarkedNotesAdapter
+        recyclerViewUnMarkedNotes.isNestedScrollingEnabled = false
     }
 
     private fun observeLiveData() {
@@ -105,8 +103,8 @@ class FolderFragment : Fragment(),
             view?.let { view ->
                 when(event) {
                     is LoadNotesEvent.Success -> {
-                        pinnedNotesAdapter?.setNewData(event.pinnedNotes)
-                        unpinnedNotesAdapter?.setNewData(event.unPinnedNotes)
+                        markedNotesAdapter?.setNewData(event.pinnedNotes)
+                        unmarkedNotesAdapter?.setNewData(event.unPinnedNotes)
                     }
                     is LoadNotesEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
                     is LoadNotesEvent.NoUserFoundError -> R.string.no_user_found.showAsSnackBar(view)
@@ -120,6 +118,16 @@ class FolderFragment : Fragment(),
 
         folderFragmentViewModel.onBackClicked.observe(viewLifecycleOwner, EventObserver {
             findNavController().popBackStack()
+        })
+
+        folderFragmentViewModel.markNote.observe(viewLifecycleOwner, SpecificEventObserver<MarkNoteEvent> { event ->
+            view?.let { view ->
+                when(event) {
+                    is MarkNoteEvent.Success -> {}
+                    is MarkNoteEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
+                }
+            }
+
         })
 
 
@@ -164,7 +172,7 @@ class FolderFragment : Fragment(),
         noteUUID?.let { navigateToNote(it) }
     }
 
-    override fun onImageClick(noteUUID: String?) {
-        noteUUID?.let { Log.i("ViewClicked", "ImageView")}
+    override fun onImageClick(note: NoteModel) {
+        folderFragmentViewModel.markNote(args.folderUUID, note)
     }
 }
