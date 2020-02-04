@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.FirebaseException
+import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
@@ -103,6 +104,7 @@ class RegisterFragmentViewModel(private val authRepository: AuthRepository,
             is FirebaseAuthWeakPasswordException -> RegisterEventError.WeakPassword()
             is FirebaseAuthInvalidCredentialsException -> RegisterEventError.InvalidEmail()
             is FirebaseAuthUserCollisionException -> RegisterEventError.EmailAlreadyUsed()
+            is FirebaseTooManyRequestsException -> RegisterEventError.TooManyRequests()
             is FirebaseException -> RegisterEventError.NetworkError()
             else -> {
                 Log.e("Register", "${throwable?.message}", throwable)
@@ -128,4 +130,5 @@ sealed class RegisterEventError : Event() {
     class InvalidEmail : RegisterEventError()
     class WeakPassword : RegisterEventError()
     class UnknownError : RegisterEventError()
+    class TooManyRequests: RegisterEventError()
 }

@@ -106,6 +106,7 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository,
             is InvalidEmailException -> InvalidEmail()
             is FirebaseAuthInvalidUserException -> BadCredentials()
             is FirebaseAuthInvalidCredentialsException -> BadCredentials()
+            is FirebaseTooManyRequestsException -> TooManyRequests()
             is FirebaseException -> NetworkError()
             else -> {
                 Log.e("Login", "${throwable?.message}", throwable)
@@ -128,6 +129,7 @@ sealed class LoginEvent : Event() {
     class NetworkError : LoginEvent()
     class UserEmailNotVerified : LoginEvent()
     class UnknownError : LoginEvent()
+    class TooManyRequests: LoginEvent()
 }
 
 sealed class CreateAccountEvent: Event() {

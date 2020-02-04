@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.FirebaseException
+import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
 import com.pixelart.notedock.domain.livedata.model.Event
@@ -68,6 +69,7 @@ class ResetPasswordFragmentViewModel(private val authRepository: AuthRepository)
         return when(throwable) {
             is FirebaseAuthInvalidUserException -> RecoverAccountEventError.InvalidEmail()
             is FirebaseException -> RecoverAccountEventError.NetworkError()
+            is FirebaseTooManyRequestsException -> RecoverAccountEventError.TooManyRequests()
             else -> {
                 Log.e("Register", "${throwable?.message}", throwable)
                 RecoverAccountEventError.UnknownError()
@@ -85,4 +87,5 @@ sealed class RecoverAccountEventError: Event() {
     class InvalidEmail: RecoverAccountEventError()
     class NetworkError: RecoverAccountEventError()
     class UnknownError: RecoverAccountEventError()
+    class TooManyRequests: RecoverAccountEventError()
 }
