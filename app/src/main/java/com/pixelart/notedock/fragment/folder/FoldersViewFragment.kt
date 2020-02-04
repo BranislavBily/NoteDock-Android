@@ -3,9 +3,11 @@ package com.pixelart.notedock.fragment.folder
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.ViewDataBinding
@@ -23,10 +25,8 @@ import com.pixelart.notedock.dialog.CreateFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogSuccessListener
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.showAsSnackBar
-import com.pixelart.notedock.model.FolderModel
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
 import com.pixelart.notedock.viewModel.folder.CreateFolderEvent
-import com.pixelart.notedock.viewModel.folder.FolderNameTakenEvent
 import com.pixelart.notedock.viewModel.folder.FoldersViewFragmentViewModel
 import com.pixelart.notedock.viewModel.folder.LoadFoldersEvent
 import kotlinx.android.synthetic.main.fragment_folders_view.*
@@ -125,6 +125,7 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
                     is CreateFolderEvent.Success -> { }
                     is CreateFolderEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
                     is CreateFolderEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
+                    is CreateFolderEvent.FolderNameTaken -> R.string.folder_name_already_exists.showAsSnackBar(view)
                 }
             } ?: run {
                 Log.e("FolderFragment", "View not found")
@@ -133,26 +134,6 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
 
         foldersViewFragmentViewModel.fabClicked.observe(viewLifecycleOwner, SpecificEventObserver<ButtonPressedEvent> {
             createFolderDialog()
-        })
-
-        foldersViewFragmentViewModel.isNameTaken.observe(viewLifecycleOwner, Observer { event ->
-            view?.let { view ->
-                when (event) {
-                    is FolderNameTakenEvent.Success -> {
-                        if (event.taken) {
-                            R.string.folder_name_already_exists.showAsSnackBar(view)
-                        } else {
-                            foldersViewFragmentViewModel.uploadFolderModel(FolderModel(event.folderName))
-                        }
-                    }
-                    is FolderNameTakenEvent.Error -> {
-                        R.string.error_occurred.showAsSnackBar(view)
-                    }
-                    is FolderNameTakenEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
-                }
-            } ?: run {
-                Log.e("FolderFragment", "View not found")
-            }
         })
     }
 
