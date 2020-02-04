@@ -8,7 +8,8 @@ import com.pixelart.notedock.R
 import com.pixelart.notedock.model.NoteModel
 import kotlinx.android.synthetic.main.note_list_item.view.*
 
-class NotesAdapter(private val onNoteClickListener: OnNoteClickListener) : RecyclerView.Adapter<NotesAdapter.NotesHolder>() {
+class UnMarkedNotesAdapter(private val onNoteClickListener: OnNoteClickListener,
+                           private val onImageClickListener: OnImageClickListener) : RecyclerView.Adapter<UnMarkedNotesAdapter.NotesHolder>() {
 
     private var notes = ArrayList<NoteModel>()
 
@@ -19,7 +20,7 @@ class NotesAdapter(private val onNoteClickListener: OnNoteClickListener) : Recyc
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotesHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.note_list_item, parent, false)
-        return NotesHolder(view, onNoteClickListener)
+        return NotesHolder(view, onNoteClickListener, onImageClickListener)
     }
 
     override fun getItemCount(): Int {
@@ -30,20 +31,34 @@ class NotesAdapter(private val onNoteClickListener: OnNoteClickListener) : Recyc
         holder.bindData(notes[position])
     }
 
-
-    class NotesHolder(itemView: View, private val onNoteClickListener: OnNoteClickListener): RecyclerView.ViewHolder(itemView) {
+    class NotesHolder(itemView: View,
+                      private val onNoteClickListener: OnNoteClickListener,
+                      private val onImageClickListener: OnImageClickListener
+    ): RecyclerView.ViewHolder(itemView) {
 
         fun bindData(note: NoteModel) {
-            itemView.editTextNoteTitle.text = note.noteTitle
+            itemView.textViewNoteTitle.text = note.noteTitle
             itemView.textViewNotePreview.text = note.noteDescription
 
-            itemView.setOnClickListener {
+            itemView.imageViewPinned.setImageResource(R.drawable.ic_unmarked)
+
+            itemView.textViewNoteTitle.setOnClickListener {
                 onNoteClickListener.onNoteClick(note.uuid)
+            }
+            itemView.textViewNotePreview.setOnClickListener {
+                onNoteClickListener.onNoteClick(note.uuid)
+            }
+            itemView.imageViewPinned.setOnClickListener {
+                onImageClickListener.onImageClick(note)
             }
         }
     }
 
     interface OnNoteClickListener {
         fun onNoteClick(noteUUID: String?)
+    }
+
+    interface OnImageClickListener {
+        fun onImageClick(note: NoteModel)
     }
 }
