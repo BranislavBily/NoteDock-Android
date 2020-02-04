@@ -113,7 +113,7 @@ class FolderFragmentViewModel(
                 else unpinnedNotesList.add(note)
             }
         }
-        pinnedNotes.value = pinnedNotesList
+        pinnedNotes.postValue(pinnedNotesList)
         _loadedNotes.postValue(LoadNotesEvent.Success(pinnedNotesList, unpinnedNotesList))
     }
 
