@@ -84,17 +84,14 @@ class NoteFragmentViewModel(
 
     fun saveNote(folderUUID: String, noteModel: NoteModel) {
         auth.currentUser?.let { user ->
-            startStopDisposeBag?.let { bag ->
-                updateNoteUseCase.updateNote(user, folderUUID, noteModel)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(Schedulers.io())
-                    .subscribe({ _noteSaved.postValue(SaveNoteEvent.Success()) },
-                        { error ->
-                            Crashlytics.logException(error)
-                            _noteSaved.postValue(SaveNoteEvent.Error())
-                        })
-                    .addTo(bag)
-            }
+            updateNoteUseCase.updateNote(user, folderUUID, noteModel)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe({ _noteSaved.postValue(SaveNoteEvent.Success()) },
+                    { error ->
+                        Crashlytics.logException(error)
+                        _noteSaved.postValue(SaveNoteEvent.Error())
+                    })
         } ?: run {
             _noteSaved.postValue(SaveNoteEvent.NoUserFound())
         }
@@ -104,12 +101,12 @@ class NoteFragmentViewModel(
 sealed class NoteDeletedEvent : Event() {
     class Success : NoteDeletedEvent()
     class Error : NoteDeletedEvent()
-    class NoUserFound: NoteDeletedEvent()
+    class NoUserFound : NoteDeletedEvent()
 }
 
-sealed class LoadNoteEvent: Event() {
-    class Error: LoadNoteEvent()
-    class NoUserFound: LoadNoteEvent()
+sealed class LoadNoteEvent : Event() {
+    class Error : LoadNoteEvent()
+    class NoUserFound : LoadNoteEvent()
 }
 
 sealed class SaveNoteEvent : Event() {
