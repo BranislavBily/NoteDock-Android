@@ -43,5 +43,32 @@
     <string name="verification_email_sent">Verification email sent</string>
     <string name="no_user_found">No user found</string>
     <string name="too_many_requests">Too many requests. Try again later</string>
-    <string name="pinned">Pinned</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Preference Titles -->
+    <string name="account">Account</string>
+    <string name="help">Help</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="changePassword">Change Password</string>
+    <string name="rateUs">Rate Us</string>
+    <string name="helpAndSupport">Help and Support</string>
+    <string name="title_activity_account_settings">Account</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+    <string name="marked">Marked</string>
+    <string name="settings">Settings</string>
+    <string name="icon">icon</string>
+    <string name="not_on_appstore">We are not on the app store, yet</string>
 </resources>

@@ -16,10 +16,10 @@ class MarkNoteImpl(private val firebaseIDSRepository: FirebaseIDSRepository,
 ): MarkNoteUseCase {
     override fun markNote(user: FirebaseUser, folderUUID: String, note: NoteModel): Completable {
         return Completable.create { emitter ->
-            note.marked?.let { pinned ->
+            note.marked?.let { marked ->
                 note.uuid?.let { uuid ->
                     val data = hashMapOf<String, Any>(
-                        firebaseIDSRepository.getNotePinned() to !pinned
+                        firebaseIDSRepository.getNoteMarked() to !marked
                     )
                     val listener = firebaseInstance.collection(firebaseIDSRepository.getCollectionUsers())
                             .document(user.uid)

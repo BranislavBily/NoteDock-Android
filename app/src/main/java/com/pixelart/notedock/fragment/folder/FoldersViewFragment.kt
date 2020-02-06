@@ -4,18 +4,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.ViewDataBinding
+import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
-import com.pixelart.notedock.BR
 import com.pixelart.notedock.NavigationRouter
 import com.pixelart.notedock.R
 import com.pixelart.notedock.activity.SplashActivity
@@ -92,14 +91,6 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
                 startActivity(intent)
             }
         }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
-            R.id.settings -> {
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun setupRecyclerView(foldersAdapter: FoldersAdapter) {

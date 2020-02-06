@@ -34,9 +34,7 @@ import org.koin.core.parameter.parametersOf
 
 class FolderFragment : Fragment(),
     MarkedNotesAdapter.OnNoteClickListener,
-    MarkedNotesAdapter.OnImageClickListener,
-    UnMarkedNotesAdapter.OnNoteClickListener,
-    UnMarkedNotesAdapter.OnImageClickListener {
+    MarkedNotesAdapter.OnImageClickListener {
     private val args: FolderFragmentArgs by navArgs()
     private val folderFragmentViewModel: FolderFragmentViewModel by viewModel {
         parametersOf(args.folderUUID, args.folderName)
@@ -103,8 +101,8 @@ class FolderFragment : Fragment(),
             view?.let { view ->
                 when(event) {
                     is LoadNotesEvent.Success -> {
-                        markedNotesAdapter?.setNewData(event.pinnedNotes)
-                        unmarkedNotesAdapter?.setNewData(event.unPinnedNotes)
+                        markedNotesAdapter?.setNewData(event.markedNotes)
+                        unmarkedNotesAdapter?.setNewData(event.unmarkedNotes)
                     }
                     is LoadNotesEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
                     is LoadNotesEvent.NoUserFoundError -> R.string.no_user_found.showAsSnackBar(view)

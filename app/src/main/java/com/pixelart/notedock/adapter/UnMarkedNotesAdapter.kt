@@ -8,8 +8,9 @@ import com.pixelart.notedock.R
 import com.pixelart.notedock.model.NoteModel
 import kotlinx.android.synthetic.main.note_list_item.view.*
 
-class UnMarkedNotesAdapter(private val onNoteClickListener: OnNoteClickListener,
-                           private val onImageClickListener: OnImageClickListener) : RecyclerView.Adapter<UnMarkedNotesAdapter.NotesHolder>() {
+class UnMarkedNotesAdapter(private val onNoteClickListener: MarkedNotesAdapter.OnNoteClickListener,
+                           private val onImageClickListener: MarkedNotesAdapter.OnImageClickListener
+) : RecyclerView.Adapter<UnMarkedNotesAdapter.NotesHolder>() {
 
     private var notes = ArrayList<NoteModel>()
 
@@ -32,8 +33,8 @@ class UnMarkedNotesAdapter(private val onNoteClickListener: OnNoteClickListener,
     }
 
     class NotesHolder(itemView: View,
-                      private val onNoteClickListener: OnNoteClickListener,
-                      private val onImageClickListener: OnImageClickListener
+                      private val onNoteClickListener: MarkedNotesAdapter.OnNoteClickListener,
+                      private val onImageClickListener: MarkedNotesAdapter.OnImageClickListener
     ): RecyclerView.ViewHolder(itemView) {
 
         fun bindData(note: NoteModel) {
@@ -52,13 +53,5 @@ class UnMarkedNotesAdapter(private val onNoteClickListener: OnNoteClickListener,
                 onImageClickListener.onImageClick(note)
             }
         }
-    }
-
-    interface OnNoteClickListener {
-        fun onNoteClick(noteUUID: String?)
-    }
-
-    interface OnImageClickListener {
-        fun onImageClick(note: NoteModel)
     }
 }

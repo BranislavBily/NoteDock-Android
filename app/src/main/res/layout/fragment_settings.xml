@@ -21,6 +21,7 @@
                 android:background="#E6FFFFFF"
                 android:elevation="8dp"
                 app:navigationIcon="@drawable/ic_arrow_back"
+                app:title="@string/settings"
                 app:onBackClicked="@{() -> viewmodel.onBackPressed()}"
                 app:titleTextColor="@color/colorPrimary" />
 
@@ -29,15 +30,13 @@
                 android:layout_height="match_parent"
                 android:paddingTop="?attr/actionBarSize">
 
-            <Button
-                    onThrottledClick="@{() -> viewmodel.onLogOutButtonClicked()}"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/log_out"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewSettings"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:paddingBottom="8dp"
+                    tools:listitem="@layout/settings_list_item" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

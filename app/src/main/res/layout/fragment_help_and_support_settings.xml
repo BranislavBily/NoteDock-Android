@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+                name="viewmodel"
+                type="com.pixelart.notedock.viewModel.settings.HelpAndSupportViewModel" />
+    </data>
+
+    <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+        <androidx.appcompat.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="#E6FFFFFF"
+                android:elevation="8dp"
+                app:menu="@menu/folder_view_menu"
+                app:navigationIcon="@drawable/ic_arrow_back"
+                app:onBackClicked="@{() -> viewmodel.onBackPressed()}"
+                app:title="@string/helpAndSupport"
+                app:titleTextColor="@color/colorPrimary" />
+    </FrameLayout>
+</layout>

@@ -3,22 +3,29 @@ package com.pixelart.notedock.fragment.settings
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.pixelart.notedock.BR
+import com.pixelart.notedock.NavigationRouter
 
 import com.pixelart.notedock.R
 import com.pixelart.notedock.activity.LoginActivity
+import com.pixelart.notedock.adapter.SettingsAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
+import com.pixelart.notedock.ext.showAsSnackBar
+import com.pixelart.notedock.model.SettingsModel
 import com.pixelart.notedock.viewModel.settings.SettingsFragmentViewModel
+import kotlinx.android.synthetic.main.fragment_settings.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
-class SettingsFragment : Fragment() {
+class SettingsFragment : Fragment(), SettingsAdapter.OnSettingsClickListener {
 
     private val settingFragmentViewModel: SettingsFragmentViewModel by viewModel()
 
@@ -39,6 +46,9 @@ class SettingsFragment : Fragment() {
         super.onStart()
 
         observeLiveData()
+        val settingsAdapter = SettingsAdapter( createSettings(), this)
+        recyclerViewSettings.layoutManager = LinearLayoutManager(context)
+        recyclerViewSettings.adapter = settingsAdapter
     }
 
     private fun observeLiveData() {
@@ -55,5 +65,39 @@ class SettingsFragment : Fragment() {
                 activity?.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
             }
         })
+    }
+
+    override fun onSettingClick(setting: SettingsModel) {
+        when(setting.title) {
+            resources.getString(R.string.account) -> {
+                val action = SettingsFragmentDirections.actionSettingsFragmentToAccountSettingsFragment()
+                val navigationRouter = NavigationRouter(view)
+                navigationRouter.openAction(action)
+            }
+            resources.getString(R.string.changePassword) -> {
+                val action = SettingsFragmentDirections.actionSettingsFragmentToChangePasswordSettingsFragment()
+                val navigationRouter = NavigationRouter(view)
+                navigationRouter.openAction(action)
+            }
+            resources.getString(R.string.rateUs) -> {
+                view?.let { R.string.not_on_appstore.showAsSnackBar(it) }
+            }
+            resources.getString(R.string.helpAndSupport) -> {
+                val action = SettingsFragmentDirections.actionSettingsFragmentToHelpAndSupportSettingsFragment()
+                val navigationRouter = NavigationRouter(view)
+                navigationRouter.openAction(action)
+            }
+            else -> settingFragmentViewModel.logOut()
+        }
+    }
+
+    private fun createSettings(): ArrayList<SettingsModel> {
+        val settings = ArrayList<SettingsModel>()
+        settings.add(SettingsModel(R.drawable.ic_account, resources.getString(R.string.account)))
+        settings.add(SettingsModel(R.drawable.ic_password, resources.getString(R.string.changePassword)))
+        settings.add(SettingsModel(R.drawable.ic_rateus, resources.getString(R.string.rateUs)))
+        settings.add(SettingsModel(R.drawable.ic_help, resources.getString(R.string.helpAndSupport)))
+        settings.add(SettingsModel(R.drawable.ic_logout, resources.getString(R.string.log_out)))
+        return settings
     }
 }
