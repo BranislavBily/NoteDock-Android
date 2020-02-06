@@ -11,60 +11,49 @@ import com.pixelart.notedock.fragment.settings.SettingsFragmentDirections
 class NavigationRouter(private val view: View?) {
 
     fun settingsToAccount() {
-        view?.let { view ->
-            val action = SettingsFragmentDirections.actionSettingsFragmentToAccountSettingsFragment()
-            val navigationController = Navigation.findNavController(view)
-            navigationController.navigate(action)
-        }
+        val action = SettingsFragmentDirections.actionSettingsFragmentToAccountSettingsFragment()
+        openAction(action)
     }
 
     fun settingsToChangePassword() {
-        view?.let { view ->
-            val action = SettingsFragmentDirections.actionSettingsFragmentToChangePasswordSettingsFragment()
-            val navigationController = Navigation.findNavController(view)
-            navigationController.navigate(action)
-        }
+        val action = SettingsFragmentDirections.actionSettingsFragmentToChangePasswordSettingsFragment()
+        openAction(action)
     }
 
     fun settingsToHelpAndSupport() {
-        view?.let { view ->
-            val action = SettingsFragmentDirections.actionSettingsFragmentToHelpAndSupportSettingsFragment()
-            val navigationController = Navigation.findNavController(view)
-            navigationController.navigate(action)
-        }
+        val action = SettingsFragmentDirections.actionSettingsFragmentToHelpAndSupportSettingsFragment()
+        openAction(action)
     }
 
     fun folderToNote(folderUUID: String, noteUUID: String) {
-        view?.let { view ->
-            val action = FolderFragmentDirections.actionFolderFragmentToNoteFragment(folderUUID, noteUUID)
-            val navigationController = Navigation.findNavController(view)
-            navigationController.navigate(action)
-        }
+        val action = FolderFragmentDirections.actionFolderFragmentToNoteFragment(folderUUID, noteUUID)
+        openAction(action)
     }
 
     fun foldersToSettings() {
-        view?.let { view ->
-            val action = FoldersViewFragmentDirections.actionFoldersViewFragmentToSettingsFragment()
-            val navigationRouter = NavigationRouter(view)
-            navigationRouter.openAction(action)
-        }
+        val action = FoldersViewFragmentDirections.actionFoldersViewFragmentToSettingsFragment()
+        openAction(action)
     }
 
     fun foldersToFolder(folderUUID: String, folderName: String) {
         val action = FoldersViewFragmentDirections.actionFoldersViewFragmentToFolderFragment(folderUUID, folderName)
-        val navigationRouter = NavigationRouter(view)
-        navigationRouter.openAction(action)
+        openAction(action)
     }
 
     fun loginToRegister() {
         val action = LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
-        val navigationRouter = NavigationRouter(view)
-        navigationRouter.openAction(action)
+        openAction(action)
     }
 
     fun loginToForgotPassword() {
         val action = LoginFragmentDirections.actionLoginFragmentToResetPasswordFragment()
-        val navigationRouter = NavigationRouter(view)
-        navigationRouter.openAction(action)
+        openAction(action)
+    }
+
+    private fun openAction(action: NavDirections) {
+        view?.let {
+            val navigationController = Navigation.findNavController(view)
+            navigationController.navigate(action)
+        }
     }
 }
