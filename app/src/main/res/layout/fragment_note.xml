@@ -8,7 +8,7 @@
 
         <variable
                 name="viewmodel"
-                type="com.pixelart.notedock.viewModel.NoteFragmentViewModel" />
+                type="com.pixelart.notedock.viewModel.note.NoteFragmentViewModel" />
     </data>
 
     <FrameLayout
