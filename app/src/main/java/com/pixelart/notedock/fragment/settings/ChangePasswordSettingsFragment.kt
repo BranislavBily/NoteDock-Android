@@ -18,20 +18,17 @@ import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.hideSoftKeyboard
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.viewModel.EyeViewModel
-import com.pixelart.notedock.viewModel.EyeViewModel2
-import com.pixelart.notedock.viewModel.EyeViewModel3
 import com.pixelart.notedock.viewModel.settings.ChangePasswordEvent
 import com.pixelart.notedock.viewModel.settings.ChangePasswordViewModel
 import kotlinx.android.synthetic.main.fragment_change_password_settings.*
-import kotlinx.android.synthetic.main.fragment_login.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class ChangePasswordSettingsFragment : Fragment() {
 
     private val changePasswordViewModel: ChangePasswordViewModel by viewModel()
     private val eyeViewModel: EyeViewModel by viewModel()
-    private val eyeViewModel2: EyeViewModel2 by viewModel()
-    private val eyeViewModel3: EyeViewModel3 by viewModel()
+    private val eyeViewModel2: EyeViewModel by viewModel()
+    private val eyeViewModel3: EyeViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
