@@ -71,6 +71,10 @@ class SettingsFragment : Fragment(), SettingsAdapter.OnSettingsClickListener {
 
     private fun createSettings(): ArrayList<SettingsModel> {
         val settings = ArrayList<SettingsModel>()
+        settings.add(SettingsModel(R.drawable.ic_account, "Account"))
+        settings.add(SettingsModel(R.drawable.ic_password, "Change password"))
+        settings.add(SettingsModel(R.drawable.ic_rateus, "Rate us"))
+        settings.add(SettingsModel(R.drawable.ic_help, "Help and support"))
         settings.add(SettingsModel(R.drawable.ic_logout, "Log out"))
         return settings
     }
