@@ -80,11 +80,23 @@
                 app:exitAnim="@anim/slide_out_left"
                 app:popEnterAnim="@anim/slide_in_left"
                 app:popExitAnim="@anim/slide_out_right" />
+        <action
+                android:id="@+id/action_settingsFragment_to_changePasswordSettingsFragment"
+                app:destination="@id/changePasswordSettingsFragment"
+                app:enterAnim="@anim/slide_in_right"
+                app:exitAnim="@anim/slide_out_left"
+                app:popEnterAnim="@anim/slide_in_left"
+                app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
             android:id="@+id/accountSettingsFragment"
             android:name="com.pixelart.notedock.fragment.settings.AccountSettingsFragment"
             android:label="fragment_account_settings"
             tools:layout="@layout/fragment_account_settings" />
+    <fragment
+            android:id="@+id/changePasswordSettingsFragment"
+            android:name="com.pixelart.notedock.fragment.settings.ChangePasswordSettingsFragment"
+            tools:layout="@layout/fragment_change_password_settings"
+            android:label="ChangePasswordSettingsFragment" />
 
 </navigation>

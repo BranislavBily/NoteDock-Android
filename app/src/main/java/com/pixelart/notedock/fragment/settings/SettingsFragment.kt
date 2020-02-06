@@ -73,7 +73,11 @@ class SettingsFragment : Fragment(), SettingsAdapter.OnSettingsClickListener {
                 val navigationRouter = NavigationRouter(view)
                 navigationRouter.openAction(action)
             }
-            resources.getString(R.string.changePassword) -> Log.i("Settings", "ChangePassowrd")
+            resources.getString(R.string.changePassword) -> {
+                val action = SettingsFragmentDirections.actionSettingsFragmentToChangePasswordSettingsFragment()
+                val navigationRouter = NavigationRouter(view)
+                navigationRouter.openAction(action)
+            }
             resources.getString(R.string.rateUs) -> Log.i("Settings", "Rate us")
             resources.getString(R.string.helpAndSupport) -> Log.i("Settings", "Help and support")
             else -> settingFragmentViewModel.logOut()

@@ -11,23 +11,23 @@ import com.pixelart.notedock.BR
 import com.pixelart.notedock.R
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
-import com.pixelart.notedock.viewModel.settings.AccountSettingsViewModel
+import com.pixelart.notedock.viewModel.settings.ChangePasswordViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
 
-class AccountSettingsFragment : Fragment() {
+class ChangePasswordSettingsFragment : Fragment() {
 
-    private val accountSettingsViewModel: AccountSettingsViewModel by viewModel()
+    private val changePasswordViewModel: ChangePasswordViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val dataBinding = setupDataBinding<ViewDataBinding>(
-            R.layout.fragment_account_settings,
-            BR.viewmodel to accountSettingsViewModel
+            R.layout.fragment_change_password_settings,
+            BR.viewmodel to changePasswordViewModel
         )
         setHasOptionsMenu(true)
-        accountSettingsViewModel.lifecycleOwner = this
+        changePasswordViewModel.lifecycleOwner = this
         return dataBinding.root
     }
 
@@ -38,7 +38,7 @@ class AccountSettingsFragment : Fragment() {
     }
 
     private fun observeLiveData() {
-        accountSettingsViewModel.onBackClicked.observe(viewLifecycleOwner, EventObserver {
+        changePasswordViewModel.onBackClicked.observe(viewLifecycleOwner, EventObserver {
             findNavController().popBackStack()
         })
     }
