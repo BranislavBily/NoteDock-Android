@@ -81,4 +81,6 @@
     <string name="please_fill_all_fields">Please fill all fields</string>
     <string name="new_password_cannot_be_old">Your new password cannot be old</string>
     <string name="wrong_password">You entered wrong current password</string>
+    <string name="send_bug_report">Send bug report</string>
+    <string name="send_feedback">Send feedback</string>
 </resources>

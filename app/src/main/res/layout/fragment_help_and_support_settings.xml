@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
                 name="viewmodel"
                 type="com.pixelart.notedock.viewModel.settings.HelpAndSupportViewModel" />
     </data>
 
-    <FrameLayout
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@drawable/note_background"
             >
 
         <androidx.appcompat.widget.Toolbar
@@ -21,5 +24,13 @@
                 app:onBackClicked="@{() -> viewmodel.onBackPressed()}"
                 app:title="@string/helpAndSupport"
                 app:titleTextColor="@color/colorPrimary" />
-    </FrameLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_help_and_support"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingBottom="8dp"
+                tools:listitem="@layout/settings_list_item" />
+    </LinearLayout>
 </layout>
