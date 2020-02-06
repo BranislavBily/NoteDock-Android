@@ -7,6 +7,9 @@
         <variable
                 name="viewmodel"
                 type="com.pixelart.notedock.viewModel.authentication.LoginFragmentViewModel" />
+        <variable
+                name="eyeviewmodel"
+                type="com.pixelart.notedock.viewModel.EyeViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -97,14 +100,14 @@
         <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:src="@{viewmodel.eyeOpen ? @drawable/ic_eye_open : @drawable/ic_eye_closed}"
-                visibleOrGone="@{viewmodel.eyeVisible}"
+                android:src="@{eyeviewmodel.eyeOpen ? @drawable/ic_eye_open : @drawable/ic_eye_closed}"
+                visibleOrGone="@{eyeviewmodel.eyeVisible}"
                 app:layout_constraintBottom_toBottomOf="@+id/editTextPassword"
                 app:layout_constraintEnd_toEndOf="@+id/editTextPassword"
                 app:layout_constraintStart_toStartOf="@+id/editTextPassword"
                 app:layout_constraintHorizontal_bias="0.95"
                 app:layout_constraintVertical_bias="0.4"
-                android:onClick="@{() -> viewmodel.onEyeClick()}"
+                android:onClick="@{() -> eyeviewmodel.onEyeClick()}"
                 app:layout_constraintTop_toTopOf="@+id/editTextPassword" />
 
         <TextView

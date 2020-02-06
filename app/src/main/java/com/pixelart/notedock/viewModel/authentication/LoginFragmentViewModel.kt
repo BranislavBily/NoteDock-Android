@@ -31,18 +31,11 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository,
     private val _loading = MutableLiveData<Boolean>().apply { postValue(false) }
     val loading: LiveData<Boolean> = _loading
 
-    private val _eyeVisible = MutableLiveData<Boolean>().apply { postValue(false) }
-    val eyeVisible: LiveData<Boolean> = _eyeVisible
-
     private val _sendEmail = MutableLiveData<SendEmailEvent>()
     val sendEmail: LiveData<SendEmailEvent> = _sendEmail
 
     private val _forgotPassword = MutableLiveData<ButtonPressedEvent>()
     val forgotPassword: LiveData<ButtonPressedEvent> = _forgotPassword
-
-    private val _eyeOpen = MutableLiveData<Boolean>().apply { postValue(false) }
-    val eyeOpen: LiveData<Boolean> = _eyeOpen
-
 
     private val _createAccount = MutableLiveData<CreateAccountEvent>()
     val createAccount: LiveData<CreateAccountEvent> = _createAccount
@@ -98,17 +91,6 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository,
             } else {
                 _loginCompleted.postValue(UserEmailNotVerified())
             }
-        }
-    }
-
-    fun changeEyeVisibility(visible: Boolean) {
-        _eyeVisible.postValue(visible)
-    }
-
-    fun onEyeClick() {
-        val eye = eyeOpen.value
-        eye?.let {
-            _eyeOpen.postValue(!eye)
         }
     }
 

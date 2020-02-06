@@ -2,6 +2,7 @@ package com.pixelart.notedock.fragment.authentication
 
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
@@ -26,13 +27,17 @@ import com.pixelart.notedock.domain.livedata.observer.DataEventObserver
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.showAsSnackBar
+import com.pixelart.notedock.viewModel.EyeViewModel
 import com.pixelart.notedock.viewModel.authentication.*
+import io.opencensus.stats.ViewData
 import kotlinx.android.synthetic.main.fragment_login.*
 import org.koin.android.viewmodel.ext.android.viewModel
+import kotlin.math.log
 
 class LoginFragment : Fragment() {
 
     private val loginFragmentViewModel: LoginFragmentViewModel by viewModel()
+    private val eyeViewModel: EyeViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,7 +45,7 @@ class LoginFragment : Fragment() {
     ): View? {
         val dataBinding = setupDataBinding<ViewDataBinding>(
             R.layout.fragment_login,
-            BR.viewmodel to loginFragmentViewModel
+            BR.viewmodel to loginFragmentViewModel, BR.eyeviewmodel to eyeViewModel
         )
         loginFragmentViewModel.lifecycleOwner = this
         return dataBinding.root
@@ -49,8 +54,10 @@ class LoginFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
+        Log.i("Color", Color.BLACK.toString())
+        Log.i("Color", Integer.toHexString(Color.BLACK).toUpperCase().substring(2))
         editTextPassword.setOnFocusChangeListener { _, hasFocus ->
-            loginFragmentViewModel.changeEyeVisibility(hasFocus)
+            eyeViewModel.changeEyeVisibility(hasFocus)
         }
         observeLiveData()
     }
@@ -85,7 +92,7 @@ class LoginFragment : Fragment() {
             }
         })
 
-        loginFragmentViewModel.eyeOpen.observe(viewLifecycleOwner, Observer { eyeOpen ->
+        eyeViewModel.eyeOpen.observe(viewLifecycleOwner, Observer { eyeOpen ->
             if (eyeOpen) {
                 val selection = editTextPassword.selectionStart
                 editTextPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
