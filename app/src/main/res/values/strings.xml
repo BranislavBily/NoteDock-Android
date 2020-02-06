@@ -77,4 +77,8 @@
     <string name="enter_your_new_password">Enter your new password</string>
     <string name="confirm_new_password">Confirm new password</string>
     <string name="save">Save</string>
+    <string name="password_changed">Your password has been changed</string>
+    <string name="please_fill_all_fields">Please fill all fields</string>
+    <string name="new_password_cannot_be_old">Your new password cannot be old</string>
+    <string name="wrong_password">You entered wrong current password</string>
 </resources>
