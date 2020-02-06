@@ -63,10 +63,10 @@ class HelpAndSupportSettingsFragment : Fragment(), SettingsAdapter.OnSettingsCli
     override fun onSettingClick(setting: SettingsModel) {
         when(setting.title) {
             getString(R.string.send_bug_report) -> {
-                activity?.openMailApp("branislav.bily@gmail.com", "NoteDock: Send bug report", "Come on man")
+                activity?.openMailApp("branislav.bily@gmail.com", "NoteDock: Send bug report")
             }
             getString(R.string.send_feedback) -> {
-                activity?.openMailApp("branislav.bily@gmail.com", "NoteDock: Send feedback", "WATAFAAAK")
+                activity?.openMailApp("branislav.bily@gmail.com", "NoteDock: Send feedback")
             }
         }
 
