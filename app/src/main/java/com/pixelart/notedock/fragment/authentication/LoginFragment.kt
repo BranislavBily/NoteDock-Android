@@ -81,19 +81,11 @@ class LoginFragment : Fragment() {
         })
 
         loginFragmentViewModel.forgotPassword.observe(viewLifecycleOwner, SpecificEventObserver {
-            view?.let { view ->
-                val action = LoginFragmentDirections.actionLoginFragmentToResetPasswordFragment()
-                val navigationRouter = NavigationRouter(view)
-                navigationRouter.openAction(action)
-            }
+            NavigationRouter(view).loginToForgotPassword()
         })
 
         loginFragmentViewModel.createAccount.observe(viewLifecycleOwner, SpecificEventObserver {
-            view?.let { view ->
-                val action = LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
-                val navigationRouter = NavigationRouter(view)
-                navigationRouter.openAction(action)
-            }
+            NavigationRouter(view).loginToRegister()
         })
 
         loginFragmentViewModel.sendEmail.observe(viewLifecycleOwner, SpecificEventObserver { event ->

@@ -3,6 +3,7 @@ package com.pixelart.notedock
 import android.view.View
 import androidx.navigation.NavDirections
 import androidx.navigation.Navigation
+import com.pixelart.notedock.fragment.authentication.LoginFragmentDirections
 import com.pixelart.notedock.fragment.folder.FolderFragmentDirections
 import com.pixelart.notedock.fragment.folder.FoldersViewFragmentDirections
 import com.pixelart.notedock.fragment.settings.SettingsFragmentDirections
@@ -51,6 +52,18 @@ class NavigationRouter(private val view: View?) {
 
     fun foldersToFolder(folderUUID: String, folderName: String) {
         val action = FoldersViewFragmentDirections.actionFoldersViewFragmentToFolderFragment(folderUUID, folderName)
+        val navigationRouter = NavigationRouter(view)
+        navigationRouter.openAction(action)
+    }
+
+    fun loginToRegister() {
+        val action = LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
+        val navigationRouter = NavigationRouter(view)
+        navigationRouter.openAction(action)
+    }
+
+    fun loginToForgotPassword() {
+        val action = LoginFragmentDirections.actionLoginFragmentToResetPasswordFragment()
         val navigationRouter = NavigationRouter(view)
         navigationRouter.openAction(action)
     }
