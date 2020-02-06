@@ -95,14 +95,15 @@
                 app:layout_constraintVertical_bias="0.1" />
 
         <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:src="@{viewmodel.eyeOpen ? @drawable/ic_eye_open : @drawable/ic_eye_closed}"
+                visibleOrGone="@{viewmodel.eyeVisible}"
                 app:layout_constraintBottom_toBottomOf="@+id/editTextPassword"
                 app:layout_constraintEnd_toEndOf="@+id/editTextPassword"
                 app:layout_constraintStart_toStartOf="@+id/editTextPassword"
                 app:layout_constraintHorizontal_bias="0.95"
-                app:layout_constraintVertical_bias="0.3"
+                app:layout_constraintVertical_bias="0.4"
                 android:onClick="@{() -> viewmodel.onEyeClick()}"
                 app:layout_constraintTop_toTopOf="@+id/editTextPassword" />
 

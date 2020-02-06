@@ -49,6 +49,9 @@ class LoginFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
+        editTextPassword.setOnFocusChangeListener { _, hasFocus ->
+            loginFragmentViewModel.changeEyeVisibility(hasFocus)
+        }
         observeLiveData()
     }
 
