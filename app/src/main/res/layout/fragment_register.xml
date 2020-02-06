@@ -7,14 +7,17 @@
         <variable
                 name="viewmodel"
                 type="com.pixelart.notedock.viewModel.authentication.RegisterFragmentViewModel" />
+        <variable
+                name="eyeviewmodel"
+                type="com.pixelart.notedock.viewModel.EyeViewModel" />
+        <variable
+                name="eyeviewmodelconfirm"
+                type="com.pixelart.notedock.viewModel.EyeViewModel2" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-
-
         <TextView
                 android:id="@+id/textViewEmail"
                 android:layout_width="wrap_content"
@@ -75,6 +78,19 @@
                 app:layout_constraintTop_toBottomOf="@id/textViewPassword"
                 app:layout_constraintVertical_bias="0.01" />
 
+        <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@{eyeviewmodel.eyeOpen ? @drawable/ic_eye_open : @drawable/ic_eye_closed}"
+                visibleOrGone="@{eyeviewmodel.eyeVisible}"
+                app:layout_constraintBottom_toBottomOf="@+id/editTextPassword"
+                app:layout_constraintEnd_toEndOf="@+id/editTextPassword"
+                app:layout_constraintStart_toStartOf="@+id/editTextPassword"
+                app:layout_constraintHorizontal_bias="0.95"
+                app:layout_constraintVertical_bias="0.4"
+                android:onClick="@{() -> eyeviewmodel.onEyeClick()}"
+                app:layout_constraintTop_toTopOf="@+id/editTextPassword" />
+
         <EditText
                 android:id="@+id/editTextConfirmPassword"
                 android:layout_width="0dp"
@@ -90,6 +106,21 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/editTextPassword"
                 app:layout_constraintVertical_bias="0.01" />
+
+        <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@{eyeviewmodelconfirm.eyeOpen ? @drawable/ic_eye_open : @drawable/ic_eye_closed}"
+                visibleOrGone="@{eyeviewmodelconfirm.eyeVisible}"
+                app:layout_constraintBottom_toBottomOf="@+id/editTextConfirmPassword"
+                app:layout_constraintEnd_toEndOf="@+id/editTextConfirmPassword"
+                app:layout_constraintStart_toStartOf="@+id/editTextConfirmPassword"
+                app:layout_constraintHorizontal_bias="0.95"
+                app:layout_constraintVertical_bias="0.4"
+                android:onClick="@{() -> eyeviewmodelconfirm.onEyeClick()}"
+                app:layout_constraintTop_toTopOf="@+id/editTextConfirmPassword" />
+
+
 
         <Button
                 android:id="@+id/buttonRegister"

@@ -6,6 +6,7 @@ import com.pixelart.notedock.domain.repository.*
 import com.pixelart.notedock.domain.usecase.folder.*
 import com.pixelart.notedock.domain.usecase.note.*
 import com.pixelart.notedock.viewModel.EyeViewModel
+import com.pixelart.notedock.viewModel.EyeViewModel2
 import com.pixelart.notedock.viewModel.folder.FolderFragmentViewModel
 import com.pixelart.notedock.viewModel.folder.FoldersViewFragmentViewModel
 import com.pixelart.notedock.viewModel.authentication.LoginFragmentViewModel
@@ -90,6 +91,9 @@ val viewModelModule = module {
 
     viewModel {
         EyeViewModel()
+    }
+    viewModel {
+        EyeViewModel2()
     }
 }
 

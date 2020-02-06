@@ -2,6 +2,7 @@ package com.pixelart.notedock.fragment.authentication
 
 
 import android.content.Intent
+import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
@@ -10,6 +11,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat.getColor
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -54,8 +56,6 @@ class LoginFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        Log.i("Color", Color.BLACK.toString())
-        Log.i("Color", Integer.toHexString(Color.BLACK).toUpperCase().substring(2))
         editTextPassword.setOnFocusChangeListener { _, hasFocus ->
             eyeViewModel.changeEyeVisibility(hasFocus)
         }
