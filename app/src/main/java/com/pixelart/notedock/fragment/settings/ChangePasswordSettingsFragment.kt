@@ -42,29 +42,12 @@ class ChangePasswordSettingsFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        setupToolbar()
         observeLiveData()
-    }
-
-    private fun setupToolbar() {
-        toolbarChangePassword?.setOnMenuItemClickListener {menuItem ->
-            when(menuItem.itemId) {
-                R.id.menu_item_save -> {
-                    changePasswordViewModel.saveNewPassword()
-                    true
-                }
-                else -> false
-            }
-        }
     }
 
     private fun observeLiveData() {
         changePasswordViewModel.onBackClicked.observe(viewLifecycleOwner, EventObserver {
             findNavController().popBackStack()
-        })
-
-        changePasswordViewModel.savePasswordEnabled.observe(viewLifecycleOwner, Observer { enabled ->
-            toolbarChangePassword?.menu?.getItem(0)?.isEnabled = enabled
         })
 
         changePasswordViewModel.loading.observe(viewLifecycleOwner, Observer { loading ->
