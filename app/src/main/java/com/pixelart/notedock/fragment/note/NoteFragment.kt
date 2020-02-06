@@ -2,8 +2,6 @@ package com.pixelart.notedock.fragment.note
 
 
 import android.os.Bundle
-import android.provider.ContactsContract
-import android.util.Log
 import android.view.*
 import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.baseAdapters.BR
@@ -21,10 +19,10 @@ import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.hideSoftKeyboard
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.model.NoteModel
-import com.pixelart.notedock.viewModel.LoadNoteEvent
-import com.pixelart.notedock.viewModel.NoteDeletedEvent
-import com.pixelart.notedock.viewModel.NoteFragmentViewModel
-import com.pixelart.notedock.viewModel.SaveNoteEvent
+import com.pixelart.notedock.viewModel.note.LoadNoteEvent
+import com.pixelart.notedock.viewModel.note.NoteDeletedEvent
+import com.pixelart.notedock.viewModel.note.NoteFragmentViewModel
+import com.pixelart.notedock.viewModel.note.SaveNoteEvent
 import kotlinx.android.synthetic.main.fragment_note.*
 import kotlinx.android.synthetic.main.fragment_note.view.*
 import org.koin.android.viewmodel.ext.android.viewModel

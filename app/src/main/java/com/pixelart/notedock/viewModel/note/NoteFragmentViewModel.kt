@@ -1,4 +1,4 @@
-package com.pixelart.notedock.viewModel
+package com.pixelart.notedock.viewModel.note
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -52,7 +52,11 @@ class NoteFragmentViewModel(
                     .subscribe({ noteModel ->
                         _editTextNoteTitle.postValue(noteModel.noteTitle)
                         _editTextNoteDescription.postValue(noteModel.noteDescription)
-                        _noteLoad.postValue(LoadNoteEvent.Success(noteModel))
+                        _noteLoad.postValue(
+                            LoadNoteEvent.Success(
+                                noteModel
+                            )
+                        )
                     }, { error ->
                         Crashlytics.logException(error)
                         _noteLoad.postValue(LoadNoteEvent.Error())

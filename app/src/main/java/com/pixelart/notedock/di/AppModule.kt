@@ -8,7 +8,7 @@ import com.pixelart.notedock.domain.usecase.note.*
 import com.pixelart.notedock.viewModel.folder.FolderFragmentViewModel
 import com.pixelart.notedock.viewModel.folder.FoldersViewFragmentViewModel
 import com.pixelart.notedock.viewModel.authentication.LoginFragmentViewModel
-import com.pixelart.notedock.viewModel.NoteFragmentViewModel
+import com.pixelart.notedock.viewModel.note.NoteFragmentViewModel
 import com.pixelart.notedock.viewModel.authentication.ResetPasswordFragmentViewModel
 import com.pixelart.notedock.viewModel.authentication.RegisterFragmentViewModel
 import com.pixelart.notedock.viewModel.settings.AccountSettingsViewModel
@@ -53,7 +53,7 @@ val viewModelModule = module {
         LoginFragmentViewModel(
             authRepository = get(),
             auth = FirebaseAuth.getInstance()
-            )
+        )
     }
     viewModel {
         RegisterFragmentViewModel(
@@ -65,7 +65,7 @@ val viewModelModule = module {
         ResetPasswordFragmentViewModel(
             authRepository = get()
         )
-    //Settings
+        //Settings
     }
     viewModel {
         SettingsFragmentViewModel(
