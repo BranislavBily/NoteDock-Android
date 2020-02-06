@@ -71,4 +71,9 @@
     <string name="settings">Settings</string>
     <string name="icon">icon</string>
     <string name="not_on_appstore">We are not on the app store, yet</string>
+    <string name="enter_your_current_password">Enter your current password</string>
+    <string name="current_password">Current password</string>
+    <string name="new_password">New password</string>
+    <string name="enter_your_new_password">Enter your new password</string>
+    <string name="confirm_new_password">Confirm new password</string>
 </resources>

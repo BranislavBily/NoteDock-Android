@@ -12,6 +12,7 @@
 
     <FrameLayout
             android:layout_width="match_parent"
+            android:background="@drawable/note_background"
             android:layout_height="match_parent">
 
         <androidx.appcompat.widget.Toolbar
@@ -37,8 +38,6 @@
                     android:clipToPadding="false"
                     android:paddingBottom="8dp"
                     tools:listitem="@layout/settings_list_item" />
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 </layout>
