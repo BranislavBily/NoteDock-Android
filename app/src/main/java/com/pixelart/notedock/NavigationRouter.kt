@@ -3,6 +3,7 @@ package com.pixelart.notedock
 import android.view.View
 import androidx.navigation.NavDirections
 import androidx.navigation.Navigation
+import com.pixelart.notedock.fragment.folder.FolderFragmentDirections
 import com.pixelart.notedock.fragment.settings.SettingsFragmentDirections
 
 class NavigationRouter(private val view: View?) {
@@ -26,6 +27,14 @@ class NavigationRouter(private val view: View?) {
     fun settingsToHelpAndSupport() {
         view?.let { view ->
             val action = SettingsFragmentDirections.actionSettingsFragmentToHelpAndSupportSettingsFragment()
+            val navigationController = Navigation.findNavController(view)
+            navigationController.navigate(action)
+        }
+    }
+
+    fun folderToNote(folderUUID: String, noteUUID: String) {
+        view?.let { view ->
+            val action = FolderFragmentDirections.actionFolderFragmentToNoteFragment(folderUUID, noteUUID)
             val navigationController = Navigation.findNavController(view)
             navigationController.navigate(action)
         }
