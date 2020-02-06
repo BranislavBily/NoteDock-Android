@@ -1,4 +1,4 @@
-package com.pixelart.notedock.adapter
+package com.pixelart.notedock.adapter.settings
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,12 +9,16 @@ import com.pixelart.notedock.model.SettingsModel
 import kotlinx.android.synthetic.main.settings_list_item.view.*
 
 class SettingsAdapter(private val settings: ArrayList<SettingsModel>,
-                      private val onSettingsClickListener: OnSettingsClickListener) : RecyclerView.Adapter<SettingsAdapter.SettingsHolder>() {
+                      private val onSettingsClickListener: OnSettingsClickListener
+) : RecyclerView.Adapter<SettingsAdapter.SettingsHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SettingsHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.settings_list_item, parent, false)
-        return SettingsHolder(view, onSettingsClickListener)
+        return SettingsHolder(
+            view,
+            onSettingsClickListener
+        )
     }
 
     override fun getItemCount(): Int {

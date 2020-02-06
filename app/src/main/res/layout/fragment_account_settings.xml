@@ -9,21 +9,33 @@
                 name="viewmodel"
                 type="com.pixelart.notedock.viewModel.settings.AccountSettingsViewModel" />
     </data>
-
-    <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".fragment.settings.AccountSettingsFragment">
-
-        <androidx.appcompat.widget.Toolbar
+        <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="#E6FFFFFF"
-                android:elevation="8dp"
-                app:navigationIcon="@drawable/ic_arrow_back"
-                app:onBackClicked="@{() -> viewmodel.onBackPressed()}"
-                app:title="@string/account"
-                app:titleTextColor="@color/colorPrimary" />
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-    </FrameLayout>
+            <androidx.appcompat.widget.Toolbar
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="#E6FFFFFF"
+                    android:elevation="8dp"
+                    app:navigationIcon="@drawable/ic_arrow_back"
+                    app:onBackClicked="@{() -> viewmodel.onBackPressed()}"
+                    app:title="@string/account"
+                    app:titleTextColor="@color/colorPrimary" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/note_background">
+
+                <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerViewAccount"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clipToPadding="false"
+                        tools:listitem="@layout/account_list_item" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 </layout>

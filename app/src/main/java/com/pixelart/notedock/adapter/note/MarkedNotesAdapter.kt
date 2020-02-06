@@ -1,4 +1,4 @@
-package com.pixelart.notedock.adapter
+package com.pixelart.notedock.adapter.note
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +9,8 @@ import com.pixelart.notedock.model.NoteModel
 import kotlinx.android.synthetic.main.note_list_item.view.*
 
 class MarkedNotesAdapter(private val onNoteClickListener: OnNoteClickListener,
-                         private val onImageClickListener: OnImageClickListener) : RecyclerView.Adapter<MarkedNotesAdapter.NotesHolder>() {
+                         private val onImageClickListener: OnImageClickListener
+) : RecyclerView.Adapter<MarkedNotesAdapter.NotesHolder>() {
 
     private var notes = ArrayList<NoteModel>()
 
@@ -20,7 +21,11 @@ class MarkedNotesAdapter(private val onNoteClickListener: OnNoteClickListener,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotesHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.note_list_item, parent, false)
-        return NotesHolder(view, onNoteClickListener, onImageClickListener)
+        return NotesHolder(
+            view,
+            onNoteClickListener,
+            onImageClickListener
+        )
     }
 
     override fun getItemCount(): Int {

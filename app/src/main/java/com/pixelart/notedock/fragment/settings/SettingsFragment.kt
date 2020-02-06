@@ -3,7 +3,6 @@ package com.pixelart.notedock.fragment.settings
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +15,7 @@ import com.pixelart.notedock.NavigationRouter
 
 import com.pixelart.notedock.R
 import com.pixelart.notedock.activity.LoginActivity
-import com.pixelart.notedock.adapter.SettingsAdapter
+import com.pixelart.notedock.adapter.settings.SettingsAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.ext.showAsSnackBar
@@ -46,7 +45,11 @@ class SettingsFragment : Fragment(), SettingsAdapter.OnSettingsClickListener {
         super.onStart()
 
         observeLiveData()
-        val settingsAdapter = SettingsAdapter( createSettings(), this)
+        val settingsAdapter =
+            SettingsAdapter(
+                createSettings(),
+                this
+            )
         recyclerViewSettings.layoutManager = LinearLayoutManager(context)
         recyclerViewSettings.adapter = settingsAdapter
     }

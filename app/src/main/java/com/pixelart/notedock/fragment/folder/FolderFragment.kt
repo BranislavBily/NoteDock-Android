@@ -16,8 +16,8 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pixelart.notedock.NavigationRouter
 import com.pixelart.notedock.R
-import com.pixelart.notedock.adapter.MarkedNotesAdapter
-import com.pixelart.notedock.adapter.UnMarkedNotesAdapter
+import com.pixelart.notedock.adapter.note.MarkedNotesAdapter
+import com.pixelart.notedock.adapter.note.UnMarkedNotesAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogDeleteSuccessListener
@@ -61,8 +61,10 @@ class FolderFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        markedNotesAdapter = MarkedNotesAdapter(this, this)
-        unmarkedNotesAdapter = UnMarkedNotesAdapter(this, this)
+        markedNotesAdapter =
+            MarkedNotesAdapter(this, this)
+        unmarkedNotesAdapter =
+            UnMarkedNotesAdapter(this, this)
 
         setupRecyclerView()
         observeLiveData()

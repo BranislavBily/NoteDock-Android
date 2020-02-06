@@ -2,20 +2,17 @@ package com.pixelart.notedock.fragment.settings
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.protobuf.LazyStringArrayList
 import com.pixelart.notedock.BR
 import com.pixelart.notedock.R
-import com.pixelart.notedock.adapter.SettingsAdapter
+import com.pixelart.notedock.adapter.settings.SettingsAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.ext.showAsSnackBar
@@ -23,7 +20,6 @@ import com.pixelart.notedock.model.SettingsModel
 import com.pixelart.notedock.viewModel.settings.HelpAndSupportViewModel
 import kotlinx.android.synthetic.main.fragment_help_and_support_settings.*
 import org.koin.android.viewmodel.ext.android.viewModel
-import java.lang.StringBuilder
 import java.util.*
 
 
@@ -47,7 +43,11 @@ class HelpAndSupportSettingsFragment : Fragment(), SettingsAdapter.OnSettingsCli
     override fun onStart() {
         super.onStart()
 
-        val settingsAdapter = SettingsAdapter(createSettings(), this)
+        val settingsAdapter =
+            SettingsAdapter(
+                createSettings(),
+                this
+            )
         recycler_view_help_and_support.layoutManager = LinearLayoutManager(context)
         recycler_view_help_and_support.adapter = settingsAdapter
         observeLiveData()

@@ -1,4 +1,4 @@
-package com.pixelart.notedock.adapter
+package com.pixelart.notedock.adapter.note
 
 import android.view.LayoutInflater
 import android.view.View
@@ -21,7 +21,11 @@ class UnMarkedNotesAdapter(private val onNoteClickListener: MarkedNotesAdapter.O
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotesHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.note_list_item, parent, false)
-        return NotesHolder(view, onNoteClickListener, onImageClickListener)
+        return NotesHolder(
+            view,
+            onNoteClickListener,
+            onImageClickListener
+        )
     }
 
     override fun getItemCount(): Int {
