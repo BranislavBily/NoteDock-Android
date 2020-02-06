@@ -125,9 +125,7 @@ class FolderFragment : Fragment(),
                     is MarkNoteEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
                 }
             }
-
         })
-
 
         folderFragmentViewModel.noteCreated.observe(viewLifecycleOwner, SpecificEventObserver<CreateNoteEvent> { event ->
                 view?.let { view ->
