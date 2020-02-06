@@ -20,7 +20,6 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="#E6FFFFFF"
                 android:elevation="8dp"
-                app:menu="@menu/folder_view_menu"
                 app:navigationIcon="@drawable/ic_arrow_back"
                 app:onBackClicked="@{() -> viewmodel.onBackPressed()}"
                 app:title="@string/account"
