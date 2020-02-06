@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-        xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
                 name="viewmodel"
                 type="com.pixelart.notedock.viewModel.authentication.LoginFragmentViewModel" />
-        <variable
-                name="eyeviewmodel"
-                type="com.pixelart.notedock.viewModel.EyeViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -50,36 +46,49 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.097" />
 
-        <EditText
-                android:id="@+id/editTextEmail"
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLoginEmail"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="17dp"
+                android:layout_marginEnd="17dp"
                 android:hint="@string/email"
-                android:inputType="textEmailAddress"
-                android:layout_margin="20dp"
-                android:text="@={viewmodel.email}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView"
-                app:layout_constraintVertical_bias="0.103" />
+                app:layout_constraintTop_toBottomOf="@id/imageView"
+                app:layout_constraintVertical_bias="0.103"
+                app:passwordToggleEnabled="true">
 
-        <EditText
-                android:id="@+id/editTextPassword"
+            <EditText
+                    android:id="@+id/editTextEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@={viewmodel.email}"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLoginPassword"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="17dp"
+                android:layout_marginEnd="17dp"
                 android:hint="@string/password"
-                android:inputType="textPassword"
-                android:text="@={viewmodel.password}"
-                android:layout_margin="20dp"
-                app:onDone="@{() -> viewmodel.login()}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextEmail"
+                app:layout_constraintTop_toBottomOf="@id/textInputLoginEmail"
+                app:layout_constraintVertical_bias="0.103"
+                app:passwordToggleEnabled="true">
 
-                app:layout_constraintVertical_bias="0.078" />
+            <EditText
+                    android:id="@+id/editTextLoginPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    app:onDone="@{() -> viewmodel.login()}"
+                    android:text="@={viewmodel.password}"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
                 android:id="@+id/buttonLogin"
@@ -94,21 +103,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextPassword"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLoginPassword"
                 app:layout_constraintVertical_bias="0.1" />
-
-        <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@{eyeviewmodel.eyeOpen ? @drawable/ic_eye_open : @drawable/ic_eye_closed}"
-                visibleOrGone="@{eyeviewmodel.eyeVisible}"
-                app:layout_constraintBottom_toBottomOf="@+id/editTextPassword"
-                app:layout_constraintEnd_toEndOf="@+id/editTextPassword"
-                app:layout_constraintStart_toStartOf="@+id/editTextPassword"
-                app:layout_constraintHorizontal_bias="0.95"
-                app:layout_constraintVertical_bias="0.4"
-                android:onClick="@{() -> eyeviewmodel.onEyeClick()}"
-                app:layout_constraintTop_toTopOf="@+id/editTextPassword" />
 
         <TextView
                 android:id="@+id/textView4"

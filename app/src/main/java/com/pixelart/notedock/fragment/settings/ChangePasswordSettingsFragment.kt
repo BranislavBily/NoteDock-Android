@@ -17,7 +17,6 @@ import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.hideSoftKeyboard
 import com.pixelart.notedock.ext.showAsSnackBar
-import com.pixelart.notedock.viewModel.EyeViewModel
 import com.pixelart.notedock.viewModel.settings.ChangePasswordEvent
 import com.pixelart.notedock.viewModel.settings.ChangePasswordViewModel
 import kotlinx.android.synthetic.main.fragment_change_password_settings.*
@@ -26,9 +25,6 @@ import org.koin.android.viewmodel.ext.android.viewModel
 class ChangePasswordSettingsFragment : Fragment() {
 
     private val changePasswordViewModel: ChangePasswordViewModel by viewModel()
-    private val eyeViewModel: EyeViewModel by viewModel()
-    private val eyeViewModel2: EyeViewModel by viewModel()
-    private val eyeViewModel3: EyeViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,10 +32,7 @@ class ChangePasswordSettingsFragment : Fragment() {
     ): View? {
         val dataBinding = setupDataBinding<ViewDataBinding>(
             R.layout.fragment_change_password_settings,
-            BR.viewmodel to changePasswordViewModel,
-            BR.eyeviewmodel to eyeViewModel,
-            BR.eyeviewmodel2 to eyeViewModel2,
-            BR.eyeviewmodel3 to eyeViewModel3
+            BR.viewmodel to changePasswordViewModel
         )
         setHasOptionsMenu(true)
         changePasswordViewModel.lifecycleOwner = this
@@ -50,15 +43,6 @@ class ChangePasswordSettingsFragment : Fragment() {
         super.onStart()
 
         setupToolbar()
-        editTextCurrentPassword.setOnFocusChangeListener { _, hasFocus ->
-            eyeViewModel.changeEyeVisibility(hasFocus)
-        }
-        editTextNewPassword.setOnFocusChangeListener { _, hasFocus ->
-            eyeViewModel2.changeEyeVisibility(hasFocus)
-        }
-        editTextConfirmNewPassword.setOnFocusChangeListener { _, hasFocus ->
-            eyeViewModel3.changeEyeVisibility(hasFocus)
-        }
         observeLiveData()
     }
 
@@ -110,42 +94,6 @@ class ChangePasswordSettingsFragment : Fragment() {
                     is ChangePasswordEvent.TooManyRequests -> R.string.too_many_requests.showAsSnackBar(view)
                     is ChangePasswordEvent.UnknownError -> R.string.error_occurred.showAsSnackBar(view)
                 }
-            }
-        })
-
-        eyeViewModel.eyeOpen.observe(viewLifecycleOwner, Observer { eyeOpen ->
-            if (eyeOpen) {
-                val selection = editTextCurrentPassword.selectionStart
-                editTextCurrentPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
-                editTextCurrentPassword.setSelection(selection)
-            } else {
-                val selection = editTextCurrentPassword.selectionStart
-                editTextCurrentPassword.transformationMethod = PasswordTransformationMethod.getInstance()
-                editTextCurrentPassword.setSelection(selection)
-            }
-        })
-
-        eyeViewModel2.eyeOpen.observe(viewLifecycleOwner, Observer { eyeOpen ->
-            if (eyeOpen) {
-                val selection = editTextNewPassword.selectionStart
-                editTextNewPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
-                editTextNewPassword.setSelection(selection)
-            } else {
-                val selection = editTextNewPassword.selectionStart
-                editTextNewPassword.transformationMethod = PasswordTransformationMethod.getInstance()
-                editTextNewPassword.setSelection(selection)
-            }
-        })
-
-        eyeViewModel3.eyeOpen.observe(viewLifecycleOwner, Observer { eyeOpen ->
-            if (eyeOpen) {
-                val selection = editTextConfirmNewPassword.selectionStart
-                editTextConfirmNewPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
-                editTextConfirmNewPassword.setSelection(selection)
-            } else {
-                val selection = editTextConfirmNewPassword.selectionStart
-                editTextConfirmNewPassword.transformationMethod = PasswordTransformationMethod.getInstance()
-                editTextConfirmNewPassword.setSelection(selection)
             }
         })
     }
