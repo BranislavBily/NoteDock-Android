@@ -2,6 +2,7 @@ package com.pixelart.notedock.fragment.note
 
 
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.util.Log
 import android.view.*
 import androidx.databinding.ViewDataBinding
@@ -35,6 +36,7 @@ class NoteFragment : Fragment() {
     private val args: NoteFragmentArgs by navArgs()
     //Please change this later
     private var deletingNote = false
+    private var note: NoteModel? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -77,7 +79,6 @@ class NoteFragment : Fragment() {
         view?.let { parentView ->
             context?.let { context ->
                 textViewNoteTitle.setOnFocusChangeListener { view, hasFocus ->
-                    Log.i("ID", R.id.doneNote.toString())
                     parentView.toolbar?.menu?.getItem(1)?.isVisible = true
                     if (!hasFocus) {
                         hideSoftKeyboard(context, view)
@@ -142,6 +143,7 @@ class NoteFragment : Fragment() {
         noteFragmentViewModel.noteLoad.observe(viewLifecycleOwner, SpecificEventObserver<LoadNoteEvent> { event ->
             view?.let { view ->
                 when(event) {
+                    is LoadNoteEvent.Success -> this.note = event.note
                     is LoadNoteEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
                     is LoadNoteEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
                 }
@@ -177,6 +179,10 @@ class NoteFragment : Fragment() {
         note.uuid = args.noteUUID
         note.noteTitle = textViewNoteTitle.text.toString()
         note.noteDescription = editTextNoteDescription.text.toString()
-        noteFragmentViewModel.saveNote(args.folderUUID, note)
+
+        //If change occurred, save
+        if(!this.note?.noteTitle.equals(note.noteTitle) || !this.note?.noteDescription.equals(note.noteDescription)) {
+            noteFragmentViewModel.saveNote(args.folderUUID, note)
+        }
     }
 }
