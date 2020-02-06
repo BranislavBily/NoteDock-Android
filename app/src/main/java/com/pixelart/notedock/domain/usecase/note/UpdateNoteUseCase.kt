@@ -4,11 +4,8 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.*
 import com.pixelart.notedock.domain.repository.FirebaseIDSRepository
 import com.pixelart.notedock.model.NoteModel
-import com.pixelart.notedock.viewModel.SaveNoteEvent
 import io.reactivex.Completable
-import io.reactivex.Single
 import io.reactivex.disposables.Disposable
-import java.lang.NullPointerException
 
 interface UpdateNoteUseCase {
     fun updateNote(user: FirebaseUser, folderUUID: String, note: NoteModel): Completable
