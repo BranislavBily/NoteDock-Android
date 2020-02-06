@@ -18,6 +18,7 @@ import com.pixelart.notedock.R
 import com.pixelart.notedock.adapter.SettingsAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
+import com.pixelart.notedock.ext.openMailApp
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.model.SettingsModel
 import com.pixelart.notedock.viewModel.settings.HelpAndSupportViewModel
@@ -67,22 +68,14 @@ class HelpAndSupportSettingsFragment : Fragment(), SettingsAdapter.OnSettingsCli
     }
 
     override fun onSettingClick(setting: SettingsModel) {
-        val intent = Intent(Intent.ACTION_SEND)
-        intent.putExtra(Intent.EXTRA_EMAIL, Array(1) { "branislav.bily@gmail.com"})
-        intent.type = "message/rfc822"
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         when(setting.title) {
             getString(R.string.send_bug_report) -> {
-                intent.putExtra(Intent.EXTRA_SUBJECT, "NoteDock: Bug report")
+                activity?.openMailApp("branislav.bily@gmail.com", "NoteDock: Send bug report")
             }
             getString(R.string.send_feedback) -> {
-                intent.putExtra(Intent.EXTRA_SUBJECT, "NoteDock: Feedback")
+                activity?.openMailApp("branislav.bily@gmail.com", "NoteDock: Send feedback")
             }
         }
-        try {
-            startActivity(Intent.createChooser(intent, "Send mail..."))
-        } catch (e: ActivityNotFoundException) {
-            view?.let { R.string.no_email_client_installed.showAsSnackBar(it) }
-        }
+
     }
 }
