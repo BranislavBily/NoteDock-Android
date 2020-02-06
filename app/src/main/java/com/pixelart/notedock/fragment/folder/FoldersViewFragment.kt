@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.NavigationRouter
 import com.pixelart.notedock.R
-import com.pixelart.notedock.activity.settings.SettingsActivity
 import com.pixelart.notedock.activity.SplashActivity
 import com.pixelart.notedock.adapter.FoldersAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
@@ -67,8 +66,9 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
         toolbarFoldersView?.setOnMenuItemClickListener { menuItem ->
             when(menuItem.itemId) {
                 R.id.settings -> {
-                    val intent = Intent(context, SettingsActivity::class.java)
-                    startActivity(intent)
+                    val action = FoldersViewFragmentDirections.actionFoldersViewFragmentToSettingsFragment()
+                    val navigationRouter = NavigationRouter(view)
+                    navigationRouter.openAction(action)
                     true
                 }
                 else -> {

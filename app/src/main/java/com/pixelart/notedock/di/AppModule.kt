@@ -11,6 +11,7 @@ import com.pixelart.notedock.viewModel.authentication.LoginFragmentViewModel
 import com.pixelart.notedock.viewModel.NoteFragmentViewModel
 import com.pixelart.notedock.viewModel.authentication.ResetPasswordFragmentViewModel
 import com.pixelart.notedock.viewModel.authentication.RegisterFragmentViewModel
+import com.pixelart.notedock.viewModel.settings.SettingsFragmentViewModel
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -57,6 +58,11 @@ val viewModelModule = module {
     viewModel {
         ResetPasswordFragmentViewModel(
             authRepository = get()
+        )
+    }
+    viewModel {
+        SettingsFragmentViewModel(
+            auth = FirebaseAuth.getInstance()
         )
     }
 }
