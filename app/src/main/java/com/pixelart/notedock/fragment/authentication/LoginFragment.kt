@@ -84,9 +84,13 @@ class LoginFragment : Fragment() {
 
         loginFragmentViewModel.eyeOpen.observe(viewLifecycleOwner, Observer { eyeOpen ->
             if (eyeOpen) {
+                val selection = editTextPassword.selectionStart
                 editTextPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                editTextPassword.setSelection(selection)
             } else {
+                val selection = editTextPassword.selectionStart
                 editTextPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+                editTextPassword.setSelection(selection)
             }
         })
 
