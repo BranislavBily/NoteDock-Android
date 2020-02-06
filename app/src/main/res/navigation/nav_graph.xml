@@ -87,6 +87,13 @@
                 app:exitAnim="@anim/slide_out_left"
                 app:popEnterAnim="@anim/slide_in_left"
                 app:popExitAnim="@anim/slide_out_right" />
+        <action
+                android:id="@+id/action_settingsFragment_to_helpAndSupportSettingsFragment"
+                app:destination="@id/helpAndSupportSettingsFragment"
+                app:enterAnim="@anim/slide_in_right"
+                app:exitAnim="@anim/slide_out_left"
+                app:popEnterAnim="@anim/slide_in_left"
+                app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
             android:id="@+id/accountSettingsFragment"
@@ -98,5 +105,10 @@
             android:name="com.pixelart.notedock.fragment.settings.ChangePasswordSettingsFragment"
             tools:layout="@layout/fragment_change_password_settings"
             android:label="ChangePasswordSettingsFragment" />
+    <fragment
+            android:id="@+id/helpAndSupportSettingsFragment"
+            android:name="com.pixelart.notedock.fragment.settings.HelpAndSupportSettingsFragment"
+            tools:layout="@layout/fragment_help_and_support_settings"
+            android:label="HelpAndSupportSettingsFragment" />
 
 </navigation>

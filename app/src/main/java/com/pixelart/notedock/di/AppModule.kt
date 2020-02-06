@@ -13,6 +13,7 @@ import com.pixelart.notedock.viewModel.authentication.ResetPasswordFragmentViewM
 import com.pixelart.notedock.viewModel.authentication.RegisterFragmentViewModel
 import com.pixelart.notedock.viewModel.settings.AccountSettingsViewModel
 import com.pixelart.notedock.viewModel.settings.ChangePasswordViewModel
+import com.pixelart.notedock.viewModel.settings.HelpAndSupportViewModel
 import com.pixelart.notedock.viewModel.settings.SettingsFragmentViewModel
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -80,6 +81,9 @@ val viewModelModule = module {
         ChangePasswordViewModel(
             auth = FirebaseAuth.getInstance()
         )
+    }
+    viewModel {
+        HelpAndSupportViewModel()
     }
 }
 

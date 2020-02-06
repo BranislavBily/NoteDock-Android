@@ -4,12 +4,13 @@
     <data>
         <variable
                 name="viewmodel"
-                type="com.pixelart.notedock.viewModel.settings.ChangePasswordViewModel" />
+                type="com.pixelart.notedock.viewModel.settings.HelpAndSupportViewModel" />
     </data>
 
     <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            >
 
         <androidx.appcompat.widget.Toolbar
                 android:layout_width="match_parent"
@@ -19,7 +20,7 @@
                 app:menu="@menu/folder_view_menu"
                 app:navigationIcon="@drawable/ic_arrow_back"
                 app:onBackClicked="@{() -> viewmodel.onBackPressed()}"
-                app:title="@string/changePassword"
+                app:title="@string/helpAndSupport"
                 app:titleTextColor="@color/colorPrimary" />
     </FrameLayout>
 </layout>

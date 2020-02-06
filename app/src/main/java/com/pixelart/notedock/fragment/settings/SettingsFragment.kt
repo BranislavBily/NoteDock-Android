@@ -19,6 +19,7 @@ import com.pixelart.notedock.activity.LoginActivity
 import com.pixelart.notedock.adapter.SettingsAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
+import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.model.SettingsModel
 import com.pixelart.notedock.viewModel.settings.SettingsFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_settings.*
@@ -78,8 +79,14 @@ class SettingsFragment : Fragment(), SettingsAdapter.OnSettingsClickListener {
                 val navigationRouter = NavigationRouter(view)
                 navigationRouter.openAction(action)
             }
-            resources.getString(R.string.rateUs) -> Log.i("Settings", "Rate us")
-            resources.getString(R.string.helpAndSupport) -> Log.i("Settings", "Help and support")
+            resources.getString(R.string.rateUs) -> {
+                view?.let { R.string.not_on_appstore.showAsSnackBar(it) }
+            }
+            resources.getString(R.string.helpAndSupport) -> {
+                val action = SettingsFragmentDirections.actionSettingsFragmentToHelpAndSupportSettingsFragment()
+                val navigationRouter = NavigationRouter(view)
+                navigationRouter.openAction(action)
+            }
             else -> settingFragmentViewModel.logOut()
         }
     }
