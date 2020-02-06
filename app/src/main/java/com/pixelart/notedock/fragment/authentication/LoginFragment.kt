@@ -3,6 +3,8 @@ package com.pixelart.notedock.fragment.authentication
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -77,6 +79,14 @@ class LoginFragment : Fragment() {
                     is LoginEvent.TooManyRequests -> R.string.too_many_requests.showAsSnackBar(view)
                     is LoginEvent.UserEmailNotVerified -> showEmailNotVerifiedSnackbar()
                 }
+            }
+        })
+
+        loginFragmentViewModel.eyeOpen.observe(viewLifecycleOwner, Observer { eyeOpen ->
+            if (eyeOpen) {
+                editTextPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
+            } else {
+                editTextPassword.transformationMethod = PasswordTransformationMethod.getInstance()
             }
         })
 
