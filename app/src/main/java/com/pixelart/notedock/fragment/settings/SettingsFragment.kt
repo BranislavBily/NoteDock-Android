@@ -69,35 +69,21 @@ class SettingsFragment : Fragment(), SettingsAdapter.OnSettingsClickListener {
 
     override fun onSettingClick(setting: SettingsModel) {
         when(setting.title) {
-            resources.getString(R.string.account) -> {
-                val action = SettingsFragmentDirections.actionSettingsFragmentToAccountSettingsFragment()
-                val navigationRouter = NavigationRouter(view)
-                navigationRouter.openAction(action)
-            }
-            resources.getString(R.string.changePassword) -> {
-                val action = SettingsFragmentDirections.actionSettingsFragmentToChangePasswordSettingsFragment()
-                val navigationRouter = NavigationRouter(view)
-                navigationRouter.openAction(action)
-            }
-            resources.getString(R.string.rateUs) -> {
-                view?.let { R.string.not_on_appstore.showAsSnackBar(it) }
-            }
-            resources.getString(R.string.helpAndSupport) -> {
-                val action = SettingsFragmentDirections.actionSettingsFragmentToHelpAndSupportSettingsFragment()
-                val navigationRouter = NavigationRouter(view)
-                navigationRouter.openAction(action)
-            }
+            getString(R.string.account) -> NavigationRouter(view).settingsToAccount()
+            getString(R.string.changePassword) -> NavigationRouter(view).settingsToChangePassword()
+            getString(R.string.rateUs) ->  view?.let { R.string.not_on_appstore.showAsSnackBar(it) }
+            getString(R.string.helpAndSupport) -> NavigationRouter(view).settingsToHelpAndSupport()
             else -> settingFragmentViewModel.logOut()
         }
     }
 
     private fun createSettings(): ArrayList<SettingsModel> {
         val settings = ArrayList<SettingsModel>()
-        settings.add(SettingsModel(R.drawable.ic_account, resources.getString(R.string.account)))
-        settings.add(SettingsModel(R.drawable.ic_password, resources.getString(R.string.changePassword)))
-        settings.add(SettingsModel(R.drawable.ic_rateus, resources.getString(R.string.rateUs)))
-        settings.add(SettingsModel(R.drawable.ic_help, resources.getString(R.string.helpAndSupport)))
-        settings.add(SettingsModel(R.drawable.ic_logout, resources.getString(R.string.log_out)))
+        settings.add(SettingsModel(R.drawable.ic_account, getString(R.string.account)))
+        settings.add(SettingsModel(R.drawable.ic_password, getString(R.string.changePassword)))
+        settings.add(SettingsModel(R.drawable.ic_rateus, getString(R.string.rateUs)))
+        settings.add(SettingsModel(R.drawable.ic_help, getString(R.string.helpAndSupport)))
+        settings.add(SettingsModel(R.drawable.ic_logout, getString(R.string.log_out)))
         return settings
     }
 }
