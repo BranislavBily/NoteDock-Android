@@ -66,16 +66,22 @@ class SettingsFragment : Fragment(), SettingsAdapter.OnSettingsClickListener {
     }
 
     override fun onSettingClick(setting: SettingsModel) {
-        Log.i("Settings", "Clickclickclick")
+        when(setting.title) {
+            resources.getString(R.string.account) -> Log.i("Settings", "Account")
+            resources.getString(R.string.changePassword) -> Log.i("Settings", "ChangePassowrd")
+            resources.getString(R.string.rateUs) -> Log.i("Settings", "Rate us")
+            resources.getString(R.string.helpAndSupport) -> Log.i("Settings", "Help and support")
+            else -> Log.i("Settings", "Log out")
+        }
     }
 
     private fun createSettings(): ArrayList<SettingsModel> {
         val settings = ArrayList<SettingsModel>()
-        settings.add(SettingsModel(R.drawable.ic_account, "Account"))
-        settings.add(SettingsModel(R.drawable.ic_password, "Change password"))
-        settings.add(SettingsModel(R.drawable.ic_rateus, "Rate us"))
-        settings.add(SettingsModel(R.drawable.ic_help, "Help and support"))
-        settings.add(SettingsModel(R.drawable.ic_logout, "Log out"))
+        settings.add(SettingsModel(R.drawable.ic_account, resources.getString(R.string.account)))
+        settings.add(SettingsModel(R.drawable.ic_password, resources.getString(R.string.changePassword)))
+        settings.add(SettingsModel(R.drawable.ic_rateus, resources.getString(R.string.rateUs)))
+        settings.add(SettingsModel(R.drawable.ic_help, resources.getString(R.string.helpAndSupport)))
+        settings.add(SettingsModel(R.drawable.ic_logout, resources.getString(R.string.log_out)))
         return settings
     }
 }
