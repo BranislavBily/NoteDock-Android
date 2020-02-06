@@ -125,14 +125,12 @@ class FolderFragment : Fragment(),
                     is MarkNoteEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
                 }
             }
-
         })
-
 
         folderFragmentViewModel.noteCreated.observe(viewLifecycleOwner, SpecificEventObserver<CreateNoteEvent> { event ->
                 view?.let { view ->
                     when (event) {
-                        is CreateNoteEvent.Success -> navigateToNote(event.noteUUID)
+                        is CreateNoteEvent.Success -> NavigationRouter(view).folderToNote(args.folderUUID, event.noteUUID)
                         is CreateNoteEvent.Error -> {
                             R.string.error_occurred.showAsSnackBar(view)
                         }
@@ -159,15 +157,8 @@ class FolderFragment : Fragment(),
         folderFragmentViewModel.createNote(args.folderUUID)
     }
 
-    private fun navigateToNote(noteUUID: String) {
-        val action =
-            FolderFragmentDirections.actionFolderFragmentToNoteFragment(args.folderUUID, noteUUID)
-        val navigationRouter = NavigationRouter(view)
-        navigationRouter.openAction(action)
-    }
-
     override fun onNoteClick(noteUUID: String?) {
-        noteUUID?.let { navigateToNote(it) }
+        noteUUID?.let { NavigationRouter(view).folderToNote(args.folderUUID, it) }
     }
 
     override fun onImageClick(note: NoteModel) {

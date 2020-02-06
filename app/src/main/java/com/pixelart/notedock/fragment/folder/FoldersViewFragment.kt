@@ -66,9 +66,7 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
         toolbarFoldersView?.setOnMenuItemClickListener { menuItem ->
             when(menuItem.itemId) {
                 R.id.settings -> {
-                    val action = FoldersViewFragmentDirections.actionFoldersViewFragmentToSettingsFragment()
-                    val navigationRouter = NavigationRouter(view)
-                    navigationRouter.openAction(action)
+                    NavigationRouter(view).foldersToSettings()
                     true
                 }
                 else -> {
@@ -146,9 +144,7 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
 
     override fun onFolderClick(uid: String?, name: String?) {
         if(uid != null && name != null) {
-                val action = FoldersViewFragmentDirections.actionFoldersViewFragmentToFolderFragment(uid, name)
-                val navigationRouter = NavigationRouter(view)
-                navigationRouter.openAction(action)
+                NavigationRouter(view).foldersToFolder(uid, name)
         }
     }
 }
