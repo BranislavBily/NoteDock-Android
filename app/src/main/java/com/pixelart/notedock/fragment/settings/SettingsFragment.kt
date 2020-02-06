@@ -12,6 +12,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pixelart.notedock.BR
+import com.pixelart.notedock.NavigationRouter
 
 import com.pixelart.notedock.R
 import com.pixelart.notedock.activity.LoginActivity
@@ -67,11 +68,15 @@ class SettingsFragment : Fragment(), SettingsAdapter.OnSettingsClickListener {
 
     override fun onSettingClick(setting: SettingsModel) {
         when(setting.title) {
-            resources.getString(R.string.account) -> Log.i("Settings", "Account")
+            resources.getString(R.string.account) -> {
+                val action = SettingsFragmentDirections.actionSettingsFragmentToAccountSettingsFragment()
+                val navigationRouter = NavigationRouter(view)
+                navigationRouter.openAction(action)
+            }
             resources.getString(R.string.changePassword) -> Log.i("Settings", "ChangePassowrd")
             resources.getString(R.string.rateUs) -> Log.i("Settings", "Rate us")
             resources.getString(R.string.helpAndSupport) -> Log.i("Settings", "Help and support")
-            else -> Log.i("Settings", "Log out")
+            else -> settingFragmentViewModel.logOut()
         }
     }
 

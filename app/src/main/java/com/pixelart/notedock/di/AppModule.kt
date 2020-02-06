@@ -11,11 +11,13 @@ import com.pixelart.notedock.viewModel.authentication.LoginFragmentViewModel
 import com.pixelart.notedock.viewModel.NoteFragmentViewModel
 import com.pixelart.notedock.viewModel.authentication.ResetPasswordFragmentViewModel
 import com.pixelart.notedock.viewModel.authentication.RegisterFragmentViewModel
+import com.pixelart.notedock.viewModel.settings.AccountSettingsViewModel
 import com.pixelart.notedock.viewModel.settings.SettingsFragmentViewModel
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val viewModelModule = module {
+    //Folder
     viewModel { (folderUUID: String, folderName: String) ->
         FolderFragmentViewModel(
             folderUUID = folderUUID,
@@ -35,6 +37,7 @@ val viewModelModule = module {
             folderNameTakenUseCase = get()
         )
     }
+    //Note
     viewModel {
         NoteFragmentViewModel(
             notesRepository = get(),
@@ -43,6 +46,7 @@ val viewModelModule = module {
             updateNoteUseCase = get()
         )
     }
+    //Authentication
     viewModel {
         LoginFragmentViewModel(
             authRepository = get(),
@@ -59,9 +63,15 @@ val viewModelModule = module {
         ResetPasswordFragmentViewModel(
             authRepository = get()
         )
+    //Settings
     }
     viewModel {
         SettingsFragmentViewModel(
+            auth = FirebaseAuth.getInstance()
+        )
+    }
+    viewModel {
+        AccountSettingsViewModel(
             auth = FirebaseAuth.getInstance()
         )
     }

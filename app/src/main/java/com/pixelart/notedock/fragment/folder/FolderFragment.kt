@@ -34,9 +34,7 @@ import org.koin.core.parameter.parametersOf
 
 class FolderFragment : Fragment(),
     MarkedNotesAdapter.OnNoteClickListener,
-    MarkedNotesAdapter.OnImageClickListener,
-    UnMarkedNotesAdapter.OnNoteClickListener,
-    UnMarkedNotesAdapter.OnImageClickListener {
+    MarkedNotesAdapter.OnImageClickListener {
     private val args: FolderFragmentArgs by navArgs()
     private val folderFragmentViewModel: FolderFragmentViewModel by viewModel {
         parametersOf(args.folderUUID, args.folderName)
