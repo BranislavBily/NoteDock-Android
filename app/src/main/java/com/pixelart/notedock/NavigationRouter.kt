@@ -67,11 +67,4 @@ class NavigationRouter(private val view: View?) {
         val navigationRouter = NavigationRouter(view)
         navigationRouter.openAction(action)
     }
-
-    fun openAction(action: NavDirections) {
-        view?.let {
-            val navigationController = Navigation.findNavController(view)
-            navigationController.navigate(action)
-        }
-    }
 }
