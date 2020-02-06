@@ -74,6 +74,7 @@ class RegisterFragmentViewModel(private val authRepository: AuthRepository,
                     }, { error ->
                         val eventError = handleRegisterError(error)
                         _register.postValue(RegisterEvent.Error(eventError))
+                        _loading.postValue(false)
                     }).addTo(bag)
             }
         }
