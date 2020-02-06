@@ -1,6 +1,7 @@
 package com.pixelart.notedock.domain.repository
 
 import android.util.Patterns
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import io.reactivex.Completable
@@ -10,6 +11,8 @@ interface AuthRepository {
     fun register(email: String, password: String): Completable
     fun sendPasswordResetEmail(email: String): Completable
     fun sendVerificationEmail(user: FirebaseUser): Completable
+    fun reauthenticateUser(user: FirebaseUser, email: String, password: String): Completable
+    fun changePassword(user: FirebaseUser, newPassword: String): Completable
 }
 
 class AuthRepositoryImpl(private val auth: FirebaseAuth): AuthRepository {
@@ -63,6 +66,24 @@ class AuthRepositoryImpl(private val auth: FirebaseAuth): AuthRepository {
                     emitter.tryOnError(error)
                 }
         }
+    }
+
+    override fun reauthenticateUser(user: FirebaseUser, email: String, password: String): Completable {
+        return Completable.create { emitter ->
+            val credentials = EmailAuthProvider.getCredential(email, password)
+            user.reauthenticate(credentials)
+                .addOnSuccessListener { emitter.onComplete() }
+                .addOnFailureListener { emitter.tryOnError(it) }
+        }
+    }
+
+    override fun changePassword(user: FirebaseUser, newPassword: String): Completable {
+        return Completable.create { emitter ->
+            user.updatePassword(newPassword)
+                .addOnSuccessListener { emitter.onComplete() }
+                .addOnFailureListener { emitter.tryOnError(it) }
+        }
+
     }
 }
 

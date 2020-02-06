@@ -79,7 +79,8 @@ val viewModelModule = module {
     }
     viewModel {
         ChangePasswordViewModel(
-            auth = FirebaseAuth.getInstance()
+            auth = FirebaseAuth.getInstance(),
+            authRepository = get()
         )
     }
     viewModel {

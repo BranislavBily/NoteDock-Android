@@ -13,6 +13,7 @@ import com.pixelart.notedock.R
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
+import com.pixelart.notedock.ext.hideSoftKeyboard
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.viewModel.settings.ChangePasswordEvent
 import com.pixelart.notedock.viewModel.settings.ChangePasswordViewModel
@@ -64,17 +65,32 @@ class ChangePasswordSettingsFragment : Fragment() {
             toolbarChangePassword?.menu?.getItem(0)?.isEnabled = enabled
         })
 
+        changePasswordViewModel.loading.observe(viewLifecycleOwner, Observer { loading ->
+            if(loading) {
+                context?.let {context ->
+                    view?.let { view ->
+                        hideSoftKeyboard(context, view)
+                    }
+                }
+            }
+        })
+
         changePasswordViewModel.changePassword.observe(viewLifecycleOwner, SpecificEventObserver { event ->
             view?.let { view ->
                 when(event) {
-                    is ChangePasswordEvent.Success -> R.string.password_changed.showAsSnackBar(view)
+                    is ChangePasswordEvent.Success -> {
+                        R.string.password_changed.showAsSnackBar(view)
+                        findNavController().popBackStack()
+                    }
                     is ChangePasswordEvent.NetworkError -> R.string.network_error_message.showAsSnackBar(view)
                     is ChangePasswordEvent.FillAllFields -> R.string.please_fill_all_fields.showAsSnackBar(view)
                     is ChangePasswordEvent.NewPasswordCannotBeOld -> R.string.new_password_cannot_be_old.showAsSnackBar(view)
                     is ChangePasswordEvent.PasswordsDoNotMatch -> R.string.passwords_do_not_match_message.showAsSnackBar(view)
                     is ChangePasswordEvent.WeakPassword -> R.string.weak_password_message.showAsSnackBar(view)
                     is ChangePasswordEvent.UserNotFound -> R.string.no_user_found.showAsSnackBar(view)
-                    is ChangePasswordEvent.WrongPasword -> R.string.wrong_password.showAsSnackBar(view)
+                    is ChangePasswordEvent.WrongPassword -> R.string.wrong_password.showAsSnackBar(view)
+                    is ChangePasswordEvent.TooManyRequests -> R.string.too_many_requests.showAsSnackBar(view)
+                    is ChangePasswordEvent.UnknownError -> R.string.error_occurred.showAsSnackBar(view)
                 }
             }
         })
