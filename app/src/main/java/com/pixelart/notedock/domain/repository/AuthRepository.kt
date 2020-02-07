@@ -13,6 +13,7 @@ interface AuthRepository {
     fun sendVerificationEmail(user: FirebaseUser): Completable
     fun reauthenticateUser(user: FirebaseUser, email: String, password: String): Completable
     fun changePassword(user: FirebaseUser, newPassword: String): Completable
+    fun deleteAccount(user: FirebaseUser): Completable
 }
 
 class AuthRepositoryImpl(private val auth: FirebaseAuth): AuthRepository {
@@ -84,6 +85,18 @@ class AuthRepositoryImpl(private val auth: FirebaseAuth): AuthRepository {
                 .addOnFailureListener { emitter.tryOnError(it) }
         }
 
+    }
+
+    override fun deleteAccount(user: FirebaseUser): Completable {
+        return Completable.create { emitter ->
+            user.delete()
+                .addOnFailureListener { error ->
+                    emitter.tryOnError(error)
+                }
+                .addOnSuccessListener {
+                    emitter.onComplete()
+                }
+        }
     }
 }
 
