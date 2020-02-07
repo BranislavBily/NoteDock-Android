@@ -88,4 +88,5 @@
     <string name="display_name">Display name</string>
     <string name="delete_account">Delete account</string>
     <string name="this_feature_not_available_yet">This feature is not available yet</string>
+    <string name="change_email">Change Email</string>
 </resources>

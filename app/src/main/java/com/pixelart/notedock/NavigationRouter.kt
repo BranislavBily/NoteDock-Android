@@ -6,6 +6,7 @@ import androidx.navigation.Navigation
 import com.pixelart.notedock.fragment.authentication.LoginFragmentDirections
 import com.pixelart.notedock.fragment.folder.FolderFragmentDirections
 import com.pixelart.notedock.fragment.folder.FoldersViewFragmentDirections
+import com.pixelart.notedock.fragment.settings.AccountSettingsFragmentDirections
 import com.pixelart.notedock.fragment.settings.SettingsFragmentDirections
 
 class NavigationRouter(private val view: View?) {
@@ -47,6 +48,11 @@ class NavigationRouter(private val view: View?) {
 
     fun loginToForgotPassword() {
         val action = LoginFragmentDirections.actionLoginFragmentToResetPasswordFragment()
+        openAction(action)
+    }
+
+    fun accountToChangeEmail() {
+        val action = AccountSettingsFragmentDirections.actionAccountSettingsFragmentToChangeEmailFragment()
         openAction(action)
     }
 

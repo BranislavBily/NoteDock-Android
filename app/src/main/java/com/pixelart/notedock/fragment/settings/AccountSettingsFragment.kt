@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.common.internal.AccountType
 import com.google.firebase.auth.FirebaseUser
 import com.pixelart.notedock.BR
+import com.pixelart.notedock.NavigationRouter
 import com.pixelart.notedock.R
 import com.pixelart.notedock.adapter.settings.AccountAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
@@ -78,9 +79,7 @@ class AccountSettingsFragment() : Fragment(), AccountAdapter.OnAccountClickListe
     override fun onAccountClick(account: AccountListModel) {
         view?.let { view ->
             when(account.title) {
-                getString(R.string.email) -> {
-                    Log.i("Account", "Email")
-                }
+                getString(R.string.email) -> { NavigationRouter(view).accountToChangeEmail() }
                 getString(R.string.phone_number) -> {
                     R.string.this_feature_not_available_yet.showAsSnackBar(view)
                 }
