@@ -17,6 +17,7 @@ import com.pixelart.notedock.R
 import com.pixelart.notedock.adapter.settings.AccountAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
+import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.model.AccountListModel
 import com.pixelart.notedock.viewModel.settings.AccountSettingsViewModel
 import kotlinx.android.synthetic.main.create_folder_dialog.view.*
@@ -75,19 +76,22 @@ class AccountSettingsFragment() : Fragment(), AccountAdapter.OnAccountClickListe
     }
 
     override fun onAccountClick(account: AccountListModel) {
-        when(account.title) {
-            getString(R.string.email) -> {
-                Log.i("Account", "Email")
-            }
-            getString(R.string.phone_number) -> {
-                Log.i("Account", "Phone number")
-            }
-            getString(R.string.display_name) -> {
-                Log.i("Account", "Display name")
-            }
-            getString(R.string.delete_account) -> {
-                Log.i("Account", "Delete account")
+        view?.let { view ->
+            when(account.title) {
+                getString(R.string.email) -> {
+                    Log.i("Account", "Email")
+                }
+                getString(R.string.phone_number) -> {
+                    R.string.this_feature_not_available_yet.showAsSnackBar(view)
+                }
+                getString(R.string.display_name) -> {
+                    Log.i("Account", "Display name")
+                }
+                else -> {
+                    Log.i("Account", "Delete account")
+                }
             }
         }
+
     }
 }
