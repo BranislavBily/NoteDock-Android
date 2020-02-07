@@ -39,7 +39,8 @@ class AccountAdapter(private val onAccountClickListener: OnAccountClickListener
         fun bindData(account: AccountListModel) {
             itemView.textViewAccountTitle.text = account.title
             itemView.textViewAccountDetail.text = account.description
-            if(account.title != "Delete Account") {
+            if(account.title != "Delete account") {
+
 
                 itemView.imageViewAccountIcon.setImageResource(R.drawable.ic_edit)
 

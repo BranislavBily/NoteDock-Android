@@ -84,4 +84,7 @@
     <string name="send_bug_report">Send bug report</string>
     <string name="send_feedback">Send feedback</string>
     <string name="no_email_client_installed">No email client installed</string>
+    <string name="phone_number">Phone number</string>
+    <string name="display_name">Display name</string>
+    <string name="delete_account">Delete account</string>
 </resources>

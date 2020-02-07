@@ -62,19 +62,32 @@ class AccountSettingsFragment() : Fragment(), AccountAdapter.OnAccountClickListe
     private fun fillTable(user: FirebaseUser): ArrayList<AccountListModel> {
         val accountList = ArrayList<AccountListModel>()
         user.email?.let { email ->
-            accountList.add(AccountListModel("Email", email))
+            accountList.add(AccountListModel(getString(R.string.email), email))
         }
-        accountList.add(AccountListModel("Phone number", "No phone number"))
+        accountList.add(AccountListModel(getString(R.string.phone_number), "No phone number"))
         user.displayName?.let { displayName ->
-            accountList.add(AccountListModel("Display name", displayName))
+            accountList.add(AccountListModel(getString(R.string.display_name), displayName))
         } ?: run {
-            accountList.add(AccountListModel("Display name", "No display name"))
+            accountList.add(AccountListModel(getString(R.string.display_name), "No display name"))
         }
-        accountList.add(AccountListModel("Delete Account", "You can delete your NoteDock account"))
+        accountList.add(AccountListModel(getString(R.string.delete_account), "Click to delete your NoteDock account"))
         return accountList
     }
 
     override fun onAccountClick(account: AccountListModel) {
-        Log.i("HEeej", account.title)
+        when(account.title) {
+            getString(R.string.email) -> {
+                Log.i("Account", "Email")
+            }
+            getString(R.string.phone_number) -> {
+                Log.i("Account", "Phone number")
+            }
+            getString(R.string.display_name) -> {
+                Log.i("Account", "Display name")
+            }
+            getString(R.string.delete_account) -> {
+                Log.i("Account", "Delete account")
+            }
+        }
     }
 }
