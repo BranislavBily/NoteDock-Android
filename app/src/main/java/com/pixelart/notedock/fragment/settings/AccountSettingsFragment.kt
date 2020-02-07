@@ -86,9 +86,7 @@ class AccountSettingsFragment() : Fragment(), AccountAdapter.OnAccountClickListe
                 getString(R.string.display_name) -> {
                     Log.i("Account", "Display name")
                 }
-                else -> {
-                    Log.i("Account", "Delete account")
-                }
+                else -> { NavigationRouter(view).accountToDeleteAccount() }
             }
         }
 

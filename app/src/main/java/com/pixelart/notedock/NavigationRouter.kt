@@ -56,6 +56,11 @@ class NavigationRouter(private val view: View?) {
         openAction(action)
     }
 
+    fun accountToDeleteAccount() {
+        val action = AccountSettingsFragmentDirections.actionAccountSettingsFragmentToDeleteAccountFragment()
+        openAction(action)
+    }
+
     private fun openAction(action: NavDirections) {
         view?.let {
             val navigationController = Navigation.findNavController(view)
