@@ -26,7 +26,7 @@ class ChangePasswordViewModel(private val auth: FirebaseAuth,
     private val _changePassword = MutableLiveData<ChangePasswordEvent>()
     val changePassword: LiveData<ChangePasswordEvent> = _changePassword
 
-    private val _loading = MutableLiveData<Boolean>().apply { postValue(false) }
+    private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean> = _loading
 
     val currentPassword = MutableLiveData<String>()
@@ -51,6 +51,8 @@ class ChangePasswordViewModel(private val auth: FirebaseAuth,
         //If all fields are filled
         if(savePasswordEnabled.value == false) {
             _changePassword.postValue(ChangePasswordEvent.FillAllFields())
+            //Posting false
+            _loading.postValue(false)
         } else {
             // If values of newPassword and confirm password are null for some reason
             if(currentPassword.value != null && newPassword.value != null && confirmNewPassword.value != null) {
@@ -92,7 +94,7 @@ class ChangePasswordViewModel(private val auth: FirebaseAuth,
     private fun changePassword(user: FirebaseUser, currentPassword: String, password: String) {
         if(currentPassword == password) {
             _loading.postValue(false)
-            _changePassword.postValue(ChangePasswordEvent.NewPasswordCannotBeOld())
+            _changePassword.postValue(ChangePasswordEvent.NewPasswordCannotBeCurrent())
         } else {
             startStopDisposeBag?.let { bag ->
                 authRepository.changePassword(user, password)
@@ -133,7 +135,7 @@ sealed class ChangePasswordEvent: Event() {
     class PasswordsDoNotMatch: ChangePasswordEvent()
     class WeakPassword: ChangePasswordEvent()
     class WrongPassword: ChangePasswordEvent()
-    class NewPasswordCannotBeOld: ChangePasswordEvent()
+    class NewPasswordCannotBeCurrent: ChangePasswordEvent()
     class FillAllFields: ChangePasswordEvent()
     class TooManyRequests: ChangePasswordEvent()
     class UnknownError: ChangePasswordEvent()
