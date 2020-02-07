@@ -92,7 +92,8 @@ val viewModelModule = module {
 
     viewModel {
         DeleteAccountViewModel(
-            auth = FirebaseAuth.getInstance()
+            auth = FirebaseAuth.getInstance(),
+            authRepository = get()
         )
     }
 }
