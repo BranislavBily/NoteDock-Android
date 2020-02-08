@@ -24,10 +24,7 @@ import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.openLoginActivity
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
-import com.pixelart.notedock.viewModel.folder.CreateFolderEvent
-import com.pixelart.notedock.viewModel.folder.DeleteFolderEvent
-import com.pixelart.notedock.viewModel.folder.FoldersViewFragmentViewModel
-import com.pixelart.notedock.viewModel.folder.LoadFoldersEvent
+import com.pixelart.notedock.viewModel.folder.*
 import kotlinx.android.synthetic.main.fragment_folders_view.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -131,6 +128,17 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener,
         foldersViewFragmentViewModel.fabClicked.observe(viewLifecycleOwner, SpecificEventObserver<ButtonPressedEvent> {
             createFolderDialog()
         })
+
+        foldersViewFragmentViewModel.renameFolder.observe(viewLifecycleOwner, Observer { event ->
+            view?.let { view ->
+                when(event) {
+                    is RenameFolderEvent.Success -> {}
+                    is RenameFolderEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
+                    is RenameFolderEvent.FolderNameTaken -> R.string.folder_name_already_exists.showAsSnackBar(view)
+                    is RenameFolderEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
+                }
+            }
+        })
     }
 
     private fun createFolderDialog() {
@@ -176,7 +184,7 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener,
             activity?.let { activity ->
                 val dialog = EditFolderDialog(folderName, object: EditFolderSuccessListener {
                     override fun editFolderClick(folderName: String) {
-                        //Whatever
+                        foldersViewFragmentViewModel.renameFolder(folderUUID, folderName)
                     }
                 }).createDialog(activity)
                 dialog.show()

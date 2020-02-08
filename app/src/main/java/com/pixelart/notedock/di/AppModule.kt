@@ -34,7 +34,8 @@ val viewModelModule = module {
             auth = FirebaseAuth.getInstance(),
             createFolderUseCase = get(),
             folderNameTakenUseCase = get(),
-            deleteFolderUseCase = get()
+            deleteFolderUseCase = get(),
+            renameFolderUseCase = get()
         )
     }
     //Note
@@ -147,6 +148,12 @@ val firebaseModule = module {
             firebaseFirestore = FirebaseFirestore.getInstance(),
             firebaseIDSRepository = get()
         ) as FolderNameTakenUseCase
+    }
+    single {
+        RenameFolderImpl(
+            firebaseIDSRepository = get(),
+            firebaseInstance = FirebaseFirestore.getInstance()
+        ) as RenameFolderUseCase
     }
     //Note
     single {
