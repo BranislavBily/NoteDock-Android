@@ -5,12 +5,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.core.widget.addTextChangedListener
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.common.internal.AccountType
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.pixelart.notedock.BR
 import com.pixelart.notedock.NavigationRouter
@@ -20,9 +26,12 @@ import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.EditDisplayNameDialog
 import com.pixelart.notedock.dialog.EditDisplaySuccessListener
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
+import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
+import com.pixelart.notedock.ext.openSoftKeyBoard
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.model.AccountListModel
 import com.pixelart.notedock.viewModel.settings.AccountSettingsViewModel
+import com.pixelart.notedock.viewModel.settings.UpdateDisplayNameEvent
 import kotlinx.android.synthetic.main.create_folder_dialog.view.*
 import kotlinx.android.synthetic.main.fragment_account_settings.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -59,8 +68,35 @@ class AccountSettingsFragment() : Fragment(), AccountAdapter.OnAccountClickListe
         })
 
         accountSettingsViewModel.user.observe(viewLifecycleOwner, Observer { user ->
+            user.reload()
+                .addOnFailureListener { error ->
+                    if(error is FirebaseNetworkException) {
+                        //This is alright
+                    } else {
+                        //This means email changed
+                    }
+                }
+                .addOnSuccessListener {
+                    accountAdapter.setNewData(fillTable(user))
+                }
             accountAdapter.setNewData(fillTable(user))
         })
+
+        accountSettingsViewModel.updateDisplayName.observe(viewLifecycleOwner, SpecificEventObserver<UpdateDisplayNameEvent> { event ->
+            view?.let { view ->
+                when(event) {
+                    is UpdateDisplayNameEvent.Success -> { reloadData(accountAdapter) }
+                    is UpdateDisplayNameEvent.NetworkError -> R.string.network_error_message.showAsSnackBar(view)
+                    is UpdateDisplayNameEvent.UnknownError -> R.string.error_occurred.showAsSnackBar(view)
+                }
+            }
+        })
+    }
+
+    private fun reloadData(accountAdapter: AccountAdapter) {
+        FirebaseAuth.getInstance().currentUser?.let { user ->
+            accountAdapter.setNewData(fillTable(user))
+        }
     }
 
     private fun fillTable(user: FirebaseUser): ArrayList<AccountListModel> {
@@ -89,17 +125,30 @@ class AccountSettingsFragment() : Fragment(), AccountAdapter.OnAccountClickListe
                 else -> { NavigationRouter(view).accountToDeleteAccount() }
             }
         }
-
     }
 
     private fun openEditDisplayNameDialog() {
         activity?.let { activity ->
             val dialog = EditDisplayNameDialog(object: EditDisplaySuccessListener {
                 override fun onSuccess(displayName: String?) {
-                    Log.i("Displayname", displayName)
+                    displayName?.trim()
+                    if(displayName?.isEmpty() == true) {
+                        accountSettingsViewModel.updateDisplayName(null)
+                    } else {
+                        accountSettingsViewModel.updateDisplayName(displayName)
+                    }
+
                 }
             }).createDialog(activity)
             dialog.show()
+            FirebaseAuth.getInstance().currentUser?.let { user ->
+                user.displayName?.let { displayName ->
+                    val editText = dialog.findViewById<EditText>(R.id.editTextDisplayName)
+                    editText?.setText(displayName, TextView.BufferType.EDITABLE)
+                    editText?.setSelection(displayName.length)
+                }
+            }
+            openSoftKeyBoard(activity)
         }
     }
 }
