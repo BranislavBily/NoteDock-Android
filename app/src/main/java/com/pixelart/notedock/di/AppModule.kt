@@ -33,7 +33,8 @@ val viewModelModule = module {
             folderRepository = get(),
             auth = FirebaseAuth.getInstance(),
             createFolderUseCase = get(),
-            folderNameTakenUseCase = get()
+            folderNameTakenUseCase = get(),
+            deleteFolderUseCase = get()
         )
     }
     //Note

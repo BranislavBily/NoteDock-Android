@@ -8,6 +8,7 @@ import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
 import com.pixelart.notedock.domain.livedata.model.Event
 import com.pixelart.notedock.domain.repository.FolderRepository
 import com.pixelart.notedock.domain.usecase.folder.CreateFolderUseCase
+import com.pixelart.notedock.domain.usecase.folder.DeleteFolderUseCase
 import com.pixelart.notedock.domain.usecase.folder.FolderNameTakenUseCase
 import com.pixelart.notedock.model.FolderModel
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
@@ -19,7 +20,8 @@ class FoldersViewFragmentViewModel(
     private val folderRepository: FolderRepository,
     private val auth: FirebaseAuth,
     private val createFolderUseCase: CreateFolderUseCase,
-    private val folderNameTakenUseCase: FolderNameTakenUseCase
+    private val folderNameTakenUseCase: FolderNameTakenUseCase,
+    private val deleteFolderUseCase: DeleteFolderUseCase
 ) : LifecycleViewModel() {
 
 
@@ -28,6 +30,9 @@ class FoldersViewFragmentViewModel(
 
     private val _newFolderCreated = MutableLiveData<CreateFolderEvent>()
     val newFolderCreated: LiveData<CreateFolderEvent> = _newFolderCreated
+
+    private val _deleteFolder = MutableLiveData<DeleteFolderEvent>()
+    val deleteFolder: LiveData<DeleteFolderEvent> = _deleteFolder
 
     private val _fabClicked = MutableLiveData<ButtonPressedEvent>()
     val fabClicked: LiveData<ButtonPressedEvent> = _fabClicked
@@ -97,6 +102,25 @@ class FoldersViewFragmentViewModel(
             _newFolderCreated.postValue(CreateFolderEvent.NoUserFound())
         }
     }
+
+    fun deleteFolder(folderUUID: String) {
+        auth.currentUser?.let { user ->
+            startStopDisposeBag?.let { bag ->
+                deleteFolderUseCase.deleteFolder(user, folderUUID)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .subscribe({
+                        _deleteFolder.postValue(DeleteFolderEvent.Success())
+                    }, { error ->
+                        Crashlytics.logException(error)
+                        _deleteFolder.postValue(DeleteFolderEvent.Error())
+                    })
+                    .addTo(bag)
+            }
+        } ?: run {
+            _deleteFolder.postValue(DeleteFolderEvent.NoUserFound())
+        }
+    }
 }
 
 sealed class LoadFoldersEvent: Event() {
@@ -110,4 +134,10 @@ sealed class CreateFolderEvent : Event() {
     class Success : CreateFolderEvent()
     class NoUserFound: CreateFolderEvent()
     class FolderNameTaken: CreateFolderEvent()
+}
+
+sealed class DeleteFolderEvent: Event() {
+    class Success: DeleteFolderEvent()
+    class Error: DeleteFolderEvent()
+    class NoUserFound: DeleteFolderEvent()
 }

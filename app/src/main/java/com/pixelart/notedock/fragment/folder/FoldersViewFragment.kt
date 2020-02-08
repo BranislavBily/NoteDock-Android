@@ -23,11 +23,13 @@ import com.pixelart.notedock.adapter.FoldersAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.CreateFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogSuccessListener
+import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.openLoginActivity
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
 import com.pixelart.notedock.viewModel.folder.CreateFolderEvent
+import com.pixelart.notedock.viewModel.folder.DeleteFolderEvent
 import com.pixelart.notedock.viewModel.folder.FoldersViewFragmentViewModel
 import com.pixelart.notedock.viewModel.folder.LoadFoldersEvent
 import kotlinx.android.synthetic.main.fragment_folders_view.*
@@ -123,6 +125,16 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener, On
             }
         })
 
+        foldersViewFragmentViewModel.deleteFolder.observe(viewLifecycleOwner, Observer { event ->
+            view?.let { view ->
+                when(event) {
+                    is DeleteFolderEvent.Success -> {}
+                    is DeleteFolderEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
+                    is DeleteFolderEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
+                }
+            }
+        })
+
         foldersViewFragmentViewModel.fabClicked.observe(viewLifecycleOwner, SpecificEventObserver<ButtonPressedEvent> {
             createFolderDialog()
         })
@@ -159,7 +171,11 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener, On
     }
 
     override fun onClick(folderUUID: String, option: Option) {
-        Log.i("FolderEdit", option.toString() + folderUUID)
+        if (option == Option.DELETE) {
+            foldersViewFragmentViewModel.deleteFolder(folderUUID)
+        } else {
+
+        }
     }
 }
 
