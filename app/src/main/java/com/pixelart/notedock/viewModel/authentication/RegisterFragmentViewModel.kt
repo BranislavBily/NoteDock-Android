@@ -1,10 +1,12 @@
 package com.pixelart.notedock.viewModel.authentication
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import com.crashlytics.android.Crashlytics
 import com.google.firebase.FirebaseException
+import com.google.firebase.FirebaseTooManyRequestsException
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
@@ -14,7 +16,8 @@ import com.pixelart.notedock.domain.repository.AuthRepository
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 
-class RegisterFragmentViewModel(private val authRepository: AuthRepository) : LifecycleViewModel() {
+class RegisterFragmentViewModel(private val authRepository: AuthRepository,
+                                private val auth: FirebaseAuth) : LifecycleViewModel() {
 
     private val _register = MutableLiveData<RegisterEvent>()
     val register: LiveData<RegisterEvent> = _register
@@ -64,6 +67,24 @@ class RegisterFragmentViewModel(private val authRepository: AuthRepository) : Li
                     .observeOn(Schedulers.io())
                     .subscribeOn(Schedulers.io())
                     .doOnSubscribe { _loading.postValue(true) }
+                    .subscribe({
+                        sendVerificationEmail()
+                        //Firebase logs in after registration, we do not want that
+                        auth.signOut()
+                    }, { error ->
+                        val eventError = handleRegisterError(error)
+                        _register.postValue(RegisterEvent.Error(eventError))
+                        _loading.postValue(false)
+                    }).addTo(bag)
+            }
+        }
+    }
+
+    private fun sendVerificationEmail() {
+        startStopDisposeBag?.let {bag ->
+            auth.currentUser?.let { user ->
+                authRepository.sendVerificationEmail(user)
+                    .subscribeOn(Schedulers.io())
                     .doAfterTerminate { _loading.postValue( false) }
                     .subscribe({
                         _register.postValue(RegisterEvent.Success())
@@ -84,9 +105,10 @@ class RegisterFragmentViewModel(private val authRepository: AuthRepository) : Li
             is FirebaseAuthWeakPasswordException -> RegisterEventError.WeakPassword()
             is FirebaseAuthInvalidCredentialsException -> RegisterEventError.InvalidEmail()
             is FirebaseAuthUserCollisionException -> RegisterEventError.EmailAlreadyUsed()
+            is FirebaseTooManyRequestsException -> RegisterEventError.TooManyRequests()
             is FirebaseException -> RegisterEventError.NetworkError()
             else -> {
-                Log.e("Register", "${throwable?.message}", throwable)
+                Crashlytics.logException(throwable)
                 RegisterEventError.UnknownError()
             }
         }
@@ -109,4 +131,5 @@ sealed class RegisterEventError : Event() {
     class InvalidEmail : RegisterEventError()
     class WeakPassword : RegisterEventError()
     class UnknownError : RegisterEventError()
+    class TooManyRequests: RegisterEventError()
 }

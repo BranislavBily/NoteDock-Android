@@ -8,9 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
-import com.google.firebase.auth.FirebaseAuth
+import com.google.android.material.snackbar.Snackbar
 import com.pixelart.notedock.BR
 import com.pixelart.notedock.NavigationRouter
 import com.pixelart.notedock.R
@@ -18,7 +16,10 @@ import com.pixelart.notedock.activity.MainActivity
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.showAsSnackBar
-import com.pixelart.notedock.viewModel.authentication.*
+import com.pixelart.notedock.viewModel.authentication.LoginEvent
+import com.pixelart.notedock.viewModel.authentication.LoginFragmentViewModel
+import com.pixelart.notedock.viewModel.authentication.SendEmailEvent
+import kotlinx.android.synthetic.main.fragment_login.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class LoginFragment : Fragment() {
@@ -43,42 +44,62 @@ class LoginFragment : Fragment() {
         observeLiveData()
     }
 
+    override fun onPause() {
+        super.onPause()
+
+        editTextLoginPassword.setText("")
+    }
+
+    private fun goToMainActivity() {
+        context?.let {
+            val intent = Intent(it, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(intent)
+        }
+    }
 
     private fun observeLiveData() {
 
-        loginFragmentViewModel.loginCompleted.observe(this, Observer { event ->
+        loginFragmentViewModel.loginCompleted.observe(viewLifecycleOwner, SpecificEventObserver { event ->
             view?.let { view ->
                 when(event) {
-                    is LoginEvent.Success -> {
-                        context?.let {
-                            val intent = Intent(it, MainActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                            startActivity(intent)
-                        }
-                    }
+                    is LoginEvent.Success -> goToMainActivity()
                     is LoginEvent.InvalidEmail -> R.string.invalid_email_message.showAsSnackBar(view)
                     is LoginEvent.BadCredentials -> R.string.invalid_credentials_message.showAsSnackBar(view)
                     is LoginEvent.NetworkError -> R.string.network_error_message.showAsSnackBar(view)
-                    is LoginEvent.UnknownError -> R.string.unknown_error_message.showAsSnackBar(view)
+                    is LoginEvent.UnknownError -> R.string.error_occurred.showAsSnackBar(view)
+                    is LoginEvent.TooManyRequests -> R.string.too_many_requests.showAsSnackBar(view)
+                    is LoginEvent.UserEmailNotVerified -> showEmailNotVerifiedSnackbar()
                 }
             }
         })
 
-        loginFragmentViewModel.forgotPassword.observe(this, SpecificEventObserver<ButtonPressedEvent> {
-            view?.let { view ->
-                val action = LoginFragmentDirections.actionLoginFragmentToResetPasswordFragment()
-                val navigationRouter = NavigationRouter(view)
-                navigationRouter.openAction(action)
-            }
+        loginFragmentViewModel.forgotPassword.observe(viewLifecycleOwner, SpecificEventObserver {
+            NavigationRouter(view).loginToForgotPassword()
         })
 
-        loginFragmentViewModel.createAccount.observe(this, SpecificEventObserver<CreateAccountEvent> {
+        loginFragmentViewModel.createAccount.observe(viewLifecycleOwner, SpecificEventObserver {
+            NavigationRouter(view).loginToRegister()
+        })
+
+        loginFragmentViewModel.sendEmail.observe(viewLifecycleOwner, SpecificEventObserver { event ->
             view?.let { view ->
-                val action = LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
-                val navigationRouter = NavigationRouter(view)
-                navigationRouter.openAction(action)
+                when(event) {
+                    is SendEmailEvent.Success -> R.string.verification_email_sent.showAsSnackBar(view)
+                    is SendEmailEvent.UnknownError -> R.string.error_occurred.showAsSnackBar(view)
+                    is SendEmailEvent.TooManyRequests -> R.string.too_many_requests.showAsSnackBar(view)
+                }
             }
         })
+    }
+
+    private fun showEmailNotVerifiedSnackbar() {
+        view?.let { view ->
+            Snackbar.make(view, R.string.email_not_verified, Snackbar.LENGTH_SHORT)
+                .setAction(R.string.send) {
+                    loginFragmentViewModel.sendVerificationEmail()
+                }.show()
+        }
     }
 }
 

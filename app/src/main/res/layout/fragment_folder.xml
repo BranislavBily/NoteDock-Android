@@ -15,25 +15,52 @@
             android:layout_height="match_parent"
             tools:context=".fragment.folder.FolderFragment">
 
-        <androidx.appcompat.widget.Toolbar
+        <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:elevation="8dp"
-                android:background="#E6FFFFFF"
-                app:titleTextColor="@color/colorPrimary"
-                app:title="@{viewmodel.toolbarTitle}"
-                app:navigationIcon="@drawable/ic_arrow_back"
-                app:onBackClicked="@{() -> viewmodel.onBackClicked()}"
-                app:menu="@menu/folder_view_menu" />
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-            <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerViewNotes"
+            <androidx.appcompat.widget.Toolbar
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clipToPadding="false"
-                    android:paddingBottom="60dp"
-                    android:paddingTop="?attr/actionBarSize"
-                    tools:listitem="@layout/note_list_item" />
+                    android:layout_height="?attr/actionBarSize"
+                    android:elevation="8dp"
+                    android:background="#E6FFFFFF"
+                    app:titleTextColor="@color/colorPrimary"
+                    app:title="@{viewmodel.toolbarTitle}"
+                    app:navigationIcon="@drawable/ic_arrow_back"
+                    app:onBackClicked="@{() -> viewmodel.onBackClicked()}"
+                    app:menu="@menu/folder_view_menu" />
+
+            <androidx.core.widget.NestedScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerViewMarkedNotes"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:clipToPadding="false"
+                            android:paddingBottom="8dp"
+                            tools:listitem="@layout/note_list_item" />
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerViewUnMarkedNotes"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:clipToPadding="false"
+                            android:paddingBottom="60dp"
+                            tools:listitem="@layout/note_list_item" />
+                </LinearLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
+        </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fabAddNote"
@@ -41,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|bottom"
                 android:layout_margin="16dp"
-                android:onClick="@{() -> viewmodel.onFABClicked()}"
+                app:onThrottledClick="@{() -> viewmodel.onFABClicked()}"
                 android:contentDescription="@string/create_new_note"
                 android:src="@drawable/ic_note_add"
                 app:backgroundTint="#30679E" />

@@ -40,10 +40,16 @@ class FoldersAdapter(private val onFolderClickListener: OnFolderClickListener) :
             itemView.setOnClickListener {
                 onFolderClickListener.onFolderClick(folder.uid, folder.name)
             }
+
+            itemView.setOnLongClickListener {
+                onFolderClickListener.onFolderLongPress(folder.uid, folder.name)
+                true
+            }
         }
     }
 
     interface OnFolderClickListener {
         fun onFolderClick(uid: String?, name: String?)
+        fun onFolderLongPress(uid: String?, folderName: String?)
     }
 }

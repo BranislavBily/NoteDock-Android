@@ -1,13 +1,20 @@
 package com.pixelart.notedock.domain.repository
 
 import android.util.Patterns
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import io.reactivex.Completable
 
 interface AuthRepository {
     fun login(email: String, password: String): Completable
     fun register(email: String, password: String): Completable
     fun sendPasswordResetEmail(email: String): Completable
+    fun sendVerificationEmail(user: FirebaseUser): Completable
+    fun reauthenticateUser(user: FirebaseUser, email: String, password: String): Completable
+    fun changePassword(user: FirebaseUser, newPassword: String): Completable
+    fun deleteAccount(user: FirebaseUser): Completable
+    fun updateEmail(user: FirebaseUser, newEmail: String): Completable
 }
 
 class AuthRepositoryImpl(private val auth: FirebaseAuth): AuthRepository {
@@ -48,6 +55,56 @@ class AuthRepositoryImpl(private val auth: FirebaseAuth): AuthRepository {
                 .addOnFailureListener { error ->
                     emitter.tryOnError(error)
                 }
+        }
+    }
+
+    override fun sendVerificationEmail(user: FirebaseUser): Completable {
+        return Completable.create { emitter ->
+            user.sendEmailVerification()
+                .addOnSuccessListener {
+                    emitter.onComplete()
+                }
+                .addOnFailureListener { error ->
+                    emitter.tryOnError(error)
+                }
+        }
+    }
+
+    override fun reauthenticateUser(user: FirebaseUser, email: String, password: String): Completable {
+        return Completable.create { emitter ->
+            val credentials = EmailAuthProvider.getCredential(email, password)
+            user.reauthenticate(credentials)
+                .addOnSuccessListener { emitter.onComplete() }
+                .addOnFailureListener { emitter.tryOnError(it) }
+        }
+    }
+
+    override fun changePassword(user: FirebaseUser, newPassword: String): Completable {
+        return Completable.create { emitter ->
+            user.updatePassword(newPassword)
+                .addOnSuccessListener { emitter.onComplete() }
+                .addOnFailureListener { emitter.tryOnError(it) }
+        }
+
+    }
+
+    override fun deleteAccount(user: FirebaseUser): Completable {
+        return Completable.create { emitter ->
+            user.delete()
+                .addOnFailureListener { error ->
+                    emitter.tryOnError(error)
+                }
+                .addOnSuccessListener {
+                    emitter.onComplete()
+                }
+        }
+    }
+
+    override fun updateEmail(user: FirebaseUser, newEmail: String): Completable {
+        return Completable.create {emitter ->
+            user.updateEmail(newEmail)
+                .addOnSuccessListener { emitter.onComplete() }
+                .addOnFailureListener { emitter.tryOnError(it) }
         }
     }
 }

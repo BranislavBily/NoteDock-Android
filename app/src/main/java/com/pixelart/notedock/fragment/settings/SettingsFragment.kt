@@ -9,16 +9,25 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.BR
+import com.pixelart.notedock.NavigationRouter
 
 import com.pixelart.notedock.R
 import com.pixelart.notedock.activity.LoginActivity
+import com.pixelart.notedock.adapter.settings.SettingsAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
+import com.pixelart.notedock.ext.openLoginActivity
+import com.pixelart.notedock.ext.showAsSnackBar
+import com.pixelart.notedock.model.SettingsModel
 import com.pixelart.notedock.viewModel.settings.SettingsFragmentViewModel
+import kotlinx.android.synthetic.main.fragment_settings.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
-class SettingsFragment : Fragment() {
+class SettingsFragment : Fragment(), SettingsAdapter.OnSettingsClickListener {
 
     private val settingFragmentViewModel: SettingsFragmentViewModel by viewModel()
 
@@ -39,6 +48,28 @@ class SettingsFragment : Fragment() {
         super.onStart()
 
         observeLiveData()
+        val settingsAdapter =
+            SettingsAdapter(
+                createSettings(),
+                this
+            )
+        recyclerViewSettings.layoutManager = LinearLayoutManager(context)
+        recyclerViewSettings.adapter = settingsAdapter
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        FirebaseAuth.getInstance().currentUser?.let { user ->
+            user.reload()
+                .addOnFailureListener {error ->
+                    if(error is FirebaseNetworkException) {
+                        //All is well
+                    } else {
+                        openLoginActivity()
+                    }
+                }
+        }
     }
 
     private fun observeLiveData() {
@@ -48,12 +79,27 @@ class SettingsFragment : Fragment() {
         })
 
         settingFragmentViewModel.signedOut.observe(this, EventObserver {
-            context?.let {context ->
-                val intent = Intent(context, LoginActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                startActivity(intent)
-                activity?.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-            }
+            openLoginActivity()
         })
+    }
+
+    override fun onSettingClick(setting: SettingsModel) {
+        when(setting.title) {
+            getString(R.string.account) -> NavigationRouter(view).settingsToAccount()
+            getString(R.string.changePassword) -> NavigationRouter(view).settingsToChangePassword()
+            getString(R.string.rateUs) ->  view?.let { R.string.not_on_appstore.showAsSnackBar(it) }
+            getString(R.string.helpAndSupport) -> NavigationRouter(view).settingsToHelpAndSupport()
+            else -> settingFragmentViewModel.logOut()
+        }
+    }
+
+    private fun createSettings(): ArrayList<SettingsModel> {
+        val settings = ArrayList<SettingsModel>()
+        settings.add(SettingsModel(R.drawable.ic_account, getString(R.string.account)))
+        settings.add(SettingsModel(R.drawable.ic_password, getString(R.string.changePassword)))
+        settings.add(SettingsModel(R.drawable.ic_rateus, getString(R.string.rateUs)))
+        settings.add(SettingsModel(R.drawable.ic_help, getString(R.string.helpAndSupport)))
+        settings.add(SettingsModel(R.drawable.ic_logout, getString(R.string.log_out)))
+        return settings
     }
 }

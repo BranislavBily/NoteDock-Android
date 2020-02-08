@@ -12,6 +12,9 @@ class SettingsFragmentViewModel(private val auth: FirebaseAuth) : LifecycleViewM
     private val _onBackClicked = MutableLiveData<ButtonPressedEvent>()
     val onBackClicked: LiveData<ButtonPressedEvent> = _onBackClicked
 
+    private val _loading = MutableLiveData<Boolean>().apply { postValue(false) }
+    val loading: LiveData<Boolean> = _loading
+
     private val _signedOut = MutableLiveData<Event>()
     val signedOut: LiveData<Event> = _signedOut
 
@@ -19,11 +22,7 @@ class SettingsFragmentViewModel(private val auth: FirebaseAuth) : LifecycleViewM
         _onBackClicked.postValue(ButtonPressedEvent.Pressed())
     }
 
-    fun onLogOutButtonClicked() {
-        logOut()
-    }
-
-    private fun logOut() {
+    fun logOut() {
         auth.signOut()
         _signedOut.postValue(Event())
     }

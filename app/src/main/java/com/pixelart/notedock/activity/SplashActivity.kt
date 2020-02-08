@@ -21,11 +21,11 @@ class SplashActivity : AppCompatActivity() {
         super.onStart()
 
         val currentUser = auth.currentUser
-        val intent: Intent = currentUser?.let {
+        val intent: Intent
+        intent = if (currentUser != null && currentUser.isEmailVerified) {
             Intent(this, MainActivity::class.java)
-        } ?: run {
+        } else {
             Intent(this, LoginActivity::class.java)
-
         }
         intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)

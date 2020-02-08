@@ -4,6 +4,7 @@ class NoteModel {
     var uuid: String? = null
     var noteTitle: String? = null
     var noteDescription: String? = null
+    var marked: Boolean? = null
 
     constructor()
 
@@ -18,10 +19,7 @@ class NoteModel {
         this.noteDescription = noteDescription
     }
 
-
     override fun toString(): String {
-        return "NoteModel(uid=$uuid, noteTitle=$noteTitle, noteDescription=$noteDescription)"
+        return "NoteModel(uuid=$uuid, noteTitle=$noteTitle, noteDescription=$noteDescription, pinned=$marked)"
     }
-
-
 }

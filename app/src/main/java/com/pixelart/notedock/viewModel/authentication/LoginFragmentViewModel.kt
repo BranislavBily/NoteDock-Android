@@ -1,12 +1,16 @@
 package com.pixelart.notedock.viewModel.authentication
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import com.crashlytics.android.Crashlytics
 import com.google.firebase.FirebaseException
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.FirebaseTooManyRequestsException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.pixelart.notedock.dataBinding.SingleLiveEvent
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
 import com.pixelart.notedock.domain.livedata.model.Event
 import com.pixelart.notedock.domain.repository.AuthRepository
@@ -15,7 +19,8 @@ import com.pixelart.notedock.viewModel.authentication.LoginEvent.*
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 
-class LoginFragmentViewModel(private val authRepository: AuthRepository): LifecycleViewModel() {
+class LoginFragmentViewModel(private val authRepository: AuthRepository,
+                             private val auth: FirebaseAuth): LifecycleViewModel() {
 
     private val _loginCompleted = MutableLiveData<LoginEvent>()
     val loginCompleted: LiveData<LoginEvent> = _loginCompleted
@@ -25,6 +30,9 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository): Lifecy
 
     private val _loading = MutableLiveData<Boolean>().apply { postValue(false) }
     val loading: LiveData<Boolean> = _loading
+
+    private val _sendEmail = MutableLiveData<SendEmailEvent>()
+    val sendEmail: LiveData<SendEmailEvent> = _sendEmail
 
     private val _forgotPassword = MutableLiveData<ButtonPressedEvent>()
     val forgotPassword: LiveData<ButtonPressedEvent> = _forgotPassword
@@ -53,10 +61,35 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository): Lifecy
                     .doOnSubscribe { _loading.postValue(true) }
                     .doAfterTerminate { _loading.postValue(false) }
                     .subscribe({
-                        _loginCompleted.postValue(Success())
-                    }, {
-                        _loginCompleted.postValue(handleLoginError(it))
+                        isUserVerified()
+                    }, { error ->
+                        _loginCompleted.postValue(handleLoginError(error))
                     }).addTo(bag)
+            }
+        }
+    }
+
+    fun sendVerificationEmail() {
+        startStopDisposeBag?.let {bag ->
+            auth.currentUser?.let { user ->
+                authRepository.sendVerificationEmail(user)
+                    .subscribeOn(Schedulers.io())
+                    .doAfterTerminate { _loading.postValue( false) }
+                    .subscribe({
+                        _sendEmail.postValue(SendEmailEvent.Success())
+                    }, { error ->
+                        _sendEmail.postValue(handleEmailError(error))
+                    }).addTo(bag)
+            }
+        }
+    }
+
+    private fun isUserVerified() {
+        auth.currentUser?.let { user ->
+            if (user.isEmailVerified) {
+                _loginCompleted.postValue(Success())
+            } else {
+                _loginCompleted.postValue(UserEmailNotVerified())
             }
         }
     }
@@ -72,14 +105,34 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository): Lifecy
     private fun handleLoginError(throwable: Throwable?): LoginEvent {
         return when (throwable) {
             is InvalidEmailException -> InvalidEmail()
-            is FirebaseException -> NetworkError()
+            is FirebaseAuthInvalidUserException -> BadCredentials()
             is FirebaseAuthInvalidCredentialsException -> BadCredentials()
+            is FirebaseTooManyRequestsException -> TooManyRequests()
+            is FirebaseException -> NetworkError()
             else -> {
-                Log.e("Login", "${throwable?.message}", throwable)
+                Crashlytics.logException(throwable)
                 UnknownError()
             }
         }
     }
+
+    private fun handleEmailError(throwable: Throwable?): SendEmailEvent {
+        return when(throwable) {
+            is FirebaseNetworkException -> SendEmailEvent.NetworkError()
+            is FirebaseTooManyRequestsException -> SendEmailEvent.TooManyRequests()
+            else -> {
+                Crashlytics.logException(throwable)
+                SendEmailEvent.UnknownError()
+            }
+        }
+    }
+}
+
+sealed class SendEmailEvent : Event() {
+    class Success : SendEmailEvent()
+    class UnknownError : SendEmailEvent()
+    class NetworkError: SendEmailEvent()
+    class TooManyRequests: SendEmailEvent()
 }
 
 sealed class LoginEvent : Event() {
@@ -87,7 +140,9 @@ sealed class LoginEvent : Event() {
     class InvalidEmail : LoginEvent()
     class BadCredentials : LoginEvent()
     class NetworkError : LoginEvent()
+    class UserEmailNotVerified : LoginEvent()
     class UnknownError : LoginEvent()
+    class TooManyRequests: LoginEvent()
 }
 
 sealed class CreateAccountEvent: Event() {

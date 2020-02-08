@@ -1,13 +1,10 @@
 package com.pixelart.notedock.fragment.authentication
 
 
-import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -49,11 +46,11 @@ class RegisterFragment : Fragment() {
 
     private fun observeLiveData() {
 
-        registerFragmentViewModel.alreadyHaveAccount.observe(this, SpecificEventObserver<ButtonPressedEvent> {
+        registerFragmentViewModel.alreadyHaveAccount.observe(viewLifecycleOwner, SpecificEventObserver<ButtonPressedEvent> {
             findNavController().popBackStack()
         })
 
-        registerFragmentViewModel.registerButtonPressedEvent.observe(this, SpecificEventObserver<ButtonPressedEvent> {
+        registerFragmentViewModel.registerButtonPressedEvent.observe(viewLifecycleOwner, SpecificEventObserver<ButtonPressedEvent> {
             val view = view
             val context = context
             if(view != null && context != null) {
@@ -61,7 +58,7 @@ class RegisterFragment : Fragment() {
             }
         })
 
-        registerFragmentViewModel.register.observe(this, Observer { event ->
+        registerFragmentViewModel.register.observe(viewLifecycleOwner, Observer { event ->
             view?.let { view ->
                 when(event) {
                     is RegisterEvent.Success -> {
@@ -75,7 +72,8 @@ class RegisterFragment : Fragment() {
                             is RegisterEventError.NetworkError -> { R.string.network_error_message.showAsSnackBar(view) }
                             is RegisterEventError.InvalidEmail -> { R.string.invalid_email_message.showAsSnackBar(view) }
                             is RegisterEventError.WeakPassword -> { R.string.weak_password_message.showAsSnackBar(view) }
-                            is RegisterEventError.UnknownError -> { R.string.unknown_error_message.showAsSnackBar(view) }
+                            is RegisterEventError.TooManyRequests -> { R.string.too_many_requests.showAsSnackBar(view) }
+                            is RegisterEventError.UnknownError -> { R.string.error_occurred.showAsSnackBar(view) }
                         }
                     }
                 }
