@@ -64,9 +64,8 @@ class NoteFragment : Fragment() {
         FirebaseAuth.getInstance().currentUser?.let { user ->
             user.reload()
                 .addOnFailureListener {error ->
-                    if(error is FirebaseNetworkException) {
-                        //All is well
-                    } else {
+                    //All is well
+                    if (error !is FirebaseNetworkException) {
                         openLoginActivity()
                     }
                 }
@@ -169,14 +168,12 @@ class NoteFragment : Fragment() {
     }
 
     private fun createDeleteNoteDialog() {
-        activity?.supportFragmentManager?.let { fragmentManager ->
-            val dialog = DeleteNoteDialog(object : NoteDialogDeleteSuccessListener {
-                override fun onDelete() {
-                    noteFragmentViewModel.deleteNote(args.folderUUID, args.noteUUID)
-                }
-            })
-            dialog.show(fragmentManager, "Delete note dialog")
-        }
+        val dialog = DeleteNoteDialog(object : NoteDialogDeleteSuccessListener {
+            override fun onDelete() {
+                noteFragmentViewModel.deleteNote(args.folderUUID, args.noteUUID)
+            }
+        })
+        dialog.show(parentFragmentManager, "Delete note dialog")
     }
 
     private fun saveNote() {

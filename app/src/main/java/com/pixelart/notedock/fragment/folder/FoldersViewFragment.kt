@@ -22,6 +22,8 @@ import com.pixelart.notedock.activity.SplashActivity
 import com.pixelart.notedock.adapter.FoldersAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.CreateFolderDialog
+import com.pixelart.notedock.dialog.DeleteFolderDialog
+import com.pixelart.notedock.dialog.FolderDialogDeleteSuccessListener
 import com.pixelart.notedock.dialog.FolderDialogSuccessListener
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
@@ -35,7 +37,8 @@ import com.pixelart.notedock.viewModel.folder.LoadFoldersEvent
 import kotlinx.android.synthetic.main.fragment_folders_view.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
-class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener, OnFolderOptionsClickListener {
+class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener,
+                                        OnFolderOptionsClickListener {
 
     private val foldersViewFragmentViewModel: FoldersViewFragmentViewModel by viewModel()
 
@@ -167,12 +170,16 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener, On
             val optionsFragment = FolderOptionsFragment(uuid, this)
             optionsFragment.show(parentFragmentManager, "FolderOptionsFragment")
         }
-
     }
 
     override fun onClick(folderUUID: String, option: Option) {
         if (option == Option.DELETE) {
-            foldersViewFragmentViewModel.deleteFolder(folderUUID)
+            val dialog = DeleteFolderDialog(object : FolderDialogDeleteSuccessListener {
+                override fun onDelete() {
+                    foldersViewFragmentViewModel.deleteFolder(folderUUID)
+                }
+            })
+            dialog.show(parentFragmentManager, "DeleteFolderDialog")
         } else {
 
         }
