@@ -77,9 +77,8 @@ class FolderFragment : Fragment(),
         FirebaseAuth.getInstance().currentUser?.let { user ->
             user.reload()
                 .addOnFailureListener {error ->
-                    if(error is FirebaseNetworkException) {
-                        //All is well
-                    } else {
+                    //All is well
+                    if (error !is FirebaseNetworkException) {
                         openLoginActivity()
                     }
                 }

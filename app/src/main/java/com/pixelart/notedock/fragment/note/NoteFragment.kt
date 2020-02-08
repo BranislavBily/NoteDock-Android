@@ -2,6 +2,7 @@ package com.pixelart.notedock.fragment.note
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.baseAdapters.BR
@@ -52,9 +53,11 @@ class NoteFragment : Fragment() {
         return dataBinding.root
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        setupToolbar()
+        setupClosingOfKeyboard()
         observeLiveData()
     }
 
@@ -80,12 +83,7 @@ class NoteFragment : Fragment() {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
-        setupToolbar()
-        setupClosingOfKeyboard()
-    }
 
     private fun setupToolbar() {
         view?.toolbar?.menu?.getItem(1)?.isVisible = false

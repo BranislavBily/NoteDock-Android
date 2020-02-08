@@ -1,6 +1,5 @@
 package com.pixelart.notedock.fragment.folder
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,14 +17,9 @@ import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.NavigationRouter
 import com.pixelart.notedock.R
-import com.pixelart.notedock.activity.SplashActivity
 import com.pixelart.notedock.adapter.FoldersAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
-import com.pixelart.notedock.dialog.CreateFolderDialog
-import com.pixelart.notedock.dialog.DeleteFolderDialog
-import com.pixelart.notedock.dialog.FolderDialogDeleteSuccessListener
-import com.pixelart.notedock.dialog.FolderDialogSuccessListener
-import com.pixelart.notedock.domain.livedata.observer.EventObserver
+import com.pixelart.notedock.dialog.*
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.openLoginActivity
 import com.pixelart.notedock.ext.showAsSnackBar
@@ -60,13 +54,24 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        auth = FirebaseAuth.getInstance()
         setupToolbar()
 
         val foldersAdapter = FoldersAdapter(this)
         setupRecyclerView(foldersAdapter)
         observeLiveData(foldersAdapter)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        FirebaseAuth.getInstance().currentUser?.let { user ->
+            user.reload()
+                .addOnFailureListener {error ->
+                    if (error !is FirebaseNetworkException) {
+                        openLoginActivity()
+                    }
+                }
+        }
     }
 
     private fun setupToolbar() {
@@ -80,21 +85,6 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener,
                     false
                 }
             }
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        FirebaseAuth.getInstance().currentUser?.let { user ->
-            user.reload()
-                .addOnFailureListener {error ->
-                    if(error is FirebaseNetworkException) {
-                        //All is well
-                    } else {
-                        openLoginActivity()
-                    }
-                }
         }
     }
 
@@ -165,14 +155,16 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener,
         }
     }
 
-    override fun onFolderLongPress(uid: String?) {
+    override fun onFolderLongPress(uid: String?, folderName: String?) {
         uid?.let { uuid ->
-            val optionsFragment = FolderOptionsFragment(uuid, this)
-            optionsFragment.show(parentFragmentManager, "FolderOptionsFragment")
+            folderName?.let { folderName ->
+                val optionsFragment = FolderOptionsFragment(uuid, folderName, this)
+                optionsFragment.show(parentFragmentManager, "FolderOptionsFragment")
+            }
         }
     }
 
-    override fun onClick(folderUUID: String, option: Option) {
+    override fun onClick(folderUUID: String,folderName: String, option: Option) {
         if (option == Option.DELETE) {
             val dialog = DeleteFolderDialog(object : FolderDialogDeleteSuccessListener {
                 override fun onDelete() {
@@ -181,7 +173,19 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener,
             })
             dialog.show(parentFragmentManager, "DeleteFolderDialog")
         } else {
-
+            activity?.let { activity ->
+                val dialog = EditFolderDialog(folderName, object: EditFolderSuccessListener {
+                    override fun editFolderClick(folderName: String) {
+                        //Whatever
+                    }
+                }).createDialog(activity)
+                dialog.show()
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+                dialog.findViewById<EditText>(R.id.editTextFolderName)?.addTextChangedListener { watcher ->
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = !watcher.isNullOrEmpty()
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = watcher.toString() != folderName
+                }
+            }
         }
     }
 }

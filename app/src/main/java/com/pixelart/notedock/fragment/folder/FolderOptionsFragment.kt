@@ -9,6 +9,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.pixelart.notedock.R
 
 class FolderOptionsFragment(private val folderUUID: String,
+                            private val folderName: String,
                             private val onFolderOptionsClickListener: OnFolderOptionsClickListener): BottomSheetDialogFragment() {
 
     override fun onCreateView(
@@ -23,18 +24,18 @@ class FolderOptionsFragment(private val folderUUID: String,
         super.onViewCreated(view, savedInstanceState)
 
         view.findViewById<TextView>(R.id.textViewEditFolder).setOnClickListener {
-            onFolderOptionsClickListener.onClick(folderUUID, Option.EDIT)
+            onFolderOptionsClickListener.onClick(folderUUID, folderName, Option.EDIT)
             dismiss()
         }
         view.findViewById<TextView>(R.id.textViewDeleteFolder).setOnClickListener {
-            onFolderOptionsClickListener.onClick(folderUUID, Option.DELETE)
+            onFolderOptionsClickListener.onClick(folderUUID, folderName, Option.DELETE)
             dismiss()
         }
     }
 }
 
 interface OnFolderOptionsClickListener {
-    fun onClick(folderUUID: String, option: Option)
+    fun onClick(folderUUID: String, folderName: String,  option: Option)
 }
 
 enum class Option {
