@@ -14,6 +14,7 @@ import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.NavigationRouter
 import com.pixelart.notedock.R
@@ -23,6 +24,7 @@ import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.CreateFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogSuccessListener
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
+import com.pixelart.notedock.ext.openLoginActivity
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
 import com.pixelart.notedock.viewModel.folder.CreateFolderEvent
@@ -76,18 +78,18 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
 
-        val currentUser = auth.currentUser
-        currentUser?.let {
-
-        } ?: run {
-            context?.let { context ->
-                val intent = Intent(context, SplashActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
-                startActivity(intent)
-            }
+        FirebaseAuth.getInstance().currentUser?.let { user ->
+            user.reload()
+                .addOnFailureListener {error ->
+                    if(error is FirebaseNetworkException) {
+                        //All is well
+                    } else {
+                        openLoginActivity()
+                    }
+                }
         }
     }
 

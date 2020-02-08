@@ -10,6 +10,8 @@ import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.BR
 import com.pixelart.notedock.NavigationRouter
 
@@ -18,6 +20,7 @@ import com.pixelart.notedock.activity.LoginActivity
 import com.pixelart.notedock.adapter.settings.SettingsAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
+import com.pixelart.notedock.ext.openLoginActivity
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.model.SettingsModel
 import com.pixelart.notedock.viewModel.settings.SettingsFragmentViewModel
@@ -54,6 +57,21 @@ class SettingsFragment : Fragment(), SettingsAdapter.OnSettingsClickListener {
         recyclerViewSettings.adapter = settingsAdapter
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        FirebaseAuth.getInstance().currentUser?.let { user ->
+            user.reload()
+                .addOnFailureListener {error ->
+                    if(error is FirebaseNetworkException) {
+                        //All is well
+                    } else {
+                        openLoginActivity()
+                    }
+                }
+        }
+    }
+
     private fun observeLiveData() {
 
         settingFragmentViewModel.onBackClicked.observe(this, EventObserver {
@@ -61,12 +79,7 @@ class SettingsFragment : Fragment(), SettingsAdapter.OnSettingsClickListener {
         })
 
         settingFragmentViewModel.signedOut.observe(this, EventObserver {
-            context?.let {context ->
-                val intent = Intent(context, LoginActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                startActivity(intent)
-                activity?.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-            }
+            openLoginActivity()
         })
     }
 

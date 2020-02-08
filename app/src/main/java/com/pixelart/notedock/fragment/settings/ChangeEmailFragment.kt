@@ -1,7 +1,6 @@
 package com.pixelart.notedock.fragment.settings
 
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,12 +8,14 @@ import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.BR
 import com.pixelart.notedock.R
-import com.pixelart.notedock.activity.LoginActivity
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
+import com.pixelart.notedock.ext.openLoginActivity
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.viewModel.settings.ChangeEmailEvent
 import com.pixelart.notedock.viewModel.settings.ChangeEmailViewModel
@@ -43,6 +44,21 @@ class ChangeEmailFragment : Fragment() {
         observeLiveData()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        FirebaseAuth.getInstance().currentUser?.let { user ->
+            user.reload()
+                .addOnFailureListener {error ->
+                    if(error is FirebaseNetworkException) {
+                        //All is well
+                    } else {
+                        openLoginActivity()
+                    }
+                }
+        }
+    }
+
     private fun observeLiveData() {
         changeEmailViewModel.onBackClicked.observe(viewLifecycleOwner, EventObserver {
             findNavController().popBackStack()
@@ -52,10 +68,7 @@ class ChangeEmailFragment : Fragment() {
           view?.let { view ->
               when(event) {
                   is ChangeEmailEvent.Success -> {
-                      val intent = Intent(context, LoginActivity::class.java)
-                      intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                      startActivity(intent)
-                      activity?.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                      openLoginActivity()
                   }
                   is ChangeEmailEvent.InvalidEmail -> R.string.invalid_email_message.showAsSnackBar(view)
                   is ChangeEmailEvent.TryAgainError -> R.string.try_again.showAsSnackBar(view)

@@ -10,6 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.R
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteNoteDialog
@@ -17,6 +19,7 @@ import com.pixelart.notedock.dialog.NoteDialogDeleteSuccessListener
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.hideSoftKeyboard
+import com.pixelart.notedock.ext.openLoginActivity
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.model.NoteModel
 import com.pixelart.notedock.viewModel.note.LoadNoteEvent
@@ -47,6 +50,35 @@ class NoteFragment : Fragment() {
         setHasOptionsMenu(true)
         noteFragmentViewModel.lifecycleOwner = this
         return dataBinding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        observeLiveData()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        FirebaseAuth.getInstance().currentUser?.let { user ->
+            user.reload()
+                .addOnFailureListener {error ->
+                    if(error is FirebaseNetworkException) {
+                        //All is well
+                    } else {
+                        openLoginActivity()
+                    }
+                }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        if (!deletingNote) {
+            saveNote()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -89,20 +121,6 @@ class NoteFragment : Fragment() {
                     }
                 }
             }
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        observeLiveData()
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        if (!deletingNote) {
-            saveNote()
         }
     }
 
