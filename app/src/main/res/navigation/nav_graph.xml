@@ -19,7 +19,7 @@
                 app:popExitAnim="@anim/slide_out_right" />
         <action
                 android:id="@+id/action_foldersViewFragment_to_settingsFragment"
-                app:destination="@id/settingsFragment"
+                app:destination="@id/settings"
                 app:enterAnim="@anim/slide_in_right"
                 app:exitAnim="@anim/slide_out_left"
                 app:popEnterAnim="@anim/slide_in_left"
@@ -68,47 +68,76 @@
                 app:nullable="false" />
 
     </fragment>
-    <fragment
-            android:id="@+id/settingsFragment"
-            android:name="com.pixelart.notedock.fragment.settings.SettingsFragment"
-            android:label="fragment_settings"
-            tools:layout="@layout/fragment_settings" >
-        <action
-                android:id="@+id/action_settingsFragment_to_accountSettingsFragment"
-                app:destination="@id/accountSettingsFragment"
-                app:enterAnim="@anim/slide_in_right"
-                app:exitAnim="@anim/slide_out_left"
-                app:popEnterAnim="@anim/slide_in_left"
-                app:popExitAnim="@anim/slide_out_right" />
-        <action
-                android:id="@+id/action_settingsFragment_to_changePasswordSettingsFragment"
-                app:destination="@id/changePasswordSettingsFragment"
-                app:enterAnim="@anim/slide_in_right"
-                app:exitAnim="@anim/slide_out_left"
-                app:popEnterAnim="@anim/slide_in_left"
-                app:popExitAnim="@anim/slide_out_right" />
-        <action
-                android:id="@+id/action_settingsFragment_to_helpAndSupportSettingsFragment"
-                app:destination="@id/helpAndSupportSettingsFragment"
-                app:enterAnim="@anim/slide_in_right"
-                app:exitAnim="@anim/slide_out_left"
-                app:popEnterAnim="@anim/slide_in_left"
-                app:popExitAnim="@anim/slide_out_right" />
-    </fragment>
-    <fragment
-            android:id="@+id/accountSettingsFragment"
-            android:name="com.pixelart.notedock.fragment.settings.AccountSettingsFragment"
-            android:label="fragment_account_settings"
-            tools:layout="@layout/fragment_account_settings" />
-    <fragment
-            android:id="@+id/changePasswordSettingsFragment"
-            android:name="com.pixelart.notedock.fragment.settings.ChangePasswordSettingsFragment"
-            tools:layout="@layout/fragment_change_password_settings"
-            android:label="ChangePasswordSettingsFragment" />
-    <fragment
-            android:id="@+id/helpAndSupportSettingsFragment"
-            android:name="com.pixelart.notedock.fragment.settings.HelpAndSupportSettingsFragment"
-            tools:layout="@layout/fragment_help_and_support_settings"
-            android:label="HelpAndSupportSettingsFragment" />
+    <navigation
+            android:id="@+id/settings"
+            app:startDestination="@id/settingsFragment" >
+        <fragment
+                android:id="@+id/settingsFragment"
+                android:name="com.pixelart.notedock.fragment.settings.SettingsFragment"
+                android:label="fragment_settings"
+                tools:layout="@layout/fragment_settings">
+            <action
+                    android:id="@+id/action_settingsFragment_to_accountSettingsFragment"
+                    app:destination="@id/accountSettingsFragment"
+                    app:enterAnim="@anim/slide_in_right"
+                    app:exitAnim="@anim/slide_out_left"
+                    app:popEnterAnim="@anim/slide_in_left"
+                    app:popExitAnim="@anim/slide_out_right" />
+            <action
+                    android:id="@+id/action_settingsFragment_to_changePasswordSettingsFragment"
+                    app:destination="@id/changePasswordSettingsFragment"
+                    app:enterAnim="@anim/slide_in_right"
+                    app:exitAnim="@anim/slide_out_left"
+                    app:popEnterAnim="@anim/slide_in_left"
+                    app:popExitAnim="@anim/slide_out_right" />
+            <action
+                    android:id="@+id/action_settingsFragment_to_helpAndSupportSettingsFragment"
+                    app:destination="@id/helpAndSupportSettingsFragment"
+                    app:enterAnim="@anim/slide_in_right"
+                    app:exitAnim="@anim/slide_out_left"
+                    app:popEnterAnim="@anim/slide_in_left"
+                    app:popExitAnim="@anim/slide_out_right" />
+        </fragment>
+        <fragment
+                android:id="@+id/helpAndSupportSettingsFragment"
+                android:name="com.pixelart.notedock.fragment.settings.HelpAndSupportSettingsFragment"
+                android:label="HelpAndSupportSettingsFragment"
+                tools:layout="@layout/fragment_help_and_support_settings" />
+        <fragment
+                android:id="@+id/changeEmailFragment"
+                android:name="com.pixelart.notedock.fragment.settings.ChangeEmailFragment"
+                android:label="fragment_change_email"
+                tools:layout="@layout/fragment_change_email" />
+        <fragment
+                android:id="@+id/changePasswordSettingsFragment"
+                android:name="com.pixelart.notedock.fragment.settings.ChangePasswordSettingsFragment"
+                android:label="ChangePasswordSettingsFragment"
+                tools:layout="@layout/fragment_change_password_settings" />
+        <fragment
+                android:id="@+id/accountSettingsFragment"
+                android:name="com.pixelart.notedock.fragment.settings.AccountSettingsFragment"
+                android:label="fragment_account_settings"
+                tools:layout="@layout/fragment_account_settings">
+            <action
+                    android:id="@+id/action_accountSettingsFragment_to_changeEmailFragment"
+                    app:destination="@id/changeEmailFragment"
+                    app:enterAnim="@anim/slide_in_right"
+                    app:exitAnim="@anim/slide_out_left"
+                    app:popEnterAnim="@anim/slide_in_left"
+                    app:popExitAnim="@anim/slide_out_right" />
+            <action
+                    android:id="@+id/action_accountSettingsFragment_to_deleteAccountFragment"
+                    app:destination="@id/deleteAccountFragment"
+                    app:enterAnim="@anim/slide_in_right"
+                    app:exitAnim="@anim/slide_out_left"
+                    app:popEnterAnim="@anim/slide_in_left"
+                    app:popExitAnim="@anim/slide_out_right" />
+        </fragment>
+        <fragment
+                android:id="@+id/deleteAccountFragment"
+                android:name="com.pixelart.notedock.fragment.settings.DeleteAccountFragment"
+                tools:layout="@layout/fragment_delete_account"
+                android:label="DeleteAccountFragment" />
+    </navigation>
 
 </navigation>

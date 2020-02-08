@@ -10,7 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pixelart.notedock.BR
 import com.pixelart.notedock.R
-import com.pixelart.notedock.adapter.SettingsAdapter
+import com.pixelart.notedock.adapter.settings.SettingsAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.ext.openMailApp
@@ -41,7 +41,11 @@ class HelpAndSupportSettingsFragment : Fragment(), SettingsAdapter.OnSettingsCli
     override fun onStart() {
         super.onStart()
 
-        val settingsAdapter = SettingsAdapter(createSettings(), this)
+        val settingsAdapter =
+            SettingsAdapter(
+                createSettings(),
+                this
+            )
         recycler_view_help_and_support.layoutManager = LinearLayoutManager(context)
         recycler_view_help_and_support.adapter = settingsAdapter
         observeLiveData()

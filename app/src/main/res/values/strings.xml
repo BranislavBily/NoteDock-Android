@@ -79,9 +79,22 @@
     <string name="save">Save</string>
     <string name="password_changed">Your password has been changed</string>
     <string name="please_fill_all_fields">Please fill all fields</string>
-    <string name="new_password_cannot_be_old">Your new password cannot be old</string>
+    <string name="new_password_cannot_be_current">Your new password cannot be current</string>
     <string name="wrong_password">You entered wrong current password</string>
     <string name="send_bug_report">Send bug report</string>
     <string name="send_feedback">Send feedback</string>
     <string name="no_email_client_installed">No email client installed</string>
+    <string name="phone_number">Phone number</string>
+    <string name="display_name">Display name</string>
+    <string name="delete_account">Delete account</string>
+    <string name="this_feature_not_available_yet">This feature is not available yet</string>
+    <string name="change_email">Change Email</string>
+    <string name="delete_account_confirmation">Enter your password if you really want to delete your NoteDock account</string>
+    <string name="your_account_has_been_deleted">your_account_has_been_deleted</string>
+    <string name="edit_displayname">Edit Display name</string>
+    <string name="enter_displayname">Enter display name</string>
+    <string name="change_email_message">*If you change your email, you will need to login again</string>
+    <string name="new_email">New Email</string>
+    <string name="try_again">An error occured. Try again</string>
+    <string name="use_new_email">Use new email</string>
 </resources>

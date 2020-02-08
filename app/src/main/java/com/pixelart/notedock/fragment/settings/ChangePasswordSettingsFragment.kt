@@ -1,8 +1,6 @@
 package com.pixelart.notedock.fragment.settings
 
 import android.os.Bundle
-import android.text.method.HideReturnsTransformationMethod
-import android.text.method.PasswordTransformationMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +17,6 @@ import com.pixelart.notedock.ext.hideSoftKeyboard
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.viewModel.settings.ChangePasswordEvent
 import com.pixelart.notedock.viewModel.settings.ChangePasswordViewModel
-import kotlinx.android.synthetic.main.fragment_change_password_settings.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class ChangePasswordSettingsFragment : Fragment() {
@@ -62,6 +59,9 @@ class ChangePasswordSettingsFragment : Fragment() {
 
         changePasswordViewModel.changePassword.observe(viewLifecycleOwner, SpecificEventObserver { event ->
             view?.let { view ->
+                context?.let {context ->
+                        hideSoftKeyboard(context, view)
+                }
                 when(event) {
                     is ChangePasswordEvent.Success -> {
                         R.string.password_changed.showAsSnackBar(view)
@@ -69,7 +69,7 @@ class ChangePasswordSettingsFragment : Fragment() {
                     }
                     is ChangePasswordEvent.NetworkError -> R.string.network_error_message.showAsSnackBar(view)
                     is ChangePasswordEvent.FillAllFields -> R.string.please_fill_all_fields.showAsSnackBar(view)
-                    is ChangePasswordEvent.NewPasswordCannotBeOld -> R.string.new_password_cannot_be_old.showAsSnackBar(view)
+                    is ChangePasswordEvent.NewPasswordCannotBeCurrent -> R.string.new_password_cannot_be_current.showAsSnackBar(view)
                     is ChangePasswordEvent.PasswordsDoNotMatch -> R.string.passwords_do_not_match_message.showAsSnackBar(view)
                     is ChangePasswordEvent.WeakPassword -> R.string.weak_password_message.showAsSnackBar(view)
                     is ChangePasswordEvent.UserNotFound -> R.string.no_user_found.showAsSnackBar(view)
