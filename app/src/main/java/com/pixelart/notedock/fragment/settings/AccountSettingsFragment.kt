@@ -17,6 +17,8 @@ import com.pixelart.notedock.NavigationRouter
 import com.pixelart.notedock.R
 import com.pixelart.notedock.adapter.settings.AccountAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
+import com.pixelart.notedock.dialog.EditDisplayNameDialog
+import com.pixelart.notedock.dialog.EditDisplaySuccessListener
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.model.AccountListModel
@@ -83,12 +85,21 @@ class AccountSettingsFragment() : Fragment(), AccountAdapter.OnAccountClickListe
                 getString(R.string.phone_number) -> {
                     R.string.this_feature_not_available_yet.showAsSnackBar(view)
                 }
-                getString(R.string.display_name) -> {
-                    Log.i("Account", "Display name")
-                }
+                getString(R.string.display_name) -> { openEditDisplayNameDialog() }
                 else -> { NavigationRouter(view).accountToDeleteAccount() }
             }
         }
 
+    }
+
+    private fun openEditDisplayNameDialog() {
+        activity?.let { activity ->
+            val dialog = EditDisplayNameDialog(object: EditDisplaySuccessListener {
+                override fun onSuccess(displayName: String?) {
+                    Log.i("Displayname", displayName)
+                }
+            }).createDialog(activity)
+            dialog.show()
+        }
     }
 }

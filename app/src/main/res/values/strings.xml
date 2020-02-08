@@ -91,4 +91,6 @@
     <string name="change_email">Change Email</string>
     <string name="delete_account_confirmation">Enter your password if you really want to delete your NoteDock account</string>
     <string name="your_account_has_been_deleted">your_account_has_been_deleted</string>
+    <string name="edit_displayname">Edit Display name</string>
+    <string name="enter_displayname">Enter display name</string>
 </resources>
