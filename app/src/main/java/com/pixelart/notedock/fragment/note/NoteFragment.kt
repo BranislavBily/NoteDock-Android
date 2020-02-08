@@ -2,6 +2,7 @@ package com.pixelart.notedock.fragment.note
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.baseAdapters.BR
@@ -52,9 +53,11 @@ class NoteFragment : Fragment() {
         return dataBinding.root
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        setupToolbar()
+        setupClosingOfKeyboard()
         observeLiveData()
     }
 
@@ -64,9 +67,8 @@ class NoteFragment : Fragment() {
         FirebaseAuth.getInstance().currentUser?.let { user ->
             user.reload()
                 .addOnFailureListener {error ->
-                    if(error is FirebaseNetworkException) {
-                        //All is well
-                    } else {
+                    //All is well
+                    if (error !is FirebaseNetworkException) {
                         openLoginActivity()
                     }
                 }
@@ -81,12 +83,7 @@ class NoteFragment : Fragment() {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
-        setupToolbar()
-        setupClosingOfKeyboard()
-    }
 
     private fun setupToolbar() {
         view?.toolbar?.menu?.getItem(1)?.isVisible = false
@@ -169,14 +166,12 @@ class NoteFragment : Fragment() {
     }
 
     private fun createDeleteNoteDialog() {
-        activity?.supportFragmentManager?.let { fragmentManager ->
-            val dialog = DeleteNoteDialog(object : NoteDialogDeleteSuccessListener {
-                override fun onDelete() {
-                    noteFragmentViewModel.deleteNote(args.folderUUID, args.noteUUID)
-                }
-            })
-            dialog.show(fragmentManager, "Delete note dialog")
-        }
+        val dialog = DeleteNoteDialog(object : NoteDialogDeleteSuccessListener {
+            override fun onDelete() {
+                noteFragmentViewModel.deleteNote(args.folderUUID, args.noteUUID)
+            }
+        })
+        dialog.show(parentFragmentManager, "Delete note dialog")
     }
 
     private fun saveNote() {

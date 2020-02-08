@@ -4,11 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.crashlytics.android.Crashlytics
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
 import com.pixelart.notedock.domain.livedata.model.Event
 import com.pixelart.notedock.domain.repository.FolderRepository
 import com.pixelart.notedock.domain.usecase.folder.CreateFolderUseCase
+import com.pixelart.notedock.domain.usecase.folder.DeleteFolderUseCase
 import com.pixelart.notedock.domain.usecase.folder.FolderNameTakenUseCase
+import com.pixelart.notedock.domain.usecase.folder.RenameFolderUseCase
 import com.pixelart.notedock.model.FolderModel
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
 import io.reactivex.disposables.CompositeDisposable
@@ -19,7 +22,9 @@ class FoldersViewFragmentViewModel(
     private val folderRepository: FolderRepository,
     private val auth: FirebaseAuth,
     private val createFolderUseCase: CreateFolderUseCase,
-    private val folderNameTakenUseCase: FolderNameTakenUseCase
+    private val folderNameTakenUseCase: FolderNameTakenUseCase,
+    private val deleteFolderUseCase: DeleteFolderUseCase,
+    private val renameFolderUseCase: RenameFolderUseCase
 ) : LifecycleViewModel() {
 
 
@@ -28,6 +33,12 @@ class FoldersViewFragmentViewModel(
 
     private val _newFolderCreated = MutableLiveData<CreateFolderEvent>()
     val newFolderCreated: LiveData<CreateFolderEvent> = _newFolderCreated
+
+    private val _renameFolder = MutableLiveData<RenameFolderEvent>()
+    val renameFolder: LiveData<RenameFolderEvent> = _renameFolder
+
+    private val _deleteFolder = MutableLiveData<DeleteFolderEvent>()
+    val deleteFolder: LiveData<DeleteFolderEvent> = _deleteFolder
 
     private val _fabClicked = MutableLiveData<ButtonPressedEvent>()
     val fabClicked: LiveData<ButtonPressedEvent> = _fabClicked
@@ -97,6 +108,60 @@ class FoldersViewFragmentViewModel(
             _newFolderCreated.postValue(CreateFolderEvent.NoUserFound())
         }
     }
+
+    fun renameFolder(folderUUID: String, folderName: String) {
+        auth.currentUser?.let { user ->
+            startStopDisposeBag?.let { bag ->
+                folderNameTakenUseCase.isNameTaken(user, folderName)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .subscribe({ nameTaken ->
+                        if(nameTaken) _renameFolder.postValue(RenameFolderEvent.FolderNameTaken())
+                        else this.updateFolderName(user, folderUUID, folderName)
+                    }, { error ->
+                        Crashlytics.logException(error)
+                        _renameFolder.postValue(RenameFolderEvent.Error())
+                    })
+                    .addTo(bag)
+            }
+        } ?: run {
+            _renameFolder.postValue(RenameFolderEvent.NoUserFound())
+        }
+    }
+
+    fun deleteFolder(folderUUID: String) {
+        auth.currentUser?.let { user ->
+            startStopDisposeBag?.let { bag ->
+                deleteFolderUseCase.deleteFolder(user, folderUUID)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .subscribe({
+                        _deleteFolder.postValue(DeleteFolderEvent.Success())
+                    }, { error ->
+                        Crashlytics.logException(error)
+                        _deleteFolder.postValue(DeleteFolderEvent.Error())
+                    })
+                    .addTo(bag)
+            }
+        } ?: run {
+            _deleteFolder.postValue(DeleteFolderEvent.NoUserFound())
+        }
+    }
+
+    private fun updateFolderName(user: FirebaseUser, folderUUID: String, folderName: String) {
+        startStopDisposeBag?.let { bag ->
+            renameFolderUseCase.renameFolder(user, folderUUID, folderName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe({
+                    _renameFolder.postValue(RenameFolderEvent.Success())
+                }, { error ->
+                    Crashlytics.logException(error)
+                    _renameFolder.postValue(RenameFolderEvent.Error())
+                })
+                .addTo(bag)
+        }
+    }
 }
 
 sealed class LoadFoldersEvent: Event() {
@@ -110,4 +175,17 @@ sealed class CreateFolderEvent : Event() {
     class Success : CreateFolderEvent()
     class NoUserFound: CreateFolderEvent()
     class FolderNameTaken: CreateFolderEvent()
+}
+
+sealed class DeleteFolderEvent: Event() {
+    class Success: DeleteFolderEvent()
+    class Error: DeleteFolderEvent()
+    class NoUserFound: DeleteFolderEvent()
+}
+
+sealed class RenameFolderEvent: Event() {
+    class Success: RenameFolderEvent()
+    class Error: RenameFolderEvent()
+    class NoUserFound: RenameFolderEvent()
+    class FolderNameTaken: RenameFolderEvent()
 }

@@ -52,11 +52,7 @@ class NoteFragmentViewModel(
                     .subscribe({ noteModel ->
                         _editTextNoteTitle.postValue(noteModel.noteTitle)
                         _editTextNoteDescription.postValue(noteModel.noteDescription)
-                        _noteLoad.postValue(
-                            LoadNoteEvent.Success(
-                                noteModel
-                            )
-                        )
+                        _noteLoad.postValue(LoadNoteEvent.Success(noteModel))
                     }, { error ->
                         Crashlytics.logException(error)
                         _noteLoad.postValue(LoadNoteEvent.Error())
@@ -113,6 +109,7 @@ sealed class LoadNoteEvent : Event() {
     class Success(val note: NoteModel): LoadNoteEvent()
     class Error : LoadNoteEvent()
     class NoUserFound : LoadNoteEvent()
+    class YoWatafak: LoadNoteEvent()
 }
 
 sealed class SaveNoteEvent : Event() {
