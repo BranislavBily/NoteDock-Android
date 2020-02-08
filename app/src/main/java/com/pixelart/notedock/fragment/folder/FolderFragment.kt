@@ -64,10 +64,8 @@ class FolderFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        markedNotesAdapter =
-            MarkedNotesAdapter(this, this)
-        unmarkedNotesAdapter =
-            UnMarkedNotesAdapter(this, this)
+        markedNotesAdapter = MarkedNotesAdapter(this, this)
+        unmarkedNotesAdapter = UnMarkedNotesAdapter(this, this)
 
         setupRecyclerView()
         observeLiveData()
