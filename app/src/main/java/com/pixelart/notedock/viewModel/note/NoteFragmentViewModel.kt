@@ -11,10 +11,13 @@ import com.pixelart.notedock.domain.usecase.note.DeleteNoteUseCase
 import com.pixelart.notedock.domain.usecase.note.UpdateNoteUseCase
 import com.pixelart.notedock.model.NoteModel
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 
 class NoteFragmentViewModel(
+    private val folderUUID: String,
+    private val noteUUID: String,
     private val notesRepository: NotesRepository,
     private val auth: FirebaseAuth,
     private val deleteNoteUseCase: DeleteNoteUseCase,
@@ -39,26 +42,30 @@ class NoteFragmentViewModel(
     private val _noteSaved = MutableLiveData<SaveNoteEvent>()
     val noteSaved: LiveData<SaveNoteEvent> = _noteSaved
 
+    override fun onStartStopObserve(disposeBag: CompositeDisposable) {
+        super.onStartStopObserve(disposeBag)
+
+        loadNote(disposeBag)
+    }
+
     fun onBackPressed() {
         _onBackClicked.postValue(ButtonPressedEvent.Pressed())
     }
 
-    fun loadNote(folderUUID: String, noteUUID: String) {
+    private fun loadNote(disposeBag: CompositeDisposable) {
         auth.currentUser?.let { user ->
-            startStopDisposeBag?.let { bag ->
-                notesRepository.loadNote(user, folderUUID, noteUUID)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(Schedulers.io())
-                    .subscribe({ noteModel ->
-                        _editTextNoteTitle.postValue(noteModel.noteTitle)
-                        _editTextNoteDescription.postValue(noteModel.noteDescription)
-                        _noteLoad.postValue(LoadNoteEvent.Success(noteModel))
-                    }, { error ->
-                        Crashlytics.logException(error)
-                        _noteLoad.postValue(LoadNoteEvent.Error())
-                    })
-                    .addTo(bag)
-            }
+            notesRepository.loadNote(user, folderUUID, noteUUID)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe({ noteModel ->
+                    _editTextNoteTitle.postValue(noteModel.noteTitle)
+                    _editTextNoteDescription.postValue(noteModel.noteDescription)
+                    _noteLoad.postValue(LoadNoteEvent.Success(noteModel))
+                }, { error ->
+                    Crashlytics.logException(error)
+                    _noteLoad.postValue(LoadNoteEvent.Error())
+                })
+                .addTo(disposeBag)
         } ?: run {
             _noteLoad.postValue(LoadNoteEvent.NoUserFound())
         }

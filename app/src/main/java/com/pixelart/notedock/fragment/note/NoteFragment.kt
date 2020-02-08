@@ -2,8 +2,9 @@ package com.pixelart.notedock.fragment.note
 
 
 import android.os.Bundle
-import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
@@ -30,10 +31,13 @@ import com.pixelart.notedock.viewModel.note.SaveNoteEvent
 import kotlinx.android.synthetic.main.fragment_note.*
 import kotlinx.android.synthetic.main.fragment_note.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class NoteFragment : Fragment() {
 
-    private val noteFragmentViewModel: NoteFragmentViewModel by viewModel()
+    private val noteFragmentViewModel: NoteFragmentViewModel by viewModel {
+        parametersOf(args.folderUUID, args.noteUUID)
+    }
 
     private val args: NoteFragmentArgs by navArgs()
     //Please change this later
@@ -66,7 +70,7 @@ class NoteFragment : Fragment() {
 
         FirebaseAuth.getInstance().currentUser?.let { user ->
             user.reload()
-                .addOnFailureListener {error ->
+                .addOnFailureListener { error ->
                     //All is well
                     if (error !is FirebaseNetworkException) {
                         openLoginActivity()
@@ -82,8 +86,6 @@ class NoteFragment : Fragment() {
             saveNote()
         }
     }
-
-
 
     private fun setupToolbar() {
         view?.toolbar?.menu?.getItem(1)?.isVisible = false
@@ -122,8 +124,6 @@ class NoteFragment : Fragment() {
     }
 
     private fun observeLiveData() {
-        //Cez onStartStop
-        noteFragmentViewModel.loadNote(args.folderUUID, args.noteUUID)
 
         noteFragmentViewModel.onBackClicked.observe(viewLifecycleOwner, EventObserver {
             findNavController().popBackStack()
