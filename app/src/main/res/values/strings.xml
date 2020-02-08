@@ -97,4 +97,6 @@
     <string name="new_email">New Email</string>
     <string name="try_again">An error occured. Try again</string>
     <string name="use_new_email">Use new email</string>
+    <string name="action_edit_folder">Edit folder</string>
+    <string name="action_delete_folder">Delete folder</string>
 </resources>

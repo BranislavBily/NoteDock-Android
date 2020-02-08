@@ -33,7 +33,7 @@ import com.pixelart.notedock.viewModel.folder.LoadFoldersEvent
 import kotlinx.android.synthetic.main.fragment_folders_view.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
-class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
+class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener, OnFolderOptionsClickListener {
 
     private val foldersViewFragmentViewModel: FoldersViewFragmentViewModel by viewModel()
 
@@ -148,6 +148,18 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener {
         if(uid != null && name != null) {
                 NavigationRouter(view).foldersToFolder(uid, name)
         }
+    }
+
+    override fun onFolderLongPress(uid: String?) {
+        uid?.let { uuid ->
+            val optionsFragment = FolderOptionsFragment(uuid, this)
+            optionsFragment.show(parentFragmentManager, "FolderOptionsFragment")
+        }
+
+    }
+
+    override fun onClick(folderUUID: String, option: Option) {
+        Log.i("FolderEdit", option.toString() + folderUUID)
     }
 }
 
