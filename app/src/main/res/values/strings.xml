@@ -95,4 +95,6 @@
     <string name="enter_displayname">Enter display name</string>
     <string name="change_email_message">*If you change your email, you will need to login again</string>
     <string name="new_email">New Email</string>
+    <string name="try_again">An error occured. Try again</string>
+    <string name="use_new_email">Use new email</string>
 </resources>

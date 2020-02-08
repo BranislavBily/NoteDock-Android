@@ -86,7 +86,8 @@ val viewModelModule = module {
 
     viewModel {
         ChangeEmailViewModel(
-            auth = FirebaseAuth.getInstance()
+            auth = FirebaseAuth.getInstance(),
+            authRepository = get()
         )
     }
 
