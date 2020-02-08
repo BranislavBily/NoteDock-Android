@@ -10,6 +10,8 @@ import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.BR
 
 import com.pixelart.notedock.R
@@ -18,6 +20,7 @@ import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.hideSoftKeyboard
+import com.pixelart.notedock.ext.openLoginActivity
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.viewModel.settings.ChangeEmailViewModel
 import com.pixelart.notedock.viewModel.settings.DeleteAccountEvent
@@ -45,6 +48,21 @@ class DeleteAccountFragment : Fragment() {
         super.onStart()
 
         observeLiveData()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        FirebaseAuth.getInstance().currentUser?.let { user ->
+            user.reload()
+                .addOnFailureListener {error ->
+                    if(error is FirebaseNetworkException) {
+                        //All is well
+                    } else {
+                        openLoginActivity()
+                    }
+                }
+        }
     }
 
     private fun observeLiveData() {

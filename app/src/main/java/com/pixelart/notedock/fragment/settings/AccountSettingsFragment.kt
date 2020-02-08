@@ -27,6 +27,7 @@ import com.pixelart.notedock.dialog.EditDisplayNameDialog
 import com.pixelart.notedock.dialog.EditDisplaySuccessListener
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
+import com.pixelart.notedock.ext.openLoginActivity
 import com.pixelart.notedock.ext.openSoftKeyBoard
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.model.AccountListModel
@@ -60,6 +61,21 @@ class AccountSettingsFragment() : Fragment(), AccountAdapter.OnAccountClickListe
         recyclerViewAccount.layoutManager = LinearLayoutManager(context)
         recyclerViewAccount.adapter = accountAdapter
         observeLiveData(accountAdapter)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        FirebaseAuth.getInstance().currentUser?.let { user ->
+            user.reload()
+                .addOnFailureListener {error ->
+                    if(error is FirebaseNetworkException) {
+                        //All is well
+                    } else {
+                        openLoginActivity()
+                    }
+                }
+        }
     }
 
     private fun observeLiveData(accountAdapter: AccountAdapter) {

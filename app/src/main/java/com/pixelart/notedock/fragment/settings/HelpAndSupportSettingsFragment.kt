@@ -8,11 +8,14 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.BR
 import com.pixelart.notedock.R
 import com.pixelart.notedock.adapter.settings.SettingsAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
+import com.pixelart.notedock.ext.openLoginActivity
 import com.pixelart.notedock.ext.openMailApp
 import com.pixelart.notedock.model.SettingsModel
 import com.pixelart.notedock.viewModel.settings.HelpAndSupportViewModel
@@ -49,6 +52,21 @@ class HelpAndSupportSettingsFragment : Fragment(), SettingsAdapter.OnSettingsCli
         recycler_view_help_and_support.layoutManager = LinearLayoutManager(context)
         recycler_view_help_and_support.adapter = settingsAdapter
         observeLiveData()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        FirebaseAuth.getInstance().currentUser?.let { user ->
+            user.reload()
+                .addOnFailureListener {error ->
+                    if(error is FirebaseNetworkException) {
+                        //All is well
+                    } else {
+                        openLoginActivity()
+                    }
+                }
+        }
     }
 
     private fun createSettings(): ArrayList<SettingsModel> {

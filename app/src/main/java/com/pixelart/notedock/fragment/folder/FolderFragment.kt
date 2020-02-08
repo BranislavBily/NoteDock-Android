@@ -14,6 +14,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.NavigationRouter
 import com.pixelart.notedock.R
 import com.pixelart.notedock.adapter.note.MarkedNotesAdapter
@@ -23,6 +25,7 @@ import com.pixelart.notedock.dialog.DeleteFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogDeleteSuccessListener
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
+import com.pixelart.notedock.ext.openLoginActivity
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.model.NoteModel
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
@@ -68,6 +71,21 @@ class FolderFragment : Fragment(),
 
         setupRecyclerView()
         observeLiveData()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        FirebaseAuth.getInstance().currentUser?.let { user ->
+            user.reload()
+                .addOnFailureListener {error ->
+                    if(error is FirebaseNetworkException) {
+                        //All is well
+                    } else {
+                        openLoginActivity()
+                    }
+                }
+        }
     }
 
     private fun setupRecyclerView() {
