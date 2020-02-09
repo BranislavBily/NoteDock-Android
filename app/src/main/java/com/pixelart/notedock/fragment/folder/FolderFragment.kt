@@ -18,8 +18,7 @@ import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.NavigationRouter
 import com.pixelart.notedock.R
-import com.pixelart.notedock.adapter.note.MarkedNotesAdapter
-import com.pixelart.notedock.adapter.note.UnMarkedNotesAdapter
+import com.pixelart.notedock.adapter.note.NotesAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
 import com.pixelart.notedock.dialog.DeleteFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogDeleteSuccessListener
@@ -36,15 +35,15 @@ import org.koin.core.parameter.parametersOf
 
 
 class FolderFragment : Fragment(),
-    MarkedNotesAdapter.OnNoteClickListener,
-    MarkedNotesAdapter.OnImageClickListener {
+    NotesAdapter.OnNoteClickListener,
+    NotesAdapter.OnImageClickListener {
     private val args: FolderFragmentArgs by navArgs()
     private val folderFragmentViewModel: FolderFragmentViewModel by viewModel {
         parametersOf(args.folderUUID, args.folderName)
     }
 
-    private var markedNotesAdapter: MarkedNotesAdapter? = null
-    private var unmarkedNotesAdapter: UnMarkedNotesAdapter? = null
+    private var markedNotesAdapter: NotesAdapter? = null
+    private var unMarkedNotesAdapter: NotesAdapter? = null
 
 
     override fun onCreateView(
@@ -64,8 +63,8 @@ class FolderFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        markedNotesAdapter = MarkedNotesAdapter(this, this)
-        unmarkedNotesAdapter = UnMarkedNotesAdapter(this, this)
+        markedNotesAdapter = NotesAdapter(this, this)
+        unMarkedNotesAdapter = NotesAdapter(this, this)
 
         setupRecyclerView()
         observeLiveData()
@@ -90,7 +89,7 @@ class FolderFragment : Fragment(),
         recyclerViewMarkedNotes.adapter = markedNotesAdapter
         recyclerViewMarkedNotes.isNestedScrollingEnabled = false
         recyclerViewUnMarkedNotes.layoutManager = LinearLayoutManager(context)
-        recyclerViewUnMarkedNotes.adapter = unmarkedNotesAdapter
+        recyclerViewUnMarkedNotes.adapter = unMarkedNotesAdapter
         recyclerViewUnMarkedNotes.isNestedScrollingEnabled = false
     }
 
@@ -119,7 +118,7 @@ class FolderFragment : Fragment(),
                 when(event) {
                     is LoadNotesEvent.Success -> {
                         markedNotesAdapter?.setNewData(event.markedNotes)
-                        unmarkedNotesAdapter?.setNewData(event.unmarkedNotes)
+                        unMarkedNotesAdapter?.setNewData(event.unmarkedNotes)
                     }
                     is LoadNotesEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
                     is LoadNotesEvent.NoUserFoundError -> R.string.no_user_found.showAsSnackBar(view)
