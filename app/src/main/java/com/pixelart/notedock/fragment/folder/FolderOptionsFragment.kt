@@ -24,21 +24,21 @@ class FolderOptionsFragment(private val folderUUID: String,
         super.onViewCreated(view, savedInstanceState)
 
         view.findViewById<TextView>(R.id.textViewEditFolder).setOnClickListener {
-            onFolderOptionsClickListener.onClick(folderUUID, folderName, Option.EDIT)
+            onFolderOptionsClickListener.onClick(folderUUID, folderName, Options.EDIT)
             dismiss()
         }
         view.findViewById<TextView>(R.id.textViewDeleteFolder).setOnClickListener {
-            onFolderOptionsClickListener.onClick(folderUUID, folderName, Option.DELETE)
+            onFolderOptionsClickListener.onClick(folderUUID, folderName, Options.DELETE)
             dismiss()
         }
     }
 }
 
 interface OnFolderOptionsClickListener {
-    fun onClick(folderUUID: String, folderName: String,  option: Option)
+    fun onClick(folderUUID: String, folderName: String, options: Options)
 }
 
-enum class Option {
+enum class Options {
     DELETE,
     EDIT
 }

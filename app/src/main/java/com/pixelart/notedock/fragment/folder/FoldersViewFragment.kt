@@ -172,8 +172,8 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener,
         }
     }
 
-    override fun onClick(folderUUID: String,folderName: String, option: Option) {
-        if (option == Option.DELETE) {
+    override fun onClick(folderUUID: String, folderName: String, options: Options) {
+        if (options == Options.DELETE) {
             val dialog = DeleteFolderDialog(object : FolderDialogDeleteSuccessListener {
                 override fun onDelete() {
                     foldersViewFragmentViewModel.deleteFolder(folderUUID)

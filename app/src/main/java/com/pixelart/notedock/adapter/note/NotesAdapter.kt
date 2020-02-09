@@ -46,7 +46,11 @@ class MarkedNotesAdapter(private val onNoteClickListener: OnNoteClickListener,
             itemView.textViewNoteTitle.text = note.noteTitle
             itemView.textViewNotePreview.text = note.noteDescription
 
-            itemView.imageViewPinned.setImageResource(R.drawable.ic_marked)
+            if(note.marked == true) {
+                itemView.imageViewPinned.setImageResource(R.drawable.ic_marked)
+            } else {
+                itemView.imageViewPinned.setImageResource(R.drawable.ic_unmarked)
+            }
 
             itemView.textViewNoteTitle.setOnClickListener {
                 onNoteClickListener.onNoteClick(note.uuid)
