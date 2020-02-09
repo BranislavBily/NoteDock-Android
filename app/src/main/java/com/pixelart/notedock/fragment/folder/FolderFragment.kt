@@ -164,6 +164,6 @@ class FolderFragment : Fragment(),
     }
 
     override fun onClick(noteUUID: String, options: Options) {
-        Log.i("Editing ", noteUUID)
+        folderFragmentViewModel.deleteNote(args.folderUUID, noteUUID)
     }
 }
