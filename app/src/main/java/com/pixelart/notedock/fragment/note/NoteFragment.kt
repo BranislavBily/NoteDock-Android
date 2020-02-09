@@ -16,8 +16,6 @@ import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.R
 import com.pixelart.notedock.dataBinding.setupDataBinding
-import com.pixelart.notedock.dialog.DeleteNoteDialog
-import com.pixelart.notedock.dialog.NoteDialogDeleteSuccessListener
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.hideSoftKeyboard
@@ -92,7 +90,7 @@ class NoteFragment : Fragment() {
         view?.toolbar?.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.deleteNote -> {
-                    createDeleteNoteDialog()
+                    noteFragmentViewModel.deleteNote(args.folderUUID, args.noteUUID)
                     true
                 }
                 R.id.doneNote -> {
@@ -161,17 +159,7 @@ class NoteFragment : Fragment() {
                     is LoadNoteEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
                 }
             }
-
         })
-    }
-
-    private fun createDeleteNoteDialog() {
-        val dialog = DeleteNoteDialog(object : NoteDialogDeleteSuccessListener {
-            override fun onDelete() {
-                noteFragmentViewModel.deleteNote(args.folderUUID, args.noteUUID)
-            }
-        })
-        dialog.show(parentFragmentManager, "Delete note dialog")
     }
 
     private fun saveNote() {

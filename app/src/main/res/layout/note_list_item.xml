@@ -15,7 +15,10 @@
             android:id="@+id/textViewNoteTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp"
+            android:paddingTop="5dp"
             android:ellipsize="end"
             android:tag="textView"
             android:lines="1"
@@ -26,7 +29,7 @@
             app:layout_constraintEnd_toStartOf="@+id/imageViewPinned"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.1" />
+            app:layout_constraintVertical_bias="0" />
 
     <ImageView
             android:id="@+id/imageViewPinned"
@@ -34,26 +37,29 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/marked"
             android:tag="imageView"
+            android:padding="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.978"
+            app:layout_constraintHorizontal_bias="0.98"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.22" />
+            app:layout_constraintVertical_bias="0.2" />
 
     <TextView
             android:id="@+id/textViewNotePreview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:ellipsize="end"
             android:lines="1"
-            android:tag="textView"
             android:textAlignment="viewStart"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.9" />
+            app:layout_constraintVertical_bias="1" />
 </androidx.constraintlayout.widget.ConstraintLayout>
