@@ -20,12 +20,15 @@ import com.pixelart.notedock.NavigationRouter
 import com.pixelart.notedock.R
 import com.pixelart.notedock.adapter.note.NotesAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
+import com.pixelart.notedock.databinding.NoteOptionsLayoutBinding
 import com.pixelart.notedock.dialog.DeleteFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogDeleteSuccessListener
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.openLoginActivity
 import com.pixelart.notedock.ext.showAsSnackBar
+import com.pixelart.notedock.fragment.note.NoteOptionsFragment
+import com.pixelart.notedock.fragment.note.OnNoteOptionsClickListener
 import com.pixelart.notedock.model.NoteModel
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
 import com.pixelart.notedock.viewModel.folder.*
@@ -36,7 +39,8 @@ import org.koin.core.parameter.parametersOf
 
 class FolderFragment : Fragment(),
     NotesAdapter.OnNoteClickListener,
-    NotesAdapter.OnImageClickListener {
+    NotesAdapter.OnImageClickListener,
+    OnNoteOptionsClickListener {
     private val args: FolderFragmentArgs by navArgs()
     private val folderFragmentViewModel: FolderFragmentViewModel by viewModel {
         parametersOf(args.folderUUID, args.folderName)
@@ -177,7 +181,18 @@ class FolderFragment : Fragment(),
         noteUUID?.let { NavigationRouter(view).folderToNote(args.folderUUID, it) }
     }
 
+    override fun onLongNoteClick(noteUUID: String?) {
+        noteUUID?.let { uuid ->
+            val optionsFragment = NoteOptionsFragment(uuid, this)
+            optionsFragment.show(parentFragmentManager, "NoteOptionsFragment")
+        }
+    }
+
     override fun onImageClick(note: NoteModel) {
         folderFragmentViewModel.markNote(args.folderUUID, note)
+    }
+
+    override fun onClick(noteUUID: String, options: Options) {
+        Log.i("Editing ", noteUUID)
     }
 }

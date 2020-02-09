@@ -161,7 +161,6 @@ class NoteFragment : Fragment() {
                     is LoadNoteEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
                 }
             }
-
         })
     }
 
