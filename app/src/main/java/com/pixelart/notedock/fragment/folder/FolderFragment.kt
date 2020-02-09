@@ -142,6 +142,16 @@ class FolderFragment : Fragment(),
                     Log.e("FolderFragment", "View not found")
                 }
             })
+
+        folderFragmentViewModel.deleteNote.observe(viewLifecycleOwner, Observer { event ->
+            view?.let { view ->
+                when(event) {
+                    is DeleteNoteEvent.Success -> {}
+                    is DeleteNoteEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
+                    is DeleteNoteEvent.NoUserFoundError -> R.string.no_user_found.showAsSnackBar(view)
+                }
+            }
+        })
     }
 
     private fun createNote() {
