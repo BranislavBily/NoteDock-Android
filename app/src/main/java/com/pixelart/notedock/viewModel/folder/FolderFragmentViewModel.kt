@@ -33,12 +33,6 @@ class FolderFragmentViewModel(
     private val _onBackClicked = MutableLiveData<ButtonPressedEvent>()
     val onBackClicked: LiveData<ButtonPressedEvent> = _onBackClicked
 
-    private val _buttonClicked = MutableLiveData<ButtonPressedEvent>()
-    val folderButtonClicked: LiveData<ButtonPressedEvent> = _buttonClicked
-
-    private val _folderDeleted = MutableLiveData<FolderDeleteEvent>()
-    val folderDeleted: LiveData<FolderDeleteEvent> = _folderDeleted
-
     private val _fabClicked = MutableLiveData<ButtonPressedEvent>()
     val fabClicked: LiveData<ButtonPressedEvent> = _fabClicked
 
@@ -78,26 +72,6 @@ class FolderFragmentViewModel(
             }
         } ?: run {
             _noteCreated.postValue(CreateNoteEvent.NoUserFound())
-        }
-    }
-
-    fun deleteFolderModel(folderUUID: String) {
-        auth.currentUser?.let { user ->
-            startStopDisposeBag?.let { bag ->
-                deleteFolderUseCase.deleteFolder(user, folderUUID)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(Schedulers.io())
-                    .subscribe(
-                        { _folderDeleted.postValue(FolderDeleteEvent.Success()) },
-                        { error ->
-                            Crashlytics.logException(error)
-                            _folderDeleted.postValue(FolderDeleteEvent.Error())
-                        }
-                    )
-                    .addTo(bag)
-            }
-        } ?: run {
-            _folderDeleted.postValue(FolderDeleteEvent.NoUserFound())
         }
     }
 
@@ -152,12 +126,6 @@ sealed class CreateNoteEvent : Event() {
     class Success(val noteUUID: String) : CreateNoteEvent()
     class Error : CreateNoteEvent()
     class NoUserFound : CreateNoteEvent()
-}
-
-sealed class FolderDeleteEvent : Event() {
-    class Error : FolderDeleteEvent()
-    class Success : FolderDeleteEvent()
-    class NoUserFound : FolderDeleteEvent()
 }
 
 sealed class LoadNotesEvent : Event() {

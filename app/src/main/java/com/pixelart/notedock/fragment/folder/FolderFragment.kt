@@ -99,24 +99,6 @@ class FolderFragment : Fragment(),
 
     private fun observeLiveData() {
 
-        folderFragmentViewModel.folderButtonClicked.observe(viewLifecycleOwner, SpecificEventObserver<ButtonPressedEvent> {
-                createDeleteDialog()
-            })
-
-        folderFragmentViewModel.folderDeleted.observe(viewLifecycleOwner, Observer { event ->
-            view?.let { view ->
-                when (event) {
-                    is FolderDeleteEvent.Success -> {
-                        view.findNavController().popBackStack()
-                    }
-                    is FolderDeleteEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
-                    is FolderDeleteEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
-                }
-            } ?: run {
-                Log.e("FolderFragment", "View not found")
-            }
-        })
-
         folderFragmentViewModel.loadedNotes.observe(viewLifecycleOwner, Observer { event ->
             view?.let { view ->
                 when(event) {
@@ -160,17 +142,6 @@ class FolderFragment : Fragment(),
                     Log.e("FolderFragment", "View not found")
                 }
             })
-    }
-
-    private fun createDeleteDialog() {
-        activity?.supportFragmentManager?.let { fragmentManager ->
-            val deleteFolderDialog = DeleteFolderDialog(object : FolderDialogDeleteSuccessListener {
-                override fun onDelete() {
-                    folderFragmentViewModel.deleteFolderModel(args.folderUUID)
-                }
-            })
-            deleteFolderDialog.show(fragmentManager, "Delete Folder Dialog")
-        }
     }
 
     private fun createNote() {
