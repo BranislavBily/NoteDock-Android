@@ -20,6 +20,7 @@ import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.hideSoftKeyboard
 import com.pixelart.notedock.ext.openLoginActivity
+import com.pixelart.notedock.ext.openSoftKeyBoard
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.model.NoteModel
 import com.pixelart.notedock.viewModel.note.LoadNoteEvent
@@ -105,7 +106,7 @@ class NoteFragment : Fragment() {
     private fun setupClosingOfKeyboard() {
         view?.let { parentView ->
             context?.let { context ->
-                textViewNoteTitle.setOnFocusChangeListener { view, hasFocus ->
+                editTextNoteTitle.setOnFocusChangeListener { view, hasFocus ->
                     parentView.toolbar?.menu?.getItem(1)?.isVisible = true
                     if (!hasFocus) {
                         hideSoftKeyboard(context, view)
@@ -176,7 +177,7 @@ class NoteFragment : Fragment() {
         //Get note values
         val note = NoteModel()
         note.uuid = args.noteUUID
-        note.noteTitle = textViewNoteTitle.text.toString()
+        note.noteTitle = editTextNoteTitle.text.toString()
         note.noteDescription = editTextNoteDescription.text.toString()
 
         //If change occurred, save

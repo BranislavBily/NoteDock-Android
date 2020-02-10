@@ -116,7 +116,6 @@ sealed class LoadNoteEvent : Event() {
     class Success(val note: NoteModel): LoadNoteEvent()
     class Error : LoadNoteEvent()
     class NoUserFound : LoadNoteEvent()
-    class YoWatafak: LoadNoteEvent()
 }
 
 sealed class SaveNoteEvent : Event() {
