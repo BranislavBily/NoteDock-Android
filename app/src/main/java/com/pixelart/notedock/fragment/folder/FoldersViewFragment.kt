@@ -190,8 +190,8 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener,
                 dialog.show()
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
                 dialog.findViewById<EditText>(R.id.editTextFolderName)?.addTextChangedListener { watcher ->
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = !watcher.isNullOrEmpty()
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = watcher.toString() != folderName
+                    val buttonEnabled = !watcher.isNullOrEmpty() && watcher.toString() != folderName
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = buttonEnabled
                 }
             }
         }
