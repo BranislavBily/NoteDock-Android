@@ -26,6 +26,8 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:paddingTop="20dp"
                 android:paddingBottom="10dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
                 />
         <TextView
                 android:id="@+id/textViewDeleteFolder"
@@ -37,6 +39,8 @@
                 android:text="@string/action_delete_folder"
                 android:paddingTop="10dp"
                 android:paddingBottom="20dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textViewEditFolder"
