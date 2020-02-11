@@ -1,75 +1,74 @@
 <resources>
+<!--    App name-->
     <string name="app_name">NoteDock</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+<!--    Used in Create Folder dialog-->
+
     <string name="create_new_folder">Create new folder</string>
-    <string name="create_new_note">Create new note</string>
     <string name="enter_folder_name">Enter Folder name</string>
+    <string name="folder">Notebook</string>
+
+<!--    Used in contentDescription for FAB-->
+    <string name="create_new_note">Create new note</string>
+
+<!--    Used in Delete Folder dialog-->
     <string name="delete_folder">Delete notebook and all its notes?</string>
     <string name="delete_folder_additional">You can not go back!</string>
-    <string name="delete_note">Delete note?</string>
-    <string name="delete_note_additional">You can not go back!</string>
-    <string name="folder">Notebook</string>
+
+<!--    Dialog actions-->
     <string name="create_dialog">Create</string>
     <string name="cancel_dialog">Cancel</string>
     <string name="delete_dialog">Delete</string>
+
+<!--    Note editText hint-->
     <string name="note_hint_title">Title</string>
     <string name="note_hint_description">Description</string>
+
     <string name="login">Login</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
+    <string name="folders">Folders</string>
     <string name="passwordConfirm">Confirm Password</string>
-    <string name="notedockicon">NoteDock icon</string>
+    <string name="register">Register</string>
+    <string name="send">Send</string>
+
+<!--    Image description-->
+    <string name="notedockicon" translatable="false">NoteDock icon</string>
+
+<!--    Error messages-->
     <string name="invalid_email_message">Invalid Email</string>
     <string name="invalid_credentials_message">Invalid Credentials</string>
     <string name="network_error_message">Check your internet connection</string>
-    <string name="forgot_password">Forgot Password?</string>
-    <string name="do_not_have_an_account">Do not have an account?</string>
-    <string name="register">Register</string>
-    <string name="already_have_account">Already have an account?</string>
     <string name="account_created">Please verify your email before logging in</string>
     <string name="weak_password_message">Please enter stronger password</string>
     <string name="email_already_used_message">Account with this email already exists</string>
     <string name="passwords_do_not_match_message">Passwords do not match</string>
-    <string name="recover_account_message">You can recover your NoteDock account by clicking the button below</string>
-    <string name="recover_account">Recover account</string>
-    <string name="go_back_to_login">Go back to login</string>
     <string name="recover_email_sent">Check your email for instructions</string>
     <string name="folder_name_already_exists">Folder name already taken</string>
     <string name="error_occurred">An error occurred. Please try again later</string>
-    <string name="folders">Folders</string>
-    <string name="log_out">Log out</string>
-    <string name="email_not_verified">Your email is not validated</string>
-    <string name="send">Send</string>
+    <string name="too_many_requests">Too many requests. Try again later</string>
     <string name="verification_email_sent">Verification email sent</string>
     <string name="no_user_found">No user found</string>
-    <string name="too_many_requests">Too many requests. Try again later</string>
-    <string name="title_activity_settings">Settings</string>
+    <string name="email_not_verified">Your email is not validated</string>
+    <string name="this_feature_not_available_yet">This feature is not available yet</string>
 
-    <!-- Preference Titles -->
+<!--    Login screen navigation messages-->
+    <string name="forgot_password">Forgot Password?</string>
     <string name="account">Account</string>
-    <string name="help">Help</string>
-
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
+    <string name="do_not_have_an_account">Do not have an account?</string>
+    <string name="already_have_account">Already have an account?</string>
+    <string name="go_back_to_login">Go back to login</string>
+    <string name="recover_account_message">You can recover your NoteDock account by clicking the button below</string>
+    <string name="recover_account">Recover account</string>
 
     <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="log_out">Log out</string>
     <string name="changePassword">Change Password</string>
     <string name="rateUs">Rate Us</string>
     <string name="helpAndSupport">Help and Support</string>
-    <string name="title_activity_account_settings">Account</string>
-
     <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
     <string name="marked">Marked</string>
     <string name="settings">Settings</string>
-    <string name="icon">icon</string>
+    <string name="icon" translatable="false">icon</string>
     <string name="not_on_appstore">We are not on the app store, yet</string>
     <string name="enter_your_current_password">Enter your current password</string>
     <string name="current_password">Current password</string>
@@ -87,7 +86,6 @@
     <string name="phone_number">Phone number</string>
     <string name="display_name">Display name</string>
     <string name="delete_account">Delete account</string>
-    <string name="this_feature_not_available_yet">This feature is not available yet</string>
     <string name="change_email">Change Email</string>
     <string name="delete_account_confirmation">Enter your password if you really want to delete your NoteDock account</string>
     <string name="your_account_has_been_deleted">your_account_has_been_deleted</string>

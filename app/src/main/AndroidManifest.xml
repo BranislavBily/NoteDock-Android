@@ -11,13 +11,6 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
         <activity
-                android:name=".activity.settings.AccountSettingsActivity"
-                android:label="@string/title_activity_account_settings"></activity>
-        <activity
-                android:name=".activity.settings.SettingsActivity"
-                android:label="@string/title_activity_settings"
-                android:parentActivityName=".activity.MainActivity" />
-        <activity
                 android:name=".activity.MainActivity"
                 android:screenOrientation="portrait" />
         <activity
