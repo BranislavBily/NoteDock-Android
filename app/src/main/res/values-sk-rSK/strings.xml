@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">NoteDock</string>
+    <string name="account_created">Veri</string>
+    <string name="action_delete_folder">Vymazať notes</string>
+    <string name="action_delete_note">Vymazať poznámku</string>
+    <string name="action_edit_folder">Upraviť notes</string>
+    <string name="already_have_account">Už máte účet?</string>
+    <string name="cancel_dialog">"Zrušiť "</string>
+    <string name="changePassword">Zmeniť heslo</string>
+    <string name="change_email">Zmeniť email</string>
+    <string name="change_email_message">*Ak zmeníte email, musíte sa znova prihlásiť</string>
+    <string name="create_dialog">Vytvoriť</string>
+</resources>
