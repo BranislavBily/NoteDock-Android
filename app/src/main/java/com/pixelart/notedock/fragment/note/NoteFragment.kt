@@ -23,10 +23,7 @@ import com.pixelart.notedock.ext.openLoginActivity
 import com.pixelart.notedock.ext.openSoftKeyBoard
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.model.NoteModel
-import com.pixelart.notedock.viewModel.note.LoadNoteEvent
-import com.pixelart.notedock.viewModel.note.NoteDeletedEvent
-import com.pixelart.notedock.viewModel.note.NoteFragmentViewModel
-import com.pixelart.notedock.viewModel.note.SaveNoteEvent
+import com.pixelart.notedock.viewModel.note.*
 import kotlinx.android.synthetic.main.fragment_note.*
 import kotlinx.android.synthetic.main.fragment_note.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -131,23 +128,22 @@ class NoteFragment : Fragment() {
         noteFragmentViewModel.noteDeleted.observe(viewLifecycleOwner, Observer { event ->
             view?.let { view ->
                 when (event) {
-                    is NoteDeletedEvent.Success -> {
+                    is GenericCRUDEvent.Success -> {
                         deletingNote = true
                         view.findNavController().popBackStack()
                     }
-                    is NoteDeletedEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
-                    is NoteDeletedEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
+                    is GenericCRUDEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
+                    is GenericCRUDEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
                 }
             }
         })
 
-
         noteFragmentViewModel.noteSaved.observe(viewLifecycleOwner, Observer { event ->
             view?.let { view ->
                 when (event) {
-                    is SaveNoteEvent.Success -> {}
-                    is SaveNoteEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
-                    is SaveNoteEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)//Go to login somehow
+                    is GenericCRUDEvent.Success -> {}
+                    is GenericCRUDEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
+                    is GenericCRUDEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)//Go to login somehow
                 }
             }
         })
