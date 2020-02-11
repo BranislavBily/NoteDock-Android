@@ -33,14 +33,14 @@ class NoteFragmentViewModel(
     private val _editTextNoteDescription = MutableLiveData<String>()
     val editTextNoteDescription: LiveData<String> = _editTextNoteDescription
 
-    private val _noteDeleted = MutableLiveData<NoteDeletedEvent>()
-    val noteDeleted: LiveData<NoteDeletedEvent> = _noteDeleted
+    private val _noteDeleted = MutableLiveData<GenericCRUDEvent>()
+    val noteDeleted: LiveData<GenericCRUDEvent> = _noteDeleted
 
     private val _noteLoad = MutableLiveData<LoadNoteEvent>()
     val noteLoad: LiveData<LoadNoteEvent> = _noteLoad
 
-    private val _noteSaved = MutableLiveData<SaveNoteEvent>()
-    val noteSaved: LiveData<SaveNoteEvent> = _noteSaved
+    private val _noteSaved = MutableLiveData<GenericCRUDEvent>()
+    val noteSaved: LiveData<GenericCRUDEvent> = _noteSaved
 
     override fun onStartStopObserve(disposeBag: CompositeDisposable) {
         super.onStartStopObserve(disposeBag)
@@ -77,15 +77,15 @@ class NoteFragmentViewModel(
                 deleteNoteUseCase.deleteNote(user, folderUUID, noteUUID)
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
-                    .subscribe({ _noteDeleted.postValue(NoteDeletedEvent.Success()) },
+                    .subscribe({ _noteDeleted.postValue(GenericCRUDEvent.Success()) },
                         { error ->
                             Crashlytics.logException(error)
-                            _noteDeleted.postValue(NoteDeletedEvent.Error())
+                            _noteDeleted.postValue(GenericCRUDEvent.Error())
                         })
                     .addTo(bag)
             }
         } ?: run {
-            _noteDeleted.postValue(NoteDeletedEvent.NoUserFound())
+            _noteDeleted.postValue(GenericCRUDEvent.NoUserFound())
         }
 
     }
@@ -95,21 +95,15 @@ class NoteFragmentViewModel(
             updateNoteUseCase.updateNote(user, folderUUID, noteModel)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .subscribe({ _noteSaved.postValue(SaveNoteEvent.Success()) },
+                .subscribe({ _noteSaved.postValue(GenericCRUDEvent.Success()) },
                     { error ->
                         Crashlytics.logException(error)
-                        _noteSaved.postValue(SaveNoteEvent.Error())
+                        _noteSaved.postValue(GenericCRUDEvent.Error())
                     })
         } ?: run {
-            _noteSaved.postValue(SaveNoteEvent.NoUserFound())
+            _noteSaved.postValue(GenericCRUDEvent.NoUserFound())
         }
     }
-}
-
-sealed class NoteDeletedEvent : Event() {
-    class Success : NoteDeletedEvent()
-    class Error : NoteDeletedEvent()
-    class NoUserFound : NoteDeletedEvent()
 }
 
 sealed class LoadNoteEvent : Event() {
@@ -118,8 +112,8 @@ sealed class LoadNoteEvent : Event() {
     class NoUserFound : LoadNoteEvent()
 }
 
-sealed class SaveNoteEvent : Event() {
-    class Success : SaveNoteEvent()
-    class Error : SaveNoteEvent()
-    class NoUserFound : SaveNoteEvent()
+sealed class GenericCRUDEvent: Event() {
+    class Success: GenericCRUDEvent()
+    class Error: GenericCRUDEvent()
+    class NoUserFound: GenericCRUDEvent()
 }

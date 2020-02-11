@@ -32,6 +32,7 @@ import com.pixelart.notedock.fragment.note.OnNoteOptionsClickListener
 import com.pixelart.notedock.model.NoteModel
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
 import com.pixelart.notedock.viewModel.folder.*
+import com.pixelart.notedock.viewModel.note.GenericCRUDEvent
 import kotlinx.android.synthetic.main.fragment_folder.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -120,16 +121,16 @@ class FolderFragment : Fragment(),
             findNavController().popBackStack()
         })
 
-        folderFragmentViewModel.markNote.observe(viewLifecycleOwner, SpecificEventObserver<MarkNoteEvent> { event ->
+        folderFragmentViewModel.markNote.observe(viewLifecycleOwner, SpecificEventObserver<GenericCRUDEvent> { event ->
             view?.let { view ->
                 when(event) {
-                    is MarkNoteEvent.Success -> {}
-                    is MarkNoteEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
+                    is GenericCRUDEvent.Success -> {}
+                    is GenericCRUDEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
                 }
             }
         })
 
-        folderFragmentViewModel.noteCreated.observe(viewLifecycleOwner, SpecificEventObserver<CreateNoteEvent> { event ->
+        folderFragmentViewModel.noteCreated.observe(viewLifecycleOwner, Observer { event ->
                 view?.let { view ->
                     when (event) {
                         is CreateNoteEvent.Success -> NavigationRouter(view).folderToNote(args.folderUUID, event.noteUUID)
@@ -146,9 +147,9 @@ class FolderFragment : Fragment(),
         folderFragmentViewModel.deleteNote.observe(viewLifecycleOwner, Observer { event ->
             view?.let { view ->
                 when(event) {
-                    is DeleteNoteEvent.Success -> {}
-                    is DeleteNoteEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
-                    is DeleteNoteEvent.NoUserFoundError -> R.string.no_user_found.showAsSnackBar(view)
+                    is GenericCRUDEvent.Success -> {}
+                    is GenericCRUDEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
+                    is GenericCRUDEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
                 }
             }
         })

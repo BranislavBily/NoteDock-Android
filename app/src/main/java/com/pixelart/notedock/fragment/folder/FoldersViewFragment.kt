@@ -25,6 +25,7 @@ import com.pixelart.notedock.ext.openLoginActivity
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
 import com.pixelart.notedock.viewModel.folder.*
+import com.pixelart.notedock.viewModel.note.GenericCRUDEvent
 import kotlinx.android.synthetic.main.fragment_folders_view.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -32,8 +33,6 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener,
                                         OnFolderOptionsClickListener {
 
     private val foldersViewFragmentViewModel: FoldersViewFragmentViewModel by viewModel()
-
-    private lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -118,9 +117,9 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener,
         foldersViewFragmentViewModel.deleteFolder.observe(viewLifecycleOwner, Observer { event ->
             view?.let { view ->
                 when(event) {
-                    is DeleteFolderEvent.Success -> {}
-                    is DeleteFolderEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
-                    is DeleteFolderEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
+                    is GenericCRUDEvent.Success -> {}
+                    is GenericCRUDEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
+                    is GenericCRUDEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
                 }
             }
         })
