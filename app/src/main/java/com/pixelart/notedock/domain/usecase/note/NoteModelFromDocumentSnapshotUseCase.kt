@@ -26,7 +26,6 @@ class NoteModelFromDocumentSnapshotImpl(private val firebaseIDSRepository: Fireb
         document.getBoolean(firebaseIDSRepository.getNoteMarked())?.let {
             note.marked = it
         }
-
         return note
     }
 }
