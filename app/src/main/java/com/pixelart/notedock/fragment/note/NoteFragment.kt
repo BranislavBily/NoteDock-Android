@@ -20,10 +20,11 @@ import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.hideSoftKeyboard
 import com.pixelart.notedock.ext.openLoginActivity
-import com.pixelart.notedock.ext.openSoftKeyBoard
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.model.NoteModel
-import com.pixelart.notedock.viewModel.note.*
+import com.pixelart.notedock.viewModel.note.GenericCRUDEvent
+import com.pixelart.notedock.viewModel.note.LoadNoteEvent
+import com.pixelart.notedock.viewModel.note.NoteFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_note.*
 import kotlinx.android.synthetic.main.fragment_note.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -36,8 +37,10 @@ class NoteFragment : Fragment() {
     }
 
     private val args: NoteFragmentArgs by navArgs()
+
     //Please change this later
     private var deletingNote = false
+
     private var note: NoteModel? = null
 
     override fun onCreateView(
