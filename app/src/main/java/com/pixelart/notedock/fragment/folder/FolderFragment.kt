@@ -174,7 +174,7 @@ class FolderFragment : Fragment(),
         folderFragmentViewModel.markNote(args.folderUUID, note)
     }
 
-    override fun onClick(noteUUID: String, options: Options) {
+    override fun onOptionClick(noteUUID: String, options: Options) {
         folderFragmentViewModel.deleteNote(args.folderUUID, noteUUID)
     }
 }

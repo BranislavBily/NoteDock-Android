@@ -24,12 +24,12 @@ class NoteOptionsFragment(private val noteUUID: String,
         super.onViewCreated(view, savedInstanceState)
 
         view.findViewById<TextView>(R.id.textViewNoteDelete).setOnClickListener {
-            onNoteOptionsClickListener.onClick(noteUUID, Options.DELETE)
+            onNoteOptionsClickListener.onOptionClick(noteUUID, Options.DELETE)
             dismiss()
         }
     }
 }
 
 interface OnNoteOptionsClickListener {
-    fun onClick(noteUUID: String, options: Options)
+    fun onOptionClick(noteUUID: String, options: Options)
 }
