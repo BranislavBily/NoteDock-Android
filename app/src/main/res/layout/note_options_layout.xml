@@ -22,7 +22,7 @@
                 android:drawablePadding="24dp"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                android:text="@string/action_delete_folder"
+                android:text="@string/action_delete_note"
                 android:paddingTop="20dp"
                 android:paddingBottom="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
