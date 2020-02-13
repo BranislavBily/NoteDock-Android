@@ -95,7 +95,7 @@ class LoginFragment : Fragment() {
 
     private fun showEmailNotVerifiedSnackbar() {
         view?.let { view ->
-            Snackbar.make(view, R.string.email_not_verified, Snackbar.LENGTH_SHORT)
+            Snackbar.make(view, R.string.email_not_verified, Snackbar.LENGTH_LONG)
                 .setAction(R.string.send) {
                     loginFragmentViewModel.sendVerificationEmail()
                 }.show()

@@ -16,7 +16,7 @@ class EditFolderDialog(
         val view = activity.layoutInflater.inflate(R.layout.edit_folder_dialog, null)
         view.editTextFolderName.setText(folderName, TextView.BufferType.EDITABLE)
         view.editTextFolderName.setSelection(folderName.length)
-        builder.setPositiveButton(R.string.create_dialog) { dialog, _ ->
+        builder.setPositiveButton(R.string.action_rename) { dialog, _ ->
             callback.editFolderClick(view.editTextFolderName.text.toString())
             dialog.cancel()
         }

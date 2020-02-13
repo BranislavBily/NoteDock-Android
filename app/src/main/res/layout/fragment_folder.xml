@@ -29,7 +29,7 @@
                     app:title="@{viewmodel.toolbarTitle}"
                     app:navigationIcon="@drawable/ic_arrow_back"
                     app:onBackClicked="@{() -> viewmodel.onBackClicked()}"
-                    app:menu="@menu/folder_view_menu" />
+                    />
 
             <androidx.core.widget.NestedScrollView
                     android:layout_width="match_parent"

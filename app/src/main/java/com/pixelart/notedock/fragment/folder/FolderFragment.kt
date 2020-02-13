@@ -18,33 +18,37 @@ import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.NavigationRouter
 import com.pixelart.notedock.R
-import com.pixelart.notedock.adapter.note.MarkedNotesAdapter
-import com.pixelart.notedock.adapter.note.UnMarkedNotesAdapter
+import com.pixelart.notedock.adapter.note.NotesAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
+import com.pixelart.notedock.databinding.NoteOptionsLayoutBinding
 import com.pixelart.notedock.dialog.DeleteFolderDialog
 import com.pixelart.notedock.dialog.FolderDialogDeleteSuccessListener
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.openLoginActivity
 import com.pixelart.notedock.ext.showAsSnackBar
+import com.pixelart.notedock.fragment.note.NoteOptionsFragment
+import com.pixelart.notedock.fragment.note.OnNoteOptionsClickListener
 import com.pixelart.notedock.model.NoteModel
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
 import com.pixelart.notedock.viewModel.folder.*
+import com.pixelart.notedock.viewModel.note.GenericCRUDEvent
 import kotlinx.android.synthetic.main.fragment_folder.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 
 class FolderFragment : Fragment(),
-    MarkedNotesAdapter.OnNoteClickListener,
-    MarkedNotesAdapter.OnImageClickListener {
+    NotesAdapter.OnNoteClickListener,
+    NotesAdapter.OnImageClickListener,
+    OnNoteOptionsClickListener {
     private val args: FolderFragmentArgs by navArgs()
     private val folderFragmentViewModel: FolderFragmentViewModel by viewModel {
         parametersOf(args.folderUUID, args.folderName)
     }
 
-    private var markedNotesAdapter: MarkedNotesAdapter? = null
-    private var unmarkedNotesAdapter: UnMarkedNotesAdapter? = null
+    private var markedNotesAdapter: NotesAdapter? = null
+    private var unMarkedNotesAdapter: NotesAdapter? = null
 
 
     override fun onCreateView(
@@ -64,8 +68,8 @@ class FolderFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        markedNotesAdapter = MarkedNotesAdapter(this, this)
-        unmarkedNotesAdapter = UnMarkedNotesAdapter(this, this)
+        markedNotesAdapter = NotesAdapter(this, this)
+        unMarkedNotesAdapter = NotesAdapter(this, this)
 
         setupRecyclerView()
         observeLiveData()
@@ -90,36 +94,18 @@ class FolderFragment : Fragment(),
         recyclerViewMarkedNotes.adapter = markedNotesAdapter
         recyclerViewMarkedNotes.isNestedScrollingEnabled = false
         recyclerViewUnMarkedNotes.layoutManager = LinearLayoutManager(context)
-        recyclerViewUnMarkedNotes.adapter = unmarkedNotesAdapter
+        recyclerViewUnMarkedNotes.adapter = unMarkedNotesAdapter
         recyclerViewUnMarkedNotes.isNestedScrollingEnabled = false
     }
 
     private fun observeLiveData() {
-
-        folderFragmentViewModel.folderButtonClicked.observe(viewLifecycleOwner, SpecificEventObserver<ButtonPressedEvent> {
-                createDeleteDialog()
-            })
-
-        folderFragmentViewModel.folderDeleted.observe(viewLifecycleOwner, Observer { event ->
-            view?.let { view ->
-                when (event) {
-                    is FolderDeleteEvent.Success -> {
-                        view.findNavController().popBackStack()
-                    }
-                    is FolderDeleteEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
-                    is FolderDeleteEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
-                }
-            } ?: run {
-                Log.e("FolderFragment", "View not found")
-            }
-        })
 
         folderFragmentViewModel.loadedNotes.observe(viewLifecycleOwner, Observer { event ->
             view?.let { view ->
                 when(event) {
                     is LoadNotesEvent.Success -> {
                         markedNotesAdapter?.setNewData(event.markedNotes)
-                        unmarkedNotesAdapter?.setNewData(event.unmarkedNotes)
+                        unMarkedNotesAdapter?.setNewData(event.unmarkedNotes)
                     }
                     is LoadNotesEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
                     is LoadNotesEvent.NoUserFoundError -> R.string.no_user_found.showAsSnackBar(view)
@@ -135,16 +121,16 @@ class FolderFragment : Fragment(),
             findNavController().popBackStack()
         })
 
-        folderFragmentViewModel.markNote.observe(viewLifecycleOwner, SpecificEventObserver<MarkNoteEvent> { event ->
+        folderFragmentViewModel.markNote.observe(viewLifecycleOwner, SpecificEventObserver<GenericCRUDEvent> { event ->
             view?.let { view ->
                 when(event) {
-                    is MarkNoteEvent.Success -> {}
-                    is MarkNoteEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
+                    is GenericCRUDEvent.Success -> {}
+                    is GenericCRUDEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
                 }
             }
         })
 
-        folderFragmentViewModel.noteCreated.observe(viewLifecycleOwner, SpecificEventObserver<CreateNoteEvent> { event ->
+        folderFragmentViewModel.noteCreated.observe(viewLifecycleOwner, Observer { event ->
                 view?.let { view ->
                     when (event) {
                         is CreateNoteEvent.Success -> NavigationRouter(view).folderToNote(args.folderUUID, event.noteUUID)
@@ -157,17 +143,16 @@ class FolderFragment : Fragment(),
                     Log.e("FolderFragment", "View not found")
                 }
             })
-    }
 
-    private fun createDeleteDialog() {
-        activity?.supportFragmentManager?.let { fragmentManager ->
-            val deleteFolderDialog = DeleteFolderDialog(object : FolderDialogDeleteSuccessListener {
-                override fun onDelete() {
-                    folderFragmentViewModel.deleteFolderModel(args.folderUUID)
+        folderFragmentViewModel.deleteNote.observe(viewLifecycleOwner, Observer { event ->
+            view?.let { view ->
+                when(event) {
+                    is GenericCRUDEvent.Success -> {}
+                    is GenericCRUDEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
+                    is GenericCRUDEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
                 }
-            })
-            deleteFolderDialog.show(fragmentManager, "Delete Folder Dialog")
-        }
+            }
+        })
     }
 
     private fun createNote() {
@@ -178,7 +163,18 @@ class FolderFragment : Fragment(),
         noteUUID?.let { NavigationRouter(view).folderToNote(args.folderUUID, it) }
     }
 
+    override fun onLongNoteClick(noteUUID: String?) {
+        noteUUID?.let { uuid ->
+            val optionsFragment = NoteOptionsFragment(uuid, this)
+            optionsFragment.show(parentFragmentManager, "NoteOptionsFragment")
+        }
+    }
+
     override fun onImageClick(note: NoteModel) {
         folderFragmentViewModel.markNote(args.folderUUID, note)
+    }
+
+    override fun onOptionClick(noteUUID: String, options: Options) {
+        folderFragmentViewModel.deleteNote(args.folderUUID, noteUUID)
     }
 }

@@ -9,9 +9,11 @@ import com.pixelart.notedock.domain.livedata.model.Event
 import com.pixelart.notedock.domain.repository.NotesRepository
 import com.pixelart.notedock.domain.usecase.folder.DeleteFolderUseCase
 import com.pixelart.notedock.domain.usecase.note.CreateNoteUseCase
+import com.pixelart.notedock.domain.usecase.note.DeleteNoteUseCase
 import com.pixelart.notedock.domain.usecase.note.MarkNoteUseCase
 import com.pixelart.notedock.model.NoteModel
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
+import com.pixelart.notedock.viewModel.note.GenericCRUDEvent
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
@@ -20,7 +22,7 @@ class FolderFragmentViewModel(
     private val folderUUID: String,
     private val folderName: String,
     private val auth: FirebaseAuth,
-    private val deleteFolderUseCase: DeleteFolderUseCase,
+    private val deleteNoteUseCase: DeleteNoteUseCase,
     private val createFolderUseCase: CreateNoteUseCase,
     private val markNoteUseCase: MarkNoteUseCase,
     private val notesRepository: NotesRepository
@@ -33,11 +35,8 @@ class FolderFragmentViewModel(
     private val _onBackClicked = MutableLiveData<ButtonPressedEvent>()
     val onBackClicked: LiveData<ButtonPressedEvent> = _onBackClicked
 
-    private val _buttonClicked = MutableLiveData<ButtonPressedEvent>()
-    val folderButtonClicked: LiveData<ButtonPressedEvent> = _buttonClicked
-
-    private val _folderDeleted = MutableLiveData<FolderDeleteEvent>()
-    val folderDeleted: LiveData<FolderDeleteEvent> = _folderDeleted
+    private val _deleteNote = MutableLiveData<GenericCRUDEvent>()
+    val deleteNote: LiveData<GenericCRUDEvent> = _deleteNote
 
     private val _fabClicked = MutableLiveData<ButtonPressedEvent>()
     val fabClicked: LiveData<ButtonPressedEvent> = _fabClicked
@@ -45,8 +44,8 @@ class FolderFragmentViewModel(
     private val _noteCreated = MutableLiveData<CreateNoteEvent>()
     val noteCreated: LiveData<CreateNoteEvent> = _noteCreated
 
-    private val _markNote = MutableLiveData<MarkNoteEvent>()
-    val markNote: LiveData<MarkNoteEvent> = _markNote
+    private val _markNote = MutableLiveData<GenericCRUDEvent>()
+    val markNote: LiveData<GenericCRUDEvent> = _markNote
 
     override fun onStartStopObserve(disposeBag: CompositeDisposable) {
         super.onStartStopObserve(disposeBag)
@@ -81,26 +80,6 @@ class FolderFragmentViewModel(
         }
     }
 
-    fun deleteFolderModel(folderUUID: String) {
-        auth.currentUser?.let { user ->
-            startStopDisposeBag?.let { bag ->
-                deleteFolderUseCase.deleteFolder(user, folderUUID)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(Schedulers.io())
-                    .subscribe(
-                        { _folderDeleted.postValue(FolderDeleteEvent.Success()) },
-                        { error ->
-                            Crashlytics.logException(error)
-                            _folderDeleted.postValue(FolderDeleteEvent.Error())
-                        }
-                    )
-                    .addTo(bag)
-            }
-        } ?: run {
-            _folderDeleted.postValue(FolderDeleteEvent.NoUserFound())
-        }
-    }
-
     fun markNote(folderUUID: String, note: NoteModel) {
         auth.currentUser?.let { user ->
             startStopDisposeBag?.let { bag ->
@@ -108,14 +87,34 @@ class FolderFragmentViewModel(
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
                     .subscribe(
-                        { _markNote.postValue(MarkNoteEvent.Success()) },
+                        { _markNote.postValue(GenericCRUDEvent.Success()) },
                         { error ->
                             Crashlytics.logException(error)
-                            _markNote.postValue(MarkNoteEvent.Error())
+                            _markNote.postValue(GenericCRUDEvent.Error())
                         }
                     )
                     .addTo(bag)
             }
+        }
+    }
+
+    fun deleteNote(folderUUID: String, noteUUID: String) {
+        auth.currentUser?.let { user ->
+            startStopDisposeBag?.let { bag ->
+                deleteNoteUseCase.deleteNote(user, folderUUID, noteUUID)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .subscribe(
+                        { _deleteNote.postValue(GenericCRUDEvent.Success()) },
+                        { error ->
+                            Crashlytics.logException(error)
+                            _deleteNote.postValue(GenericCRUDEvent.Error())
+                        }
+                    )
+                    .addTo(bag)
+            }
+        } ?: run {
+            _deleteNote.postValue(GenericCRUDEvent.NoUserFound())
         }
     }
 
@@ -154,20 +153,9 @@ sealed class CreateNoteEvent : Event() {
     class NoUserFound : CreateNoteEvent()
 }
 
-sealed class FolderDeleteEvent : Event() {
-    class Error : FolderDeleteEvent()
-    class Success : FolderDeleteEvent()
-    class NoUserFound : FolderDeleteEvent()
-}
-
 sealed class LoadNotesEvent : Event() {
     class Success(val markedNotes: ArrayList<NoteModel>, val unmarkedNotes: ArrayList<NoteModel>) :
         LoadNotesEvent()
     class Error : LoadNotesEvent()
     class NoUserFoundError : LoadNotesEvent()
-}
-
-sealed class MarkNoteEvent: Event() {
-    class Success: MarkNoteEvent()
-    class Error: MarkNoteEvent()
 }
