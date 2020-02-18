@@ -41,6 +41,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textStyle="bold"
                     android:hint="@string/note_hint_title"
                     android:text="@{viewmodel.editTextNoteTitle}" />
 
@@ -48,7 +50,8 @@
                     android:id="@+id/editTextNoteDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:layout_margin="12dp"
+                    android:background="@android:color/transparent"
                     android:hint="@string/note_hint_description"
                     android:text="@{viewmodel.editTextNoteDescription}" />
         </LinearLayout>
