@@ -100,4 +100,5 @@
     <string name="action_delete_folder">Delete folder</string>
     <string name="rename_folder">Rename Folder</string>
     <string name="action_delete_note">Delete note</string>
+    <string name="sign_up">Sign up.</string>
 </resources>
