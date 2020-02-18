@@ -130,7 +130,7 @@ class FolderFragment : Fragment(),
             }
         })
 
-        folderFragmentViewModel.noteCreated.observe(viewLifecycleOwner, Observer { event ->
+        folderFragmentViewModel.noteCreated.observe(viewLifecycleOwner, SpecificEventObserver<CreateNoteEvent> { event ->
                 view?.let { view ->
                     when (event) {
                         is CreateNoteEvent.Success -> NavigationRouter(view).folderToNote(args.folderUUID, event.noteUUID)
