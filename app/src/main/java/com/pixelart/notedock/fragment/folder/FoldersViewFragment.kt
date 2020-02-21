@@ -24,7 +24,10 @@ import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.openLoginActivity
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
-import com.pixelart.notedock.viewModel.folder.*
+import com.pixelart.notedock.viewModel.folder.CreateFolderEvent
+import com.pixelart.notedock.viewModel.folder.FoldersViewFragmentViewModel
+import com.pixelart.notedock.viewModel.folder.LoadFoldersEvent
+import com.pixelart.notedock.viewModel.folder.RenameFolderEvent
 import com.pixelart.notedock.viewModel.note.GenericCRUDEvent
 import kotlinx.android.synthetic.main.fragment_folders_view.*
 import org.koin.android.viewmodel.ext.android.viewModel
