@@ -9,23 +9,51 @@ apply plugin: "kotlin-kapt"
 apply plugin: "androidx.navigation.safeargs.kotlin"
 
 android {
+
+    signingConfigs {
+        release {
+            storeFile file('/Users/branislavbily/Documents/NoteDock-Key/Untitled')
+            storePassword 'KzfYkx!schnZQ%Y457V&'
+            keyPassword 'KzfYkx!schnZQ%Y457V&'
+            keyAlias = 'release'
+        }
+    }
+
     compileSdkVersion 29
     defaultConfig {
         applicationId "com.pixelart.notedock"
         minSdkVersion 21
         targetSdkVersion 29
         multiDexEnabled true
-        versionCode 1
+        versionCode 3
         versionName "1.0.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    flavorDimensions "enviroment"
+    productFlavors {
+        dev {
+            dimension "enviroment"
+            applicationIdSuffix ".dev"
+            versionNameSuffix "-dev"
+        }
+
+        prod {
+            dimension "enviroment"
+            versionNameSuffix "-prod"
+        }
+    }
+
+
     dataBinding {
         enabled = true
     }
@@ -33,6 +61,8 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    sourceSets { prod { java.srcDirs = ['src/prod/java', 'src/prod/java/'] } }
+    sourceSets { prod { java.srcDirs = ['src/dev/java', 'src/dev/java/'] } }
 }
 
 apply plugin: 'com.google.gms.google-services'
