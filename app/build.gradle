@@ -63,6 +63,8 @@ android {
     }
     sourceSets { prod { java.srcDirs = ['src/prod/java', 'src/prod/java/'] } }
     sourceSets { prod { java.srcDirs = ['src/dev/java', 'src/dev/java/'] } }
+    sourceSets { dev { resources.srcDirs = ['src/dev/resources', 'src/dev/resources/'] } }
+    sourceSets { prod { res.srcDirs = ['src/prod/res', 'src/prod/res/'] } }
 }
 
 apply plugin: 'com.google.gms.google-services'
