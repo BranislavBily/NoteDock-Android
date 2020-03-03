@@ -58,6 +58,8 @@
                 android:hint="@string/email"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 app:boxStrokeColor="@color/colorPrimary"
+                app:hintTextAppearance="@style/TextInputLayout"
+
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -70,7 +72,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"
-                    android:text="@={viewmodel.email}"/>
+                    android:text="@={viewmodel.email}"
+                    android:textColor="@color/colorText"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -82,6 +85,8 @@
                 android:hint="@string/password"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 app:boxStrokeColor="@color/colorPrimary"
+                app:hintTextAppearance="@style/TextInputLayout"
+                android:textColor="@color/colorText"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -95,7 +100,8 @@
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
                     app:onDone="@{() -> viewmodel.login()}"
-                    android:text="@={viewmodel.password}"/>
+                    android:text="@={viewmodel.password}"
+                    android:textColor="@color/colorText"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
