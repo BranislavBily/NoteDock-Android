@@ -113,7 +113,7 @@
                     android:layout_height="50dp"
                     android:layout_margin="20dp"
                     android:text="@string/change_email"
-                    style="@style/buttonStyle"
+                    style="@style/ButtonStyle"
                     android:enabled="@{viewmodel.changeEmailEnabled}"
                     android:background="@{viewmodel.changeEmailEnabled ? @drawable/main_button : @drawable/main_button_disabled}"
                     onThrottledClick="@{() -> viewmodel.changeEmailClick()}"

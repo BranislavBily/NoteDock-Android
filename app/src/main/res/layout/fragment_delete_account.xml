@@ -92,7 +92,7 @@
                     android:layout_height="50dp"
                     android:layout_margin="20dp"
                     android:text="@string/delete_account"
-                    style="@style/buttonStyle"
+                    style="@style/ButtonStyle"
                     android:enabled="@{viewmodel.deleteAccountEnabled}"
                     android:background="@{viewmodel.deleteAccountEnabled ? @drawable/main_delete_button : @drawable/main_delete_button_disabled}"
                     onThrottledClick="@{() -> viewmodel.deleteAccountClick()}"
