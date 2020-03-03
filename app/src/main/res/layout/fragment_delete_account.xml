@@ -12,12 +12,13 @@
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/colorBackground"
             android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="#E6FFFFFF"
+                android:background="@color/colorToolbar"
                 android:elevation="8dp"
                 app:navigationIcon="@drawable/ic_arrow_back"
                 app:onBackClicked="@{() -> viewmodel.onBackPressed()}"
@@ -55,7 +56,7 @@
                     android:layout_marginEnd="20dp"
                     android:text="@string/delete_account_confirmation"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="#000000"
+                    android:textColor="@color/colorText"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
@@ -70,6 +71,9 @@
                     android:layout_marginStart="17dp"
                     android:layout_marginEnd="17dp"
                     android:hint="@string/password"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:boxStrokeColor="@color/colorPrimary"
+                    app:hintTextAppearance="@style/TextInputLayout"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

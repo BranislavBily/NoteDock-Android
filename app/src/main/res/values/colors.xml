@@ -10,6 +10,7 @@
 
     <color name="colorMark">#FF9800</color>
     <color name="colorDisabledButton">#B8C7D6</color>
+    <color name="colorDeleteDisabledButton">#FFCCCC</color>
 
     <color name="colorToolbar">#E6FFFFFF</color>
 
