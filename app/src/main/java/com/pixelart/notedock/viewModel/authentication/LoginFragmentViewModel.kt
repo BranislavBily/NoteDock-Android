@@ -108,7 +108,7 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository,
             is FirebaseAuthInvalidUserException -> BadCredentials()
             is FirebaseAuthInvalidCredentialsException -> BadCredentials()
             is FirebaseTooManyRequestsException -> TooManyRequests()
-            is FirebaseException -> NetworkError()
+            is FirebaseNetworkException -> NetworkError()
             else -> {
                 Crashlytics.logException(throwable)
                 UnknownError()
