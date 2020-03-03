@@ -4,4 +4,9 @@
     <color name="colorPrimaryDark">#30379E</color>
     <color name="colorAccent">#306FEE</color>
 
+    <color name="colorBackground">#FFFFFF</color>
+    <color name="colorText">#000000</color>
+
+    <color name="colorDisabledButton">#B8C7D6</color>
+
 </resources>

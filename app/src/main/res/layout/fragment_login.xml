@@ -117,7 +117,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/forgot_password"
-                android:textColor="#000"
+                android:textColor="@color/colorText"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -141,7 +141,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/do_not_have_an_account"
-                    android:textColor="#000"
+                    android:textColor="@color/colorText"
                     android:textSize="16sp"
                     app:onThrottledClick="@{() -> viewmodel.createAccount()}"
                     android:layout_marginEnd="8dp"/>
