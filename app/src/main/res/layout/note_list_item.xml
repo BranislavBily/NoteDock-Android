@@ -23,6 +23,7 @@
             android:tag="textView"
             android:lines="1"
             android:singleLine="true"
+            android:textColor="@color/colorText"
             android:textAlignment="viewStart"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintBottom_toBottomOf="parent"

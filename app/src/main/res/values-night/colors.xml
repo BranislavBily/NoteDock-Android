@@ -9,6 +9,7 @@
     <color name="colorText">#E4E4E4</color>
 
     <color name="colorToolbar">#E6000000</color>
+    <color name="colorMark">#B16B00</color>
 
     <color name="colorDisabledButton">#101927</color>
 </resources>
