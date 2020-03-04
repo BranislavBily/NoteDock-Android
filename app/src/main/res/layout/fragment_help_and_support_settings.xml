@@ -12,13 +12,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:background="@drawable/note_background"
+            android:background="@color/colorBackground"
             >
 
         <androidx.appcompat.widget.Toolbar
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="#E6FFFFFF"
+                android:background="@color/colorToolbar"
                 android:elevation="8dp"
                 app:navigationIcon="@drawable/ic_arrow_back"
                 app:onBackClicked="@{() -> viewmodel.onBackPressed()}"
