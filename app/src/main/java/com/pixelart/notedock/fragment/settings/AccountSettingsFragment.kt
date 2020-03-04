@@ -1,10 +1,12 @@
 package com.pixelart.notedock.fragment.settings
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -37,7 +39,7 @@ import kotlinx.android.synthetic.main.create_folder_dialog.view.*
 import kotlinx.android.synthetic.main.fragment_account_settings.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
-class AccountSettingsFragment() : Fragment(), AccountAdapter.OnAccountClickListener {
+class AccountSettingsFragment : Fragment(), AccountAdapter.OnAccountClickListener {
 
     private val accountSettingsViewModel: AccountSettingsViewModel by viewModel()
 
@@ -157,6 +159,9 @@ class AccountSettingsFragment() : Fragment(), AccountAdapter.OnAccountClickListe
                 }
             }).createDialog(activity)
             dialog.show()
+            //Changing Dialog buttons color so they are more visible in dark theme
+            dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(resources.getColor(R.color.colorPrimary))
+            dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(resources.getColor(R.color.colorPrimary))
             FirebaseAuth.getInstance().currentUser?.let { user ->
                 user.displayName?.let { displayName ->
                     val editText = dialog.findViewById<EditText>(R.id.editTextDisplayName)
