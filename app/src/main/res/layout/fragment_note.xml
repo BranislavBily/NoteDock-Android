@@ -16,6 +16,7 @@
         android:layout_height="match_parent"
         android:clickable="true"
         android:focusable="true"
+        android:background="@color/colorBackground"
         android:focusableInTouchMode="true"
         tools:context=".fragment.note.NoteFragment">
 
@@ -23,7 +24,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="#E6FFFFFF"
+            android:background="@color/colorToolbar"
             android:elevation="8dp"
             app:menu="@menu/note_menu"
             app:navigationIcon="@drawable/ic_arrow_back"
