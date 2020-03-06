@@ -91,7 +91,7 @@ class AccountSettingsFragment : Fragment(), AccountAdapter.OnAccountClickListene
                     if(error is FirebaseNetworkException) {
                         //This is alright
                     } else {
-                        //This means email changed
+                        openLoginActivity()
                     }
                 }
                 .addOnSuccessListener {
@@ -159,9 +159,6 @@ class AccountSettingsFragment : Fragment(), AccountAdapter.OnAccountClickListene
                 }
             }).createDialog(activity)
             dialog.show()
-            //Changing Dialog buttons color so they are more visible in dark theme
-            dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(resources.getColor(R.color.colorPrimary))
-            dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(resources.getColor(R.color.colorPrimary))
             FirebaseAuth.getInstance().currentUser?.let { user ->
                 user.displayName?.let { displayName ->
                     val editText = dialog.findViewById<EditText>(R.id.editTextDisplayName)
