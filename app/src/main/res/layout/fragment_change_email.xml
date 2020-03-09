@@ -17,7 +17,7 @@
         <androidx.appcompat.widget.Toolbar
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="#E6FFFFFF"
+                android:background="@color/colorToolbar"
                 android:elevation="8dp"
                 app:navigationIcon="@drawable/ic_arrow_back"
                 app:onBackClicked="@{() -> viewmodel.onBackPressed()}"
@@ -26,7 +26,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="@color/colorBackground">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -54,6 +55,8 @@
                     android:layout_marginStart="17dp"
                     android:layout_marginEnd="17dp"
                     android:hint="@string/new_email"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:boxStrokeColor="@color/colorPrimary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -66,7 +69,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textEmailAddress"
-                        android:text="@={viewmodel.email}"/>
+                        android:text="@={viewmodel.email}"
+                        android:textColor="@color/colorText"/>
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -77,6 +81,8 @@
                     android:layout_marginStart="17dp"
                     android:layout_marginEnd="17dp"
                     android:hint="@string/password"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:boxStrokeColor="@color/colorPrimary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -90,7 +96,8 @@
                         android:layout_height="wrap_content"
                         android:text="@={viewmodel.password}"
                         onDone="@{() -> viewmodel.changeEmailClick()}"
-                        android:inputType="textPassword" />
+                        android:inputType="textPassword"
+                        android:textColor="@color/colorText"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -99,6 +106,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/change_email_message"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/colorText"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -113,7 +121,7 @@
                     android:layout_height="50dp"
                     android:layout_margin="20dp"
                     android:text="@string/change_email"
-                    style="@style/buttonStyle"
+                    style="@style/ButtonStyle"
                     android:enabled="@{viewmodel.changeEmailEnabled}"
                     android:background="@{viewmodel.changeEmailEnabled ? @drawable/main_button : @drawable/main_button_disabled}"
                     onThrottledClick="@{() -> viewmodel.changeEmailClick()}"

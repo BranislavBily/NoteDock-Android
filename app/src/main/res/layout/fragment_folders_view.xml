@@ -14,13 +14,14 @@
     <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".fragment.FoldersViewFragment">
+            tools:context=".fragment.FoldersViewFragment"
+            android:background="@color/colorBackground">
 
         <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbarFoldersView"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="#E6FFFFFF"
+                android:background="@color/colorToolbar"
                 android:elevation="8dp"
                 app:menu="@menu/folders_view_menu"
                 app:title="@string/folders"

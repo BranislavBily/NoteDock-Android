@@ -55,14 +55,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="17dp"
                 android:layout_marginEnd="17dp"
-                app:boxStrokeColor="@color/colorPrimary"
-                app:boxBackgroundColor="@color/colorPrimary"
                 android:hint="@string/email"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:boxStrokeColor="@color/colorPrimary"
+                app:hintTextAppearance="@style/TextInputLayout"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/textViewNoteDock"
-                app:layout_constraintVertical_bias="0.103"
+                app:layout_constraintVertical_bias="0.125"
                 >
 
             <EditText
@@ -70,7 +71,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"
-                    android:text="@={viewmodel.email}"/>
+                    android:text="@={viewmodel.email}"
+                    android:textColor="@color/colorText"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -80,11 +82,15 @@
                 android:layout_marginStart="17dp"
                 android:layout_marginEnd="17dp"
                 android:hint="@string/password"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:boxStrokeColor="@color/colorPrimary"
+                app:hintTextAppearance="@style/TextInputLayout"
+                android:textColor="@color/colorText"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/textInputLoginEmail"
-                app:layout_constraintVertical_bias="0.103"
+                app:layout_constraintVertical_bias="0.1"
                 app:passwordToggleEnabled="true">
 
             <EditText
@@ -93,7 +99,8 @@
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
                     app:onDone="@{() -> viewmodel.login()}"
-                    android:text="@={viewmodel.password}"/>
+                    android:text="@={viewmodel.password}"
+                    android:textColor="@color/colorText"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
@@ -105,7 +112,7 @@
                 android:enabled="@{viewmodel.loginEnabled}"
                 app:onThrottledClick="@{() -> viewmodel.login()}"
                 android:text="@string/login"
-                style="@style/buttonStyle"
+                style="@style/ButtonStyle"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -117,7 +124,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/forgot_password"
-                android:textColor="#000"
+                android:textColor="@color/colorText"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -141,7 +148,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/do_not_have_an_account"
-                    android:textColor="#000"
+                    android:textColor="@color/colorText"
                     android:textSize="16sp"
                     app:onThrottledClick="@{() -> viewmodel.createAccount()}"
                     android:layout_marginEnd="8dp"/>

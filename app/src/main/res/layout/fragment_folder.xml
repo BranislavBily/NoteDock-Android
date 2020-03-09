@@ -13,6 +13,7 @@
     <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/colorBackground"
             tools:context=".fragment.folder.FolderFragment">
 
         <LinearLayout
@@ -24,7 +25,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:elevation="8dp"
-                    android:background="#E6FFFFFF"
+                    android:background="@color/colorToolbar"
                     app:titleTextColor="@color/colorPrimary"
                     app:title="@{viewmodel.toolbarTitle}"
                     app:navigationIcon="@drawable/ic_arrow_back"
