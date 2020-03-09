@@ -8,6 +8,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.crashlytics.android.Crashlytics
 import com.google.firebase.FirebaseException
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
@@ -69,7 +70,7 @@ class ResetPasswordFragmentViewModel(private val authRepository: AuthRepository)
     private fun handleRecoverError(throwable: Throwable?): RecoverAccountEventError {
         return when(throwable) {
             is FirebaseAuthInvalidUserException -> RecoverAccountEventError.InvalidEmail()
-            is FirebaseException -> RecoverAccountEventError.NetworkError()
+            is FirebaseNetworkException -> RecoverAccountEventError.NetworkError()
             is FirebaseTooManyRequestsException -> RecoverAccountEventError.TooManyRequests()
             else -> {
                 Crashlytics.logException(throwable)

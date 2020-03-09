@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">NoteDock</string>
-    <string name="account_created">Verifikujte si email</string>
+    <string name="account_created">Pred prihlásením si overte email</string>
     <string name="action_delete_folder">Vymazať notes</string>
     <string name="action_delete_note">Vymazať poznámku</string>
     <string name="action_edit_folder">Upraviť notes</string>
@@ -18,13 +18,13 @@
     <string name="delete_account_confirmation">Zadajte heslo ak si vážne chcete vymazať NoteDock účet</string>
     <string name="delete_dialog">Vymazať</string>
     <string name="delete_folder">Vymazať notes a všetky jeho poznámky</string>
-    <string name="delete_folder_additional">Nemôžeš sa vrátiť!</string>
+    <string name="delete_folder_additional">Nemôžete sa vrátiť!</string>
     <string name="display_name">Uživateľské meno</string>
     <string name="do_not_have_an_account">Nemáte účet?</string>
     <string name="edit_displayname">Zmeniť uživateľské meno</string>
     <string name="email">Email</string>
     <string name="email_already_used_message">Účet s týmto emailom už existuje</string>
-    <string name="email_not_verified">Váš email nie je validovaný</string>
+    <string name="email_not_verified">Váš email nie je overený</string>
     <string name="enter_displayname">Napíšte uživateľské meno</string>
     <string name="enter_folder_name">Napíšte názov notesu</string>
     <string name="enter_your_current_password">Napíšte aktuálne heslo</string>
@@ -44,10 +44,9 @@
     <string name="network_error_message">Skontrolujte pripojenie na internet</string>
     <string name="new_email">Nový email</string>
     <string name="new_password">Nové heslo</string>
-    <string name="new_password_cannot_be_current">" Vaše nové heslo nemože byt staré"</string>
+    <string name="new_password_cannot_be_current">Vaše nové heslo nemože byt staré</string>
     <string name="no_email_client_installed">Žiadna emailová aplikácia nebola nájdená</string>
     <string name="no_user_found">Žiadny uživateľ nebol nájdený</string>
-    <string name="not_on_appstore">Ešte nie sme na Google Play</string>
     <string name="note_hint_description">Text</string>
     <string name="note_hint_title">Názov</string>
     <string name="password">Heslo</string>
@@ -59,7 +58,7 @@
     <string name="rateUs">Ohodnoťte nás</string>
     <string name="recover_account">Obnoviť účet</string>
     <string name="recover_account_message">Môžete si obnoviť účet kliknutím na tlačidlo</string>
-    <string name="recover_email_sent">Skontrolujte si mail pre ďalšie inštrukcie</string>
+    <string name="recover_email_sent">Skontrolujte si email pre ďalšie inštrukcie</string>
     <string name="register">Zaregistrovať sa</string>
     <string name="rename_folder">Premenovať notes</string>
     <string name="save">Uložit</string>
@@ -72,10 +71,12 @@
     <string name="too_many_requests">Príliš veľa požiadaviek. Skúste neskôr</string>
     <string name="try_again">Nastala chyba. Skúste znova</string>
     <string name="use_new_email">Použite nový email</string>
-    <string name="verification_email_sent">Verifikačný email odoslaný</string>
+    <string name="verification_email_sent">Overovací email odoslaný</string>
     <string name="weak_password_message">Zadajte silnejšie heslo</string>
     <string name="wrong_password">Vložili ste nesprávne heslo</string>
     <string name="your_account_has_been_deleted">Váš účet bol vymazaný</string>
     <string name="account">Účet</string>
     <string name="confirm_new_password">Potvrdťe nové heslo</string>
+    <string name="action_rename">Premenovať</string>
+    <string name="sign_up">Zaregistrujte sa</string>
 </resources>

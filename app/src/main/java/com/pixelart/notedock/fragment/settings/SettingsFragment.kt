@@ -2,6 +2,7 @@ package com.pixelart.notedock.fragment.settings
 
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -87,7 +88,7 @@ class SettingsFragment : Fragment(), SettingsAdapter.OnSettingsClickListener {
         when(setting.title) {
             getString(R.string.account) -> NavigationRouter(view).settingsToAccount()
             getString(R.string.changePassword) -> NavigationRouter(view).settingsToChangePassword()
-            getString(R.string.rateUs) ->  view?.let { R.string.not_on_appstore.showAsSnackBar(it) }
+            getString(R.string.rateUs) ->  context?.let { context -> NavigationRouter(view).settingsToGooglePlay(context) }
             getString(R.string.helpAndSupport) -> NavigationRouter(view).settingsToHelpAndSupport()
             else -> settingFragmentViewModel.logOut()
         }

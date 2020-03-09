@@ -1,6 +1,10 @@
 package com.pixelart.notedock
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.view.View
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavDirections
 import androidx.navigation.Navigation
 import com.pixelart.notedock.fragment.authentication.LoginFragmentDirections
@@ -14,6 +18,13 @@ class NavigationRouter(private val view: View?) {
     fun settingsToAccount() {
         val action = SettingsFragmentDirections.actionSettingsFragmentToAccountSettingsFragment()
         openAction(action)
+    }
+
+    fun settingsToGooglePlay(context: Context) {
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            data = Uri.parse("https://play.google.com/store/apps/details?id=com.pixelart.notedock")
+        }
+        context.startActivity(intent)
     }
 
     fun settingsToChangePassword() {

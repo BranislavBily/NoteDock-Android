@@ -5,6 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.crashlytics.android.Crashlytics
 import com.google.firebase.FirebaseException
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
@@ -106,7 +107,7 @@ class RegisterFragmentViewModel(private val authRepository: AuthRepository,
             is FirebaseAuthInvalidCredentialsException -> RegisterEventError.InvalidEmail()
             is FirebaseAuthUserCollisionException -> RegisterEventError.EmailAlreadyUsed()
             is FirebaseTooManyRequestsException -> RegisterEventError.TooManyRequests()
-            is FirebaseException -> RegisterEventError.NetworkError()
+            is FirebaseNetworkException -> RegisterEventError.NetworkError()
             else -> {
                 Crashlytics.logException(throwable)
                 RegisterEventError.UnknownError()
