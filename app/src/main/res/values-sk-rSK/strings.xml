@@ -79,4 +79,5 @@
     <string name="confirm_new_password">Potvrdťe nové heslo</string>
     <string name="action_rename">Premenovať</string>
     <string name="sign_up">Zaregistrujte sa</string>
+    <string name="done">Hotovo</string>
 </resources>
