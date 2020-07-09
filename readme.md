@@ -5,7 +5,7 @@ NoteDock je multiplatformová aplikácia, vytvorená pre Android, iOS a web. Sl�
 ## Ako používať
 
 <ul>
-<li>Android aplikácia: [Google PlayStore](https://play.google.com/store/apps/details?id=com.pixelart.notedock)</li>
+<li>Android aplikácia: [Google Play](https://play.google.com/store/apps/details?id=com.pixelart.notedock)</li>
 <li>iOS: Zamietnutý z AppStoru :( </li>
-<li>Web: [notedock.firebaseapp.com](https://notedock.firebaseapp.com/)</li>
+<li>Web: [NoteDock](https://notedock.firebaseapp.com/)</li>
 </ul>
