@@ -19,8 +19,10 @@ import com.pixelart.notedock.viewModel.authentication.LoginEvent.*
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 
-class LoginFragmentViewModel(private val authRepository: AuthRepository,
-                             private val auth: FirebaseAuth): LifecycleViewModel() {
+class LoginFragmentViewModel(
+    private val authRepository: AuthRepository,
+    private val auth: FirebaseAuth
+) : LifecycleViewModel() {
 
     private val _loginCompleted = MutableLiveData<LoginEvent>()
     val loginCompleted: LiveData<LoginEvent> = _loginCompleted
@@ -70,11 +72,11 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository,
     }
 
     fun sendVerificationEmail() {
-        startStopDisposeBag?.let {bag ->
+        startStopDisposeBag?.let { bag ->
             auth.currentUser?.let { user ->
                 authRepository.sendVerificationEmail(user)
                     .subscribeOn(Schedulers.io())
-                    .doAfterTerminate { _loading.postValue( false) }
+                    .doAfterTerminate { _loading.postValue(false) }
                     .subscribe({
                         _sendEmail.postValue(SendEmailEvent.Success())
                     }, { error ->
@@ -117,7 +119,7 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository,
     }
 
     private fun handleEmailError(throwable: Throwable?): SendEmailEvent {
-        return when(throwable) {
+        return when (throwable) {
             is FirebaseNetworkException -> SendEmailEvent.NetworkError()
             is FirebaseTooManyRequestsException -> SendEmailEvent.TooManyRequests()
             else -> {
@@ -131,8 +133,8 @@ class LoginFragmentViewModel(private val authRepository: AuthRepository,
 sealed class SendEmailEvent : Event() {
     class Success : SendEmailEvent()
     class UnknownError : SendEmailEvent()
-    class NetworkError: SendEmailEvent()
-    class TooManyRequests: SendEmailEvent()
+    class NetworkError : SendEmailEvent()
+    class TooManyRequests : SendEmailEvent()
 }
 
 sealed class LoginEvent : Event() {
@@ -142,9 +144,9 @@ sealed class LoginEvent : Event() {
     class NetworkError : LoginEvent()
     class UserEmailNotVerified : LoginEvent()
     class UnknownError : LoginEvent()
-    class TooManyRequests: LoginEvent()
+    class TooManyRequests : LoginEvent()
 }
 
-sealed class CreateAccountEvent: Event() {
-    class Pressed: CreateAccountEvent()
+sealed class CreateAccountEvent : Event() {
+    class Pressed : CreateAccountEvent()
 }
