@@ -11,10 +11,12 @@ interface CreateNoteUseCase {
     fun createNote(user: FirebaseUser, folderUUID: String): Single<String>
 }
 
-class CreateNoteImpl(private val firebaseIDSRepository: FirebaseIDSRepository,
-                     private val firebaseInstance: FirebaseFirestore): CreateNoteUseCase {
+class CreateNoteImpl(
+    private val firebaseIDSRepository: FirebaseIDSRepository,
+    private val firebaseInstance: FirebaseFirestore
+) : CreateNoteUseCase {
     override fun createNote(user: FirebaseUser, folderUUID: String): Single<String> {
-        return Single.create<String> {emitter ->
+        return Single.create<String> { emitter ->
             val data = hashMapOf(
                 firebaseIDSRepository.getNoteTitle() to "Untitled",
                 firebaseIDSRepository.getNoteDescription() to "",
@@ -31,7 +33,7 @@ class CreateNoteImpl(private val firebaseIDSRepository: FirebaseIDSRepository,
                 .addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
                     firebaseFirestoreException?.let { emitter.tryOnError(it) }
 
-                    documentSnapshot?.reference?.let {reference ->
+                    documentSnapshot?.reference?.let { reference ->
                         reference.set(data)
                         emitter.onSuccess(reference.id)
                     }

@@ -10,9 +10,15 @@ interface RenameFolderUseCase {
     fun renameFolder(user: FirebaseUser, folderUUID: String, folderName: String): Completable
 }
 
-class RenameFolderImpl(private val firebaseIDSRepository: FirebaseIDSRepository,
-                       private val firebaseInstance: FirebaseFirestore) : RenameFolderUseCase {
-    override fun renameFolder(user: FirebaseUser, folderUUID: String, folderName: String): Completable {
+class RenameFolderImpl(
+    private val firebaseIDSRepository: FirebaseIDSRepository,
+    private val firebaseInstance: FirebaseFirestore
+) : RenameFolderUseCase {
+    override fun renameFolder(
+        user: FirebaseUser,
+        folderUUID: String,
+        folderName: String
+    ): Completable {
         return Completable.create { emitter ->
             val data = hashMapOf<String, Any>(
                 firebaseIDSRepository.getFolderName() to folderName

@@ -53,7 +53,7 @@ class AccountSettingsViewModel(private val auth: FirebaseAuth) : LifecycleViewMo
     }
 
     private fun handleError(throwable: Throwable): UpdateDisplayNameEvent {
-        return when(throwable) {
+        return when (throwable) {
             is FirebaseNetworkException -> UpdateDisplayNameEvent.NetworkError()
             else -> {
                 Crashlytics.logException(throwable)
@@ -67,8 +67,8 @@ class AccountSettingsViewModel(private val auth: FirebaseAuth) : LifecycleViewMo
     }
 }
 
-sealed class UpdateDisplayNameEvent: Event() {
-    class Success: UpdateDisplayNameEvent()
-    class UnknownError: UpdateDisplayNameEvent()
-    class NetworkError: UpdateDisplayNameEvent()
+sealed class UpdateDisplayNameEvent : Event() {
+    class Success : UpdateDisplayNameEvent()
+    class UnknownError : UpdateDisplayNameEvent()
+    class NetworkError : UpdateDisplayNameEvent()
 }

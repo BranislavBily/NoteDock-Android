@@ -19,7 +19,10 @@ class NotesRepositoryImpl(
     private val noteModelFromDocumentSnapshotUseCase: NoteModelFromDocumentSnapshotUseCase
 ) : NotesRepository {
 
-    override fun getNotes(user: FirebaseUser,folderUUID: String): Observable<ArrayList<NoteModel>> {
+    override fun getNotes(
+        user: FirebaseUser,
+        folderUUID: String
+    ): Observable<ArrayList<NoteModel>> {
         return Observable.create { emitter ->
             val notes = ArrayList<NoteModel>()
             firebaseInstance.collection(firebaseIDSRepository.getCollectionUsers())
@@ -29,9 +32,9 @@ class NotesRepositoryImpl(
                 .collection(firebaseIDSRepository.getCollectionNotes())
                 .orderBy(firebaseIDSRepository.getNoteUpdated(), Query.Direction.DESCENDING)
                 .addSnapshotListener { queryDocumentSnapshots, error ->
-                    queryDocumentSnapshots?.let {querySnapshot ->
+                    queryDocumentSnapshots?.let { querySnapshot ->
                         notes.clear()
-                        for( document in querySnapshot) {
+                        for (document in querySnapshot) {
                             notes.add(noteModelFromDocumentSnapshotUseCase.getNote(document))
                         }
                         emitter.onNext(notes)
@@ -43,8 +46,10 @@ class NotesRepositoryImpl(
         }
     }
 
-    override fun loadNote(user: FirebaseUser, folderUUID: String,
-                          noteUUID: String): Single<NoteModel> {
+    override fun loadNote(
+        user: FirebaseUser, folderUUID: String,
+        noteUUID: String
+    ): Single<NoteModel> {
         return Single.create<NoteModel> { emitter ->
             firebaseInstance.collection(firebaseIDSRepository.getCollectionUsers())
                 .document(user.uid)

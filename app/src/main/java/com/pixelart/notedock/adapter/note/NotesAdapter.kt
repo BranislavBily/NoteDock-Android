@@ -8,8 +8,9 @@ import com.pixelart.notedock.R
 import com.pixelart.notedock.model.NoteModel
 import kotlinx.android.synthetic.main.note_list_item.view.*
 
-class NotesAdapter(private val onNoteClickListener: OnNoteClickListener,
-                   private val onImageClickListener: OnImageClickListener
+class NotesAdapter(
+    private val onNoteClickListener: OnNoteClickListener,
+    private val onImageClickListener: OnImageClickListener
 ) : RecyclerView.Adapter<NotesAdapter.NotesHolder>() {
 
     private var notes = ArrayList<NoteModel>()
@@ -20,7 +21,8 @@ class NotesAdapter(private val onNoteClickListener: OnNoteClickListener,
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotesHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.note_list_item, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.note_list_item, parent, false)
         return NotesHolder(
             view,
             onNoteClickListener,
@@ -37,16 +39,17 @@ class NotesAdapter(private val onNoteClickListener: OnNoteClickListener,
     }
 
 
-    class NotesHolder(itemView: View,
-                      private val onNoteClickListener: OnNoteClickListener,
-                      private val onImageClickListener: OnImageClickListener
-                      ): RecyclerView.ViewHolder(itemView) {
+    class NotesHolder(
+        itemView: View,
+        private val onNoteClickListener: OnNoteClickListener,
+        private val onImageClickListener: OnImageClickListener
+    ) : RecyclerView.ViewHolder(itemView) {
 
         fun bindData(note: NoteModel) {
             itemView.textViewNoteTitle.text = note.noteTitle
             itemView.textViewNotePreview.text = note.noteDescription
 
-            if(note.marked == true) {
+            if (note.marked == true) {
                 itemView.imageViewPinned.setImageResource(R.drawable.ic_marked)
             } else {
                 itemView.imageViewPinned.setImageResource(R.drawable.ic_unmarked)

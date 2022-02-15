@@ -29,7 +29,7 @@ class LoginFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val dataBinding = setupDataBinding<ViewDataBinding>(
             R.layout.fragment_login,
             BR.viewmodel to loginFragmentViewModel
@@ -60,19 +60,29 @@ class LoginFragment : Fragment() {
 
     private fun observeLiveData() {
 
-        loginFragmentViewModel.loginCompleted.observe(viewLifecycleOwner, SpecificEventObserver { event ->
-            view?.let { view ->
-                when(event) {
-                    is LoginEvent.Success -> goToMainActivity()
-                    is LoginEvent.InvalidEmail -> R.string.invalid_email_message.showAsSnackBar(view)
-                    is LoginEvent.BadCredentials -> R.string.invalid_credentials_message.showAsSnackBar(view)
-                    is LoginEvent.NetworkError -> R.string.network_error_message.showAsSnackBar(view)
-                    is LoginEvent.UnknownError -> R.string.error_occurred.showAsSnackBar(view)
-                    is LoginEvent.TooManyRequests -> R.string.too_many_requests.showAsSnackBar(view)
-                    is LoginEvent.UserEmailNotVerified -> showEmailNotVerifiedSnackbar()
+        loginFragmentViewModel.loginCompleted.observe(
+            viewLifecycleOwner,
+            SpecificEventObserver { event ->
+                view?.let { view ->
+                    when (event) {
+                        is LoginEvent.Success -> goToMainActivity()
+                        is LoginEvent.InvalidEmail -> R.string.invalid_email_message.showAsSnackBar(
+                            view
+                        )
+                        is LoginEvent.BadCredentials -> R.string.invalid_credentials_message.showAsSnackBar(
+                            view
+                        )
+                        is LoginEvent.NetworkError -> R.string.network_error_message.showAsSnackBar(
+                            view
+                        )
+                        is LoginEvent.UnknownError -> R.string.error_occurred.showAsSnackBar(view)
+                        is LoginEvent.TooManyRequests -> R.string.too_many_requests.showAsSnackBar(
+                            view
+                        )
+                        is LoginEvent.UserEmailNotVerified -> showEmailNotVerifiedSnackBar()
+                    }
                 }
-            }
-        })
+            })
 
         loginFragmentViewModel.forgotPassword.observe(viewLifecycleOwner, SpecificEventObserver {
             NavigationRouter(view).loginToForgotPassword()
@@ -82,18 +92,29 @@ class LoginFragment : Fragment() {
             NavigationRouter(view).loginToRegister()
         })
 
-        loginFragmentViewModel.sendEmail.observe(viewLifecycleOwner, SpecificEventObserver { event ->
-            view?.let { view ->
-                when(event) {
-                    is SendEmailEvent.Success -> R.string.verification_email_sent.showAsSnackBar(view)
-                    is SendEmailEvent.UnknownError -> R.string.error_occurred.showAsSnackBar(view)
-                    is SendEmailEvent.TooManyRequests -> R.string.too_many_requests.showAsSnackBar(view)
+        loginFragmentViewModel.sendEmail.observe(
+            viewLifecycleOwner,
+            SpecificEventObserver { event ->
+                view?.let { view ->
+                    when (event) {
+                        is SendEmailEvent.Success -> R.string.verification_email_sent.showAsSnackBar(
+                            view
+                        )
+                        is SendEmailEvent.UnknownError -> R.string.error_occurred.showAsSnackBar(
+                            view
+                        )
+                        is SendEmailEvent.TooManyRequests -> R.string.too_many_requests.showAsSnackBar(
+                            view
+                        )
+                        is SendEmailEvent.NetworkError -> R.string.network_error_message.showAsSnackBar(
+                            view
+                        )
+                    }
                 }
-            }
-        })
+            })
     }
 
-    private fun showEmailNotVerifiedSnackbar() {
+    private fun showEmailNotVerifiedSnackBar() {
         view?.let { view ->
             Snackbar.make(view, R.string.email_not_verified, Snackbar.LENGTH_LONG)
                 .setAction(R.string.send) {

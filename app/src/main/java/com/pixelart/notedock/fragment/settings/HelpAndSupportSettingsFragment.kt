@@ -31,7 +31,7 @@ class HelpAndSupportSettingsFragment : Fragment(), SettingsAdapter.OnSettingsCli
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val dataBinding = setupDataBinding<ViewDataBinding>(
             R.layout.fragment_help_and_support_settings,
             BR.viewmodel to helpAndSupportViewModel
@@ -59,8 +59,8 @@ class HelpAndSupportSettingsFragment : Fragment(), SettingsAdapter.OnSettingsCli
 
         FirebaseAuth.getInstance().currentUser?.let { user ->
             user.reload()
-                .addOnFailureListener {error ->
-                    if(error is FirebaseNetworkException) {
+                .addOnFailureListener { error ->
+                    if (error is FirebaseNetworkException) {
                         //All is well
                     } else {
                         openLoginActivity()
@@ -83,7 +83,7 @@ class HelpAndSupportSettingsFragment : Fragment(), SettingsAdapter.OnSettingsCli
     }
 
     override fun onSettingClick(setting: SettingsModel) {
-        when(setting.title) {
+        when (setting.title) {
             getString(R.string.send_bug_report) -> {
                 activity?.openMailApp("branislav.bily@gmail.com", "NoteDock: Send bug report")
             }
@@ -91,6 +91,5 @@ class HelpAndSupportSettingsFragment : Fragment(), SettingsAdapter.OnSettingsCli
                 activity?.openMailApp("branislav.bily@gmail.com", "NoteDock: Send feedback")
             }
         }
-
     }
 }

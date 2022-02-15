@@ -87,7 +87,6 @@ class NoteFragmentViewModel(
         } ?: run {
             _noteDeleted.postValue(GenericCRUDEvent.NoUserFound())
         }
-
     }
 
     fun saveNote(folderUUID: String, noteModel: NoteModel) {
@@ -107,13 +106,13 @@ class NoteFragmentViewModel(
 }
 
 sealed class LoadNoteEvent : Event() {
-    class Success(val note: NoteModel): LoadNoteEvent()
+    class Success(val note: NoteModel) : LoadNoteEvent()
     class Error : LoadNoteEvent()
     class NoUserFound : LoadNoteEvent()
 }
 
-sealed class GenericCRUDEvent: Event() {
-    class Success: GenericCRUDEvent()
-    class Error: GenericCRUDEvent()
-    class NoUserFound: GenericCRUDEvent()
+sealed class GenericCRUDEvent : Event() {
+    class Success : GenericCRUDEvent()
+    class Error : GenericCRUDEvent()
+    class NoUserFound : GenericCRUDEvent()
 }

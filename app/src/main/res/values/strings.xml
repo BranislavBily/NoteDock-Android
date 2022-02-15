@@ -37,7 +37,7 @@
 <!--    Error messages-->
     <string name="invalid_email_message">Invalid Email</string>
     <string name="invalid_credentials_message">Invalid Credentials</string>
-    <string name="network_error_message">Check your internet connection</string>
+    <string name="network_error_message">Network error occurred. Check your internet connection</string>
     <string name="account_created">Please verify your email before logging in</string>
     <string name="weak_password_message">Please enter stronger password</string>
     <string name="email_already_used_message">Account with this email already exists</string>

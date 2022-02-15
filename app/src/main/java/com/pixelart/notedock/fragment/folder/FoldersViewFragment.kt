@@ -41,7 +41,7 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener,
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val dataBinding = setupDataBinding<ViewDataBinding>(
             R.layout.fragment_folders_view,
             BR.viewmodel to foldersViewFragmentViewModel
@@ -158,7 +158,6 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener,
     }
 
     private fun createFolderDialog() {
-        //Lepsie ale ajtak stale nie velmi barz
         activity?.let { activity ->
             val dialog = CreateFolderDialog(object : FolderDialogSuccessListener {
                 override fun onSuccess(folderName: String?) {
@@ -167,9 +166,11 @@ class FoldersViewFragment : Fragment(), FoldersAdapter.OnFolderClickListener,
             }).createDialog(activity)
             dialog.show()
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
-            dialog.findViewById<EditText>(R.id.editTextFolderName)?.addTextChangedListener { watcher ->
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = !watcher.isNullOrEmpty()
-            }
+            dialog.findViewById<EditText>(R.id.editTextFolderName)
+                ?.addTextChangedListener { watcher ->
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
+                        !watcher.isNullOrEmpty()
+                }
         }
     }
 

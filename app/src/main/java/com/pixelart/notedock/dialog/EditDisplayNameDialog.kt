@@ -24,6 +24,7 @@ class EditDisplayNameDialog(
         return builder.create()
     }
 }
+
 interface EditDisplaySuccessListener {
     fun onSuccess(displayName: String?)
 }

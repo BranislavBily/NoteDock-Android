@@ -8,15 +8,17 @@ import android.widget.TextView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.pixelart.notedock.R
 
-class FolderOptionsFragment(private val folderUUID: String,
-                            private val folderName: String,
-                            private val onFolderOptionsClickListener: OnFolderOptionsClickListener): BottomSheetDialogFragment() {
+class FolderOptionsFragment(
+    private val folderUUID: String,
+    private val folderName: String,
+    private val onFolderOptionsClickListener: OnFolderOptionsClickListener
+) : BottomSheetDialogFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return inflater.inflate(R.layout.folder_options_layout, container, false)
     }
 

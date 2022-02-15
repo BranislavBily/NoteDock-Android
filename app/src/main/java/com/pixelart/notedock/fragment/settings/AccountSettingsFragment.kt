@@ -46,7 +46,7 @@ class AccountSettingsFragment : Fragment(), AccountAdapter.OnAccountClickListene
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val dataBinding = setupDataBinding<ViewDataBinding>(
             R.layout.fragment_account_settings,
             BR.viewmodel to accountSettingsViewModel
@@ -70,8 +70,8 @@ class AccountSettingsFragment : Fragment(), AccountAdapter.OnAccountClickListene
 
         FirebaseAuth.getInstance().currentUser?.let { user ->
             user.reload()
-                .addOnFailureListener {error ->
-                    if(error is FirebaseNetworkException) {
+                .addOnFailureListener { error ->
+                    if (error is FirebaseNetworkException) {
                         //All is well
                     } else {
                         openLoginActivity()
@@ -88,7 +88,7 @@ class AccountSettingsFragment : Fragment(), AccountAdapter.OnAccountClickListene
         accountSettingsViewModel.user.observe(viewLifecycleOwner, Observer { user ->
             user.reload()
                 .addOnFailureListener { error ->
-                    if(error is FirebaseNetworkException) {
+                    if (error is FirebaseNetworkException) {
                         //This is alright
                     } else {
                         openLoginActivity()
@@ -100,15 +100,23 @@ class AccountSettingsFragment : Fragment(), AccountAdapter.OnAccountClickListene
             accountAdapter.setNewData(fillTable(user))
         })
 
-        accountSettingsViewModel.updateDisplayName.observe(viewLifecycleOwner, SpecificEventObserver<UpdateDisplayNameEvent> { event ->
-            view?.let { view ->
-                when(event) {
-                    is UpdateDisplayNameEvent.Success -> { reloadData(accountAdapter) }
-                    is UpdateDisplayNameEvent.NetworkError -> R.string.network_error_message.showAsSnackBar(view)
-                    is UpdateDisplayNameEvent.UnknownError -> R.string.error_occurred.showAsSnackBar(view)
+        accountSettingsViewModel.updateDisplayName.observe(
+            viewLifecycleOwner,
+            SpecificEventObserver<UpdateDisplayNameEvent> { event ->
+                view?.let { view ->
+                    when (event) {
+                        is UpdateDisplayNameEvent.Success -> {
+                            reloadData(accountAdapter)
+                        }
+                        is UpdateDisplayNameEvent.NetworkError -> R.string.network_error_message.showAsSnackBar(
+                            view
+                        )
+                        is UpdateDisplayNameEvent.UnknownError -> R.string.error_occurred.showAsSnackBar(
+                            view
+                        )
+                    }
                 }
-            }
-        })
+            })
     }
 
     private fun reloadData(accountAdapter: AccountAdapter) {
@@ -128,34 +136,44 @@ class AccountSettingsFragment : Fragment(), AccountAdapter.OnAccountClickListene
         } ?: run {
             accountList.add(AccountListModel(getString(R.string.display_name), "No display name"))
         }
-        accountList.add(AccountListModel(getString(R.string.delete_account), "Click to delete your NoteDock account"))
+        accountList.add(
+            AccountListModel(
+                getString(R.string.delete_account),
+                "Click to delete your NoteDock account"
+            )
+        )
         return accountList
     }
 
     override fun onAccountClick(account: AccountListModel) {
         view?.let { view ->
-            when(account.title) {
-                getString(R.string.email) -> { NavigationRouter(view).accountToChangeEmail() }
+            when (account.title) {
+                getString(R.string.email) -> {
+                    NavigationRouter(view).accountToChangeEmail()
+                }
                 getString(R.string.phone_number) -> {
                     R.string.this_feature_not_available_yet.showAsSnackBar(view)
                 }
-                getString(R.string.display_name) -> { openEditDisplayNameDialog() }
-                else -> { NavigationRouter(view).accountToDeleteAccount() }
+                getString(R.string.display_name) -> {
+                    openEditDisplayNameDialog()
+                }
+                else -> {
+                    NavigationRouter(view).accountToDeleteAccount()
+                }
             }
         }
     }
 
     private fun openEditDisplayNameDialog() {
         activity?.let { activity ->
-            val dialog = EditDisplayNameDialog(object: EditDisplaySuccessListener {
+            val dialog = EditDisplayNameDialog(object : EditDisplaySuccessListener {
                 override fun onSuccess(displayName: String?) {
                     displayName?.trim()
-                    if(displayName?.isEmpty() == true) {
+                    if (displayName?.isEmpty() == true) {
                         accountSettingsViewModel.updateDisplayName(null)
                     } else {
                         accountSettingsViewModel.updateDisplayName(displayName)
                     }
-
                 }
             }).createDialog(activity)
             dialog.show()

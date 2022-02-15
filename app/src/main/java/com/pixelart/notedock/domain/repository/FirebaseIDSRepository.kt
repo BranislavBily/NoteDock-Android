@@ -13,7 +13,7 @@ interface FirebaseIDSRepository {
     fun getNoteMarked(): String
 }
 
-class FirebaseIDSImpl: FirebaseIDSRepository {
+class FirebaseIDSImpl : FirebaseIDSRepository {
     override fun getCollectionFolders(): String {
         return "folders"
     }

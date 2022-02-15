@@ -24,7 +24,6 @@ class UpdateNoteImpl(
                     firebaseIDSRepository.getNoteDescription() to note.noteDescription,
                     firebaseIDSRepository.getNoteUpdated() to FieldValue.serverTimestamp()
                 )
-
                 val listener =
                     firebaseInstance.collection(firebaseIDSRepository.getCollectionUsers())
                         .document(user.uid)

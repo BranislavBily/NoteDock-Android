@@ -29,7 +29,7 @@ class RegisterFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val dataBinding = setupDataBinding<ViewDataBinding>(
             R.layout.fragment_register,
             BR.viewmodel to registerFragmentViewModel
@@ -46,34 +46,52 @@ class RegisterFragment : Fragment() {
 
     private fun observeLiveData() {
 
-        registerFragmentViewModel.alreadyHaveAccount.observe(viewLifecycleOwner, SpecificEventObserver<ButtonPressedEvent> {
-            findNavController().popBackStack()
-        })
+        registerFragmentViewModel.alreadyHaveAccount.observe(
+            viewLifecycleOwner,
+            SpecificEventObserver<ButtonPressedEvent> {
+                findNavController().popBackStack()
+            })
 
-        registerFragmentViewModel.registerButtonPressedEvent.observe(viewLifecycleOwner, SpecificEventObserver<ButtonPressedEvent> {
-            val view = view
-            val context = context
-            if(view != null && context != null) {
-                hideSoftKeyboard(context, view)
-            }
-        })
+        registerFragmentViewModel.registerButtonPressedEvent.observe(
+            viewLifecycleOwner,
+            SpecificEventObserver<ButtonPressedEvent> {
+                val view = view
+                val context = context
+                if (view != null && context != null) {
+                    hideSoftKeyboard(context, view)
+                }
+            })
 
         registerFragmentViewModel.register.observe(viewLifecycleOwner, Observer { event ->
             view?.let { view ->
-                when(event) {
+                when (event) {
                     is RegisterEvent.Success -> {
                         R.string.account_created.showAsSnackBar(view)
                         findNavController().popBackStack()
                     }
                     is RegisterEvent.Error -> {
-                        when(event.error) {
-                            is RegisterEventError.EmailAlreadyUsed -> { R.string.email_already_used_message.showAsSnackBar(view) }
-                            is RegisterEventError.PasswordsDoNotMatch -> { R.string.passwords_do_not_match_message.showAsSnackBar(view) }
-                            is RegisterEventError.NetworkError -> { R.string.network_error_message.showAsSnackBar(view) }
-                            is RegisterEventError.InvalidEmail -> { R.string.invalid_email_message.showAsSnackBar(view) }
-                            is RegisterEventError.WeakPassword -> { R.string.weak_password_message.showAsSnackBar(view) }
-                            is RegisterEventError.TooManyRequests -> { R.string.too_many_requests.showAsSnackBar(view) }
-                            is RegisterEventError.UnknownError -> { R.string.error_occurred.showAsSnackBar(view) }
+                        when (event.error) {
+                            is RegisterEventError.EmailAlreadyUsed -> {
+                                R.string.email_already_used_message.showAsSnackBar(view)
+                            }
+                            is RegisterEventError.PasswordsDoNotMatch -> {
+                                R.string.passwords_do_not_match_message.showAsSnackBar(view)
+                            }
+                            is RegisterEventError.NetworkError -> {
+                                R.string.network_error_message.showAsSnackBar(view)
+                            }
+                            is RegisterEventError.InvalidEmail -> {
+                                R.string.invalid_email_message.showAsSnackBar(view)
+                            }
+                            is RegisterEventError.WeakPassword -> {
+                                R.string.weak_password_message.showAsSnackBar(view)
+                            }
+                            is RegisterEventError.TooManyRequests -> {
+                                R.string.too_many_requests.showAsSnackBar(view)
+                            }
+                            is RegisterEventError.UnknownError -> {
+                                R.string.error_occurred.showAsSnackBar(view)
+                            }
                         }
                     }
                 }

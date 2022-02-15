@@ -42,7 +42,7 @@ val viewModelModule = module {
     viewModel { (folderUUID: String, noteUUID: String) ->
         NoteFragmentViewModel(
             folderUUID = folderUUID,
-            noteUUID =  noteUUID,
+            noteUUID = noteUUID,
             notesRepository = get(),
             auth = FirebaseAuth.getInstance(),
             deleteNoteUseCase = get(),
@@ -112,7 +112,7 @@ val firebaseModule = module {
             folderModelFromDocumentSnapshotUseCase = get(),
             folderModelFromDocumentUseCase = get(),
             firebaseInstance = FirebaseFirestore.getInstance()
-            ) as FolderRepository
+        ) as FolderRepository
     }
     single {
         NotesRepositoryImpl(

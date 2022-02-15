@@ -9,7 +9,7 @@ interface FolderModelFromDocumentUseCase {
     fun getModel(documentSnapshot: QueryDocumentSnapshot): FolderModel
 }
 
-class FolderModelFromDocumentImpl(private val firebaseIDSRepository: FirebaseIDSRepository):
+class FolderModelFromDocumentImpl(private val firebaseIDSRepository: FirebaseIDSRepository) :
     FolderModelFromDocumentUseCase {
     override fun getModel(documentSnapshot: QueryDocumentSnapshot): FolderModel {
         val folder = FolderModel()

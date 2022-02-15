@@ -9,8 +9,10 @@ interface FolderNameTakenUseCase {
     fun isNameTaken(user: FirebaseUser, folderName: String): Single<Boolean>
 }
 
-class FolderNameTakenImpl(private val firebaseFirestore: FirebaseFirestore,
-                          private val firebaseIDSRepository: FirebaseIDSRepository):
+class FolderNameTakenImpl(
+    private val firebaseFirestore: FirebaseFirestore,
+    private val firebaseIDSRepository: FirebaseIDSRepository
+) :
     FolderNameTakenUseCase {
     override fun isNameTaken(user: FirebaseUser, folderName: String): Single<Boolean> {
         return Single.create<Boolean> { emitter ->
@@ -22,7 +24,7 @@ class FolderNameTakenImpl(private val firebaseFirestore: FirebaseFirestore,
                 .addOnSuccessListener { documents ->
                     emitter.onSuccess(!documents.isEmpty)
                 }
-                .addOnFailureListener {emitter.onError(it) }
+                .addOnFailureListener { emitter.onError(it) }
         }
     }
 }

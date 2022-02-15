@@ -35,7 +35,7 @@ class SettingsFragment : Fragment(), SettingsAdapter.OnSettingsClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val dataBinding = setupDataBinding<ViewDataBinding>(
             R.layout.fragment_settings,
             BR.viewmodel to settingFragmentViewModel
@@ -63,8 +63,8 @@ class SettingsFragment : Fragment(), SettingsAdapter.OnSettingsClickListener {
 
         FirebaseAuth.getInstance().currentUser?.let { user ->
             user.reload()
-                .addOnFailureListener {error ->
-                    if(error is FirebaseNetworkException) {
+                .addOnFailureListener { error ->
+                    if (error is FirebaseNetworkException) {
                         //All is well
                     } else {
                         openLoginActivity()
@@ -85,10 +85,14 @@ class SettingsFragment : Fragment(), SettingsAdapter.OnSettingsClickListener {
     }
 
     override fun onSettingClick(setting: SettingsModel) {
-        when(setting.title) {
+        when (setting.title) {
             getString(R.string.account) -> NavigationRouter(view).settingsToAccount()
             getString(R.string.changePassword) -> NavigationRouter(view).settingsToChangePassword()
-            getString(R.string.rateUs) ->  context?.let { context -> NavigationRouter(view).settingsToGooglePlay(context) }
+            getString(R.string.rateUs) -> context?.let { context ->
+                NavigationRouter(view).settingsToGooglePlay(
+                    context
+                )
+            }
             getString(R.string.helpAndSupport) -> NavigationRouter(view).settingsToHelpAndSupport()
             else -> settingFragmentViewModel.logOut()
         }

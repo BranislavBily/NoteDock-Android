@@ -9,14 +9,16 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.pixelart.notedock.R
 import com.pixelart.notedock.fragment.folder.Options
 
-class NoteOptionsFragment(private val noteUUID: String,
-                          private val onNoteOptionsClickListener: OnNoteOptionsClickListener): BottomSheetDialogFragment() {
+class NoteOptionsFragment(
+    private val noteUUID: String,
+    private val onNoteOptionsClickListener: OnNoteOptionsClickListener
+) : BottomSheetDialogFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return inflater.inflate(R.layout.note_options_layout, container, false)
     }
 

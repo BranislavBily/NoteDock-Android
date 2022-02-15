@@ -13,12 +13,14 @@ class DeleteFolderDialog(private val callback: FolderDialogDeleteSuccessListener
     fun createDialog(activity: Activity): AlertDialog {
         val builder = AlertDialog.Builder(activity)
         builder.setMessage(R.string.delete_folder)
-            .setPositiveButton(R.string.delete_dialog
-            ) { dialog , _ ->
+            .setPositiveButton(
+                R.string.delete_dialog
+            ) { dialog, _ ->
                 callback.onDelete()
                 dialog.cancel()
             }
-            .setNegativeButton(R.string.cancel_dialog
+            .setNegativeButton(
+                R.string.cancel_dialog
             ) { dialog, _ ->
                 dialog.cancel()
             }

@@ -38,14 +38,17 @@ abstract class LifecycleViewModel : ViewModel() {
         }
 
     private val startStopDisposable = ReusableCompositeDisposable { onStartStopObserve(it) }
-    private val resumePauseDisposable = ReusableCompositeDisposable { onResumePauseObserve(it)
-        }
+    private val resumePauseDisposable = ReusableCompositeDisposable {
+        onResumePauseObserve(it)
+    }
+
     /**
      * Use this CompositeDisposable when you need to dispose subscription, that was subscribed out of
      * onStartStopObserve method, when on STOP lifecycle event is triggered.
      */
     protected val startStopDisposeBag
         get() = startStopDisposable.disposeBag
+
     /**
      * Use this CompositeDisposable when you need to dispose subscription, that was subscribed out of
      * onPauseResumeObserve method, when on PAUSE lifecycle event is triggered.

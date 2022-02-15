@@ -17,8 +17,10 @@ import com.pixelart.notedock.domain.repository.AuthRepository
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 
-class RegisterFragmentViewModel(private val authRepository: AuthRepository,
-                                private val auth: FirebaseAuth) : LifecycleViewModel() {
+class RegisterFragmentViewModel(
+    private val authRepository: AuthRepository,
+    private val auth: FirebaseAuth
+) : LifecycleViewModel() {
 
     private val _register = MutableLiveData<RegisterEvent>()
     val register: LiveData<RegisterEvent> = _register
@@ -82,11 +84,11 @@ class RegisterFragmentViewModel(private val authRepository: AuthRepository,
     }
 
     private fun sendVerificationEmail() {
-        startStopDisposeBag?.let {bag ->
+        startStopDisposeBag?.let { bag ->
             auth.currentUser?.let { user ->
                 authRepository.sendVerificationEmail(user)
                     .subscribeOn(Schedulers.io())
-                    .doAfterTerminate { _loading.postValue( false) }
+                    .doAfterTerminate { _loading.postValue(false) }
                     .subscribe({
                         _register.postValue(RegisterEvent.Success())
                     }, { error ->
@@ -132,5 +134,5 @@ sealed class RegisterEventError : Event() {
     class InvalidEmail : RegisterEventError()
     class WeakPassword : RegisterEventError()
     class UnknownError : RegisterEventError()
-    class TooManyRequests: RegisterEventError()
+    class TooManyRequests : RegisterEventError()
 }

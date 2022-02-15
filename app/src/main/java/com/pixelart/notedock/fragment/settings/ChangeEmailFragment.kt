@@ -28,7 +28,7 @@ class ChangeEmailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val dataBinding = setupDataBinding<ViewDataBinding>(
             R.layout.fragment_change_email,
             BR.viewmodel to changeEmailViewModel
@@ -49,8 +49,8 @@ class ChangeEmailFragment : Fragment() {
 
         FirebaseAuth.getInstance().currentUser?.let { user ->
             user.reload()
-                .addOnFailureListener {error ->
-                    if(error is FirebaseNetworkException) {
+                .addOnFailureListener { error ->
+                    if (error is FirebaseNetworkException) {
                         //All is well
                     } else {
                         openLoginActivity()
@@ -64,21 +64,37 @@ class ChangeEmailFragment : Fragment() {
             findNavController().popBackStack()
         })
 
-        changeEmailViewModel.changeEmail.observe(viewLifecycleOwner, SpecificEventObserver<ChangeEmailEvent> { event ->
-          view?.let { view ->
-              when(event) {
-                  is ChangeEmailEvent.Success -> {
-                      openLoginActivity()
-                  }
-                  is ChangeEmailEvent.InvalidEmail -> R.string.invalid_email_message.showAsSnackBar(view)
-                  is ChangeEmailEvent.TryAgainError -> R.string.try_again.showAsSnackBar(view)
-                  is ChangeEmailEvent.InvalidPassword -> R.string.wrong_password.showAsSnackBar(view)
-                  is ChangeEmailEvent.EmailAlreadyUsed -> R.string.email_already_used_message.showAsSnackBar(view)
-                  is ChangeEmailEvent.UseNewEmail -> R.string.use_new_email.showAsSnackBar(view)
-                  is ChangeEmailEvent.UnknownError -> R.string.error_occurred.showAsSnackBar(view)
-                  is ChangeEmailEvent.NetworkError -> R.string.network_error_message.showAsSnackBar(view)
-              }
-          }
-        })
+        changeEmailViewModel.changeEmail.observe(
+            viewLifecycleOwner,
+            SpecificEventObserver<ChangeEmailEvent> { event ->
+                view?.let { view ->
+                    when (event) {
+                        is ChangeEmailEvent.Success -> {
+                            openLoginActivity()
+                        }
+                        is ChangeEmailEvent.InvalidEmail -> R.string.invalid_email_message.showAsSnackBar(
+                            view
+                        )
+                        is ChangeEmailEvent.TryAgainError -> R.string.try_again.showAsSnackBar(
+                            view
+                        )
+                        is ChangeEmailEvent.InvalidPassword -> R.string.wrong_password.showAsSnackBar(
+                            view
+                        )
+                        is ChangeEmailEvent.EmailAlreadyUsed -> R.string.email_already_used_message.showAsSnackBar(
+                            view
+                        )
+                        is ChangeEmailEvent.UseNewEmail -> R.string.use_new_email.showAsSnackBar(
+                            view
+                        )
+                        is ChangeEmailEvent.UnknownError -> R.string.error_occurred.showAsSnackBar(
+                            view
+                        )
+                        is ChangeEmailEvent.NetworkError -> R.string.network_error_message.showAsSnackBar(
+                            view
+                        )
+                    }
+                }
+            })
     }
 }

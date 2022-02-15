@@ -23,6 +23,7 @@ class CreateFolderDialog(
         return builder.create()
     }
 }
+
 interface FolderDialogSuccessListener {
     fun onSuccess(folderName: String?)
 }

@@ -34,7 +34,7 @@ class DeleteAccountFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val dataBinding = setupDataBinding<ViewDataBinding>(
             R.layout.fragment_delete_account,
             BR.viewmodel to deleteAccountViewModel
@@ -55,8 +55,8 @@ class DeleteAccountFragment : Fragment() {
 
         FirebaseAuth.getInstance().currentUser?.let { user ->
             user.reload()
-                .addOnFailureListener {error ->
-                    if(error is FirebaseNetworkException) {
+                .addOnFailureListener { error ->
+                    if (error is FirebaseNetworkException) {
                         //All is well
                     } else {
                         openLoginActivity()
@@ -70,9 +70,9 @@ class DeleteAccountFragment : Fragment() {
             findNavController().popBackStack()
         })
 
-        deleteAccountViewModel.loading.observe(viewLifecycleOwner, Observer {loading ->
-            if(loading) {
-                context?.let {context ->
+        deleteAccountViewModel.loading.observe(viewLifecycleOwner, Observer { loading ->
+            if (loading) {
+                context?.let { context ->
                     view?.let { view ->
                         hideSoftKeyboard(context, view)
                     }
@@ -80,21 +80,35 @@ class DeleteAccountFragment : Fragment() {
             }
         })
 
-        deleteAccountViewModel.deleteAccount.observe(viewLifecycleOwner, SpecificEventObserver<DeleteAccountEvent> { event ->
-            view?.let { view ->
-                when(event) {
-                    is DeleteAccountEvent.Success -> {
-                        val intent = Intent(context, LoginActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                        startActivity(intent)
-                        activity?.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        deleteAccountViewModel.deleteAccount.observe(
+            viewLifecycleOwner,
+            SpecificEventObserver<DeleteAccountEvent> { event ->
+                view?.let { view ->
+                    when (event) {
+                        is DeleteAccountEvent.Success -> {
+                            val intent = Intent(context, LoginActivity::class.java)
+                            intent.flags =
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                            startActivity(intent)
+                            activity?.overridePendingTransition(
+                                R.anim.slide_in_left,
+                                R.anim.slide_out_right
+                            )
+                        }
+                        is DeleteAccountEvent.NetworkError -> R.string.network_error_message.showAsSnackBar(
+                            view
+                        )
+                        is DeleteAccountEvent.WrongPassword -> R.string.wrong_password.showAsSnackBar(
+                            view
+                        )
+                        is DeleteAccountEvent.TooManyRequests -> R.string.too_many_requests.showAsSnackBar(
+                            view
+                        )
+                        is DeleteAccountEvent.UnknownError -> R.string.error_occurred.showAsSnackBar(
+                            view
+                        )
                     }
-                    is DeleteAccountEvent.NetworkError -> R.string.network_error_message.showAsSnackBar(view)
-                    is DeleteAccountEvent.WrongPassword -> R.string.wrong_password.showAsSnackBar(view)
-                    is DeleteAccountEvent.TooManyRequests -> R.string.too_many_requests.showAsSnackBar(view)
-                    is DeleteAccountEvent.UnknownError -> R.string.error_occurred.showAsSnackBar(view)
                 }
-            }
-        })
+            })
     }
 }

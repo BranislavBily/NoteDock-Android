@@ -27,6 +27,7 @@ class FolderFragmentViewModel(
     private val markNoteUseCase: MarkNoteUseCase,
     private val notesRepository: NotesRepository
 ) : LifecycleViewModel() {
+
     val toolbarTitle: LiveData<String> = MutableLiveData<String>().apply { postValue(folderName) }
 
     private val _loadedNotes = MutableLiveData<LoadNotesEvent>()
@@ -156,6 +157,7 @@ sealed class CreateNoteEvent : Event() {
 sealed class LoadNotesEvent : Event() {
     class Success(val markedNotes: ArrayList<NoteModel>, val unmarkedNotes: ArrayList<NoteModel>) :
         LoadNotesEvent()
+
     class Error : LoadNotesEvent()
     class NoUserFoundError : LoadNotesEvent()
 }

@@ -16,8 +16,10 @@ import com.pixelart.notedock.viewModel.authentication.ButtonPressedEvent
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 
-class DeleteAccountViewModel(private val auth: FirebaseAuth,
-                             private val authRepository: AuthRepository) : LifecycleViewModel() {
+class DeleteAccountViewModel(
+    private val auth: FirebaseAuth,
+    private val authRepository: AuthRepository
+) : LifecycleViewModel() {
 
     private val _onBackClicked = MutableLiveData<ButtonPressedEvent>()
     val onBackClicked: LiveData<ButtonPressedEvent> = _onBackClicked
@@ -41,18 +43,18 @@ class DeleteAccountViewModel(private val auth: FirebaseAuth,
     }
 
     fun deleteAccountClick() {
-        reauthenticate()
+        reAuthenticate()
     }
 
-    private fun reauthenticate() {
+    private fun reAuthenticate() {
         auth.currentUser?.let { user ->
             val email = user.email
             val password = password.value
-            if(email == null || password == null) {
+            if (email == null || password == null) {
                 _deleteAccount.postValue(DeleteAccountEvent.UnknownError())
             } else {
                 startStopDisposeBag?.let { bag ->
-                    authRepository.reauthenticateUser(user, email, password)
+                    authRepository.reAuthenticateUser(user, email, password)
                         .subscribeOn(Schedulers.io())
                         .observeOn(Schedulers.io())
                         .doOnSubscribe { _loading.postValue(true) }
@@ -82,7 +84,7 @@ class DeleteAccountViewModel(private val auth: FirebaseAuth,
     }
 
     private fun handleDeleteAccountError(throwable: Throwable): DeleteAccountEvent {
-        return when(throwable) {
+        return when (throwable) {
             is FirebaseNetworkException -> DeleteAccountEvent.NetworkError()
             is FirebaseTooManyRequestsException -> DeleteAccountEvent.TooManyRequests()
             is FirebaseAuthInvalidCredentialsException -> DeleteAccountEvent.WrongPassword()
@@ -94,10 +96,10 @@ class DeleteAccountViewModel(private val auth: FirebaseAuth,
     }
 }
 
-sealed class DeleteAccountEvent: Event() {
-    class Success: DeleteAccountEvent()
-    class UnknownError: DeleteAccountEvent()
-    class NetworkError: DeleteAccountEvent()
-    class WrongPassword: DeleteAccountEvent()
-    class TooManyRequests: DeleteAccountEvent()
+sealed class DeleteAccountEvent : Event() {
+    class Success : DeleteAccountEvent()
+    class UnknownError : DeleteAccountEvent()
+    class NetworkError : DeleteAccountEvent()
+    class WrongPassword : DeleteAccountEvent()
+    class TooManyRequests : DeleteAccountEvent()
 }

@@ -11,9 +11,10 @@ interface MarkNoteUseCase {
     fun markNote(user: FirebaseUser, folderUUID: String, note: NoteModel): Completable
 }
 
-class MarkNoteImpl(private val firebaseIDSRepository: FirebaseIDSRepository,
-                   private val firebaseInstance: FirebaseFirestore
-): MarkNoteUseCase {
+class MarkNoteImpl(
+    private val firebaseIDSRepository: FirebaseIDSRepository,
+    private val firebaseInstance: FirebaseFirestore
+) : MarkNoteUseCase {
     override fun markNote(user: FirebaseUser, folderUUID: String, note: NoteModel): Completable {
         return Completable.create { emitter ->
             note.marked?.let { marked ->
@@ -21,7 +22,8 @@ class MarkNoteImpl(private val firebaseIDSRepository: FirebaseIDSRepository,
                     val data = hashMapOf<String, Any>(
                         firebaseIDSRepository.getNoteMarked() to !marked
                     )
-                    val listener = firebaseInstance.collection(firebaseIDSRepository.getCollectionUsers())
+                    val listener =
+                        firebaseInstance.collection(firebaseIDSRepository.getCollectionUsers())
                             .document(user.uid)
                             .collection(firebaseIDSRepository.getCollectionFolders())
                             .document(folderUUID)

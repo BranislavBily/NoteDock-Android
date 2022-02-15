@@ -17,7 +17,8 @@ import com.pixelart.notedock.domain.repository.AuthRepository
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 
-class ResetPasswordFragmentViewModel(private val authRepository: AuthRepository): LifecycleViewModel() {
+class ResetPasswordFragmentViewModel(private val authRepository: AuthRepository) :
+    LifecycleViewModel() {
 
     val email = MutableLiveData<String>()
 
@@ -68,7 +69,7 @@ class ResetPasswordFragmentViewModel(private val authRepository: AuthRepository)
     }
 
     private fun handleRecoverError(throwable: Throwable?): RecoverAccountEventError {
-        return when(throwable) {
+        return when (throwable) {
             is FirebaseAuthInvalidUserException -> RecoverAccountEventError.InvalidEmail()
             is FirebaseNetworkException -> RecoverAccountEventError.NetworkError()
             is FirebaseTooManyRequestsException -> RecoverAccountEventError.TooManyRequests()
@@ -80,14 +81,14 @@ class ResetPasswordFragmentViewModel(private val authRepository: AuthRepository)
     }
 }
 
-sealed class RecoverAccountEvent: Event() {
-    class Success: RecoverAccountEvent()
-    class Error(val error: RecoverAccountEventError): RecoverAccountEvent()
+sealed class RecoverAccountEvent : Event() {
+    class Success : RecoverAccountEvent()
+    class Error(val error: RecoverAccountEventError) : RecoverAccountEvent()
 }
 
-sealed class RecoverAccountEventError: Event() {
-    class InvalidEmail: RecoverAccountEventError()
-    class NetworkError: RecoverAccountEventError()
-    class UnknownError: RecoverAccountEventError()
-    class TooManyRequests: RecoverAccountEventError()
+sealed class RecoverAccountEventError : Event() {
+    class InvalidEmail : RecoverAccountEventError()
+    class NetworkError : RecoverAccountEventError()
+    class UnknownError : RecoverAccountEventError()
+    class TooManyRequests : RecoverAccountEventError()
 }

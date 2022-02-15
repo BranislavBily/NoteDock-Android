@@ -54,7 +54,7 @@ class FolderFragment : Fragment(),
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val dataBinding = setupDataBinding<ViewDataBinding>(
             R.layout.fragment_folder,
             BR.viewmodel to folderFragmentViewModel
@@ -80,7 +80,7 @@ class FolderFragment : Fragment(),
 
         FirebaseAuth.getInstance().currentUser?.let { user ->
             user.reload()
-                .addOnFailureListener {error ->
+                .addOnFailureListener { error ->
                     //All is well
                     if (error !is FirebaseNetworkException) {
                         openLoginActivity()
@@ -102,7 +102,7 @@ class FolderFragment : Fragment(),
 
         folderFragmentViewModel.loadedNotes.observe(viewLifecycleOwner, Observer { event ->
             view?.let { view ->
-                when(event) {
+                when (event) {
                     is LoadNotesEvent.Success -> {
                         markedNotesAdapter?.setNewData(event.markedNotes)
                         unMarkedNotesAdapter?.setNewData(event.unmarkedNotes)
@@ -113,27 +113,43 @@ class FolderFragment : Fragment(),
             }
         })
 
-        folderFragmentViewModel.fabClicked.observe(viewLifecycleOwner, SpecificEventObserver<ButtonPressedEvent> {
-            createNote()
-        })
+        folderFragmentViewModel.fabClicked.observe(
+            viewLifecycleOwner,
+            SpecificEventObserver<ButtonPressedEvent> {
+                createNote()
+            })
 
         folderFragmentViewModel.onBackClicked.observe(viewLifecycleOwner, EventObserver {
             findNavController().popBackStack()
         })
 
-        folderFragmentViewModel.markNote.observe(viewLifecycleOwner, SpecificEventObserver<GenericCRUDEvent> { event ->
-            view?.let { view ->
-                when(event) {
-                    is GenericCRUDEvent.Success -> {}
-                    is GenericCRUDEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
-                }
-            }
-        })
-
-        folderFragmentViewModel.noteCreated.observe(viewLifecycleOwner, SpecificEventObserver<CreateNoteEvent> { event ->
+        folderFragmentViewModel.markNote.observe(
+            viewLifecycleOwner,
+            SpecificEventObserver<GenericCRUDEvent> { event ->
                 view?.let { view ->
                     when (event) {
-                        is CreateNoteEvent.Success -> NavigationRouter(view).folderToNote(args.folderUUID, event.noteUUID)
+                        is GenericCRUDEvent.Success -> {
+
+                        }
+                        is GenericCRUDEvent.Error -> R.string.error_occurred.showAsSnackBar(
+                            view
+                        )
+                        is GenericCRUDEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(
+                            view
+                        )
+                    }
+                }
+            })
+
+        folderFragmentViewModel.noteCreated.observe(
+            viewLifecycleOwner,
+            SpecificEventObserver<CreateNoteEvent> { event ->
+                view?.let { view ->
+                    when (event) {
+                        is CreateNoteEvent.Success -> NavigationRouter(view).folderToNote(
+                            args.folderUUID,
+                            event.noteUUID
+                        )
                         is CreateNoteEvent.Error -> {
                             R.string.error_occurred.showAsSnackBar(view)
                         }
@@ -146,8 +162,9 @@ class FolderFragment : Fragment(),
 
         folderFragmentViewModel.deleteNote.observe(viewLifecycleOwner, Observer { event ->
             view?.let { view ->
-                when(event) {
-                    is GenericCRUDEvent.Success -> {}
+                when (event) {
+                    is GenericCRUDEvent.Success -> {
+                    }
                     is GenericCRUDEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
                     is GenericCRUDEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
                 }

@@ -8,7 +8,8 @@ import com.pixelart.notedock.R
 import com.pixelart.notedock.model.FolderModel
 import kotlinx.android.synthetic.main.folder_list_item.view.*
 
-class FoldersAdapter(private val onFolderClickListener: OnFolderClickListener) : RecyclerView.Adapter<FoldersAdapter.FoldersHolder>() {
+class FoldersAdapter(private val onFolderClickListener: OnFolderClickListener) :
+    RecyclerView.Adapter<FoldersAdapter.FoldersHolder>() {
 
     private var folders = ArrayList<FolderModel>()
 
@@ -18,7 +19,8 @@ class FoldersAdapter(private val onFolderClickListener: OnFolderClickListener) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FoldersHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.folder_list_item, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.folder_list_item, parent, false)
         return FoldersHolder(view, onFolderClickListener)
     }
 
@@ -31,7 +33,8 @@ class FoldersAdapter(private val onFolderClickListener: OnFolderClickListener) :
     }
 
 
-    class FoldersHolder(itemView: View, private val onFolderClickListener: OnFolderClickListener): RecyclerView.ViewHolder(itemView) {
+    class FoldersHolder(itemView: View, private val onFolderClickListener: OnFolderClickListener) :
+        RecyclerView.ViewHolder(itemView) {
 
         fun bindData(folder: FolderModel) {
             itemView.textViewFolderName.text = folder.name

@@ -10,8 +10,10 @@ interface DeleteNoteUseCase {
     fun deleteNote(user: FirebaseUser, folderUUID: String, noteUUID: String): Completable
 }
 
-class DeleteNoteImpl(private val firebaseIDSRepository: FirebaseIDSRepository,
-                     private val firebaseInstance: FirebaseFirestore): DeleteNoteUseCase {
+class DeleteNoteImpl(
+    private val firebaseIDSRepository: FirebaseIDSRepository,
+    private val firebaseInstance: FirebaseFirestore
+) : DeleteNoteUseCase {
     override fun deleteNote(user: FirebaseUser, folderUUID: String, noteUUID: String): Completable {
         return Completable.create { emitter ->
             val listener = firebaseInstance.collection(firebaseIDSRepository.getCollectionUsers())

@@ -28,7 +28,6 @@ class FoldersViewFragmentViewModel(
     private val renameFolderUseCase: RenameFolderUseCase
 ) : LifecycleViewModel() {
 
-
     private val _loadFolders = MutableLiveData<LoadFoldersEvent>()
     val loadFolders: LiveData<LoadFoldersEvent> = _loadFolders
 
@@ -63,7 +62,7 @@ class FoldersViewFragmentViewModel(
                     { error ->
                         Crashlytics.logException(error)
                         _loadFolders.postValue(LoadFoldersEvent.Error())
-                }).addTo(disposeBag)
+                    }).addTo(disposeBag)
         } ?: run {
             _loadFolders.postValue(LoadFoldersEvent.NoUserFound())
         }
@@ -97,7 +96,7 @@ class FoldersViewFragmentViewModel(
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
                     .subscribe({ nameTaken ->
-                        if(nameTaken) _newFolderCreated.postValue(CreateFolderEvent.FolderNameTaken())
+                        if (nameTaken) _newFolderCreated.postValue(CreateFolderEvent.FolderNameTaken())
                         else this.uploadFolderModel(folderName)
                     }, { error ->
                         Crashlytics.logException(error)
@@ -117,7 +116,7 @@ class FoldersViewFragmentViewModel(
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
                     .subscribe({ nameTaken ->
-                        if(nameTaken) _renameFolder.postValue(RenameFolderEvent.FolderNameTaken())
+                        if (nameTaken) _renameFolder.postValue(RenameFolderEvent.FolderNameTaken())
                         else this.updateFolderName(user, folderUUID, folderName)
                     }, { error ->
                         Crashlytics.logException(error)
@@ -165,22 +164,22 @@ class FoldersViewFragmentViewModel(
     }
 }
 
-sealed class LoadFoldersEvent: Event() {
-    class Success(val folders: ArrayList<FolderModel>): LoadFoldersEvent()
+sealed class LoadFoldersEvent : Event() {
+    class Success(val folders: ArrayList<FolderModel>) : LoadFoldersEvent()
     class Error : LoadFoldersEvent()
-    class NoUserFound: LoadFoldersEvent()
+    class NoUserFound : LoadFoldersEvent()
 }
 
 sealed class CreateFolderEvent : Event() {
     class Error : CreateFolderEvent()
     class Success : CreateFolderEvent()
-    class NoUserFound: CreateFolderEvent()
-    class FolderNameTaken: CreateFolderEvent()
+    class NoUserFound : CreateFolderEvent()
+    class FolderNameTaken : CreateFolderEvent()
 }
 
-sealed class RenameFolderEvent: Event() {
-    class Success: RenameFolderEvent()
-    class Error: RenameFolderEvent()
-    class NoUserFound: RenameFolderEvent()
-    class FolderNameTaken: RenameFolderEvent()
+sealed class RenameFolderEvent : Event() {
+    class Success : RenameFolderEvent()
+    class Error : RenameFolderEvent()
+    class NoUserFound : RenameFolderEvent()
+    class FolderNameTaken : RenameFolderEvent()
 }

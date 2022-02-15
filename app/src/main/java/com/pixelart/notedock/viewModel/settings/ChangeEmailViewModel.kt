@@ -27,8 +27,8 @@ class ChangeEmailViewModel(
     private val _changeEmail = MutableLiveData<ChangeEmailEvent>()
     val changeEmail: LiveData<ChangeEmailEvent> = _changeEmail
 
-    var email = MutableLiveData<String>()
-    var password = MutableLiveData<String>()
+    val email = MutableLiveData<String>()
+    val password = MutableLiveData<String>()
 
     val changeEmailEnabled: LiveData<Boolean> = MediatorLiveData<Boolean>().apply {
         addSource(email) {
@@ -50,28 +50,27 @@ class ChangeEmailViewModel(
         if (email != null && password != null) {
             if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 _changeEmail.postValue(ChangeEmailEvent.InvalidEmail())
-            } else  {
-                reanthenticate()
+            } else {
+                reAuthenticate(email, password)
             }
         } else {
             _changeEmail.postValue(ChangeEmailEvent.UnknownError())
         }
     }
 
-    private fun reanthenticate() {
+    private fun reAuthenticate(email: String, password: String) {
         auth.currentUser?.let { user ->
             user.email?.let { currentEmail ->
-                if(currentEmail == email.value!!) {
+                if (currentEmail == email) {
                     _changeEmail.postValue(ChangeEmailEvent.UseNewEmail())
                 } else {
                     startStopDisposeBag?.let { bag ->
-                        //I changed if its null already please Kotlin
-                        authRepository.reauthenticateUser(user, currentEmail, password.value!!)
+                        authRepository.reAuthenticateUser(user, currentEmail, password)
                             .subscribeOn(Schedulers.io())
                             .observeOn(Schedulers.io())
                             .doOnSubscribe { _loading.postValue(true) }
                             .subscribe({
-                                updateEmail(user, email.value!!)
+                                updateEmail(user, email)
                             }, { error ->
                                 _loading.postValue(false)
                                 _changeEmail.postValue(handleError(error))
@@ -97,7 +96,7 @@ class ChangeEmailViewModel(
     }
 
     private fun handleError(throwable: Throwable): ChangeEmailEvent {
-        return when(throwable) {
+        return when (throwable) {
             is FirebaseNetworkException -> ChangeEmailEvent.NetworkError()
             is FirebaseAuthEmailException -> ChangeEmailEvent.EmailAlreadyUsed()
             is FirebaseAuthInvalidCredentialsException -> ChangeEmailEvent.InvalidPassword()
@@ -114,13 +113,13 @@ class ChangeEmailViewModel(
     }
 }
 
-    sealed class ChangeEmailEvent : Event() {
-        class Success : ChangeEmailEvent()
-        class NetworkError : ChangeEmailEvent()
-        class InvalidEmail : ChangeEmailEvent()
-        class UseNewEmail : ChangeEmailEvent()
-        class EmailAlreadyUsed : ChangeEmailEvent()
-        class InvalidPassword : ChangeEmailEvent()
-        class TryAgainError : ChangeEmailEvent()
-        class UnknownError : ChangeEmailEvent()
-    }
+sealed class ChangeEmailEvent : Event() {
+    class Success : ChangeEmailEvent()
+    class NetworkError : ChangeEmailEvent()
+    class InvalidEmail : ChangeEmailEvent()
+    class UseNewEmail : ChangeEmailEvent()
+    class EmailAlreadyUsed : ChangeEmailEvent()
+    class InvalidPassword : ChangeEmailEvent()
+    class TryAgainError : ChangeEmailEvent()
+    class UnknownError : ChangeEmailEvent()
+}

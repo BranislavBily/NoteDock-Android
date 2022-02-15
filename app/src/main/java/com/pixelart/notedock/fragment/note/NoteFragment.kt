@@ -46,7 +46,7 @@ class NoteFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val dataBinding = setupDataBinding<ViewDataBinding>(
             R.layout.fragment_note,
             BR.viewmodel to noteFragmentViewModel
@@ -144,22 +144,25 @@ class NoteFragment : Fragment() {
         noteFragmentViewModel.noteSaved.observe(viewLifecycleOwner, Observer { event ->
             view?.let { view ->
                 when (event) {
-                    is GenericCRUDEvent.Success -> {}
+                    is GenericCRUDEvent.Success -> {
+                    }
                     is GenericCRUDEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
                     is GenericCRUDEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)//Go to login somehow
                 }
             }
         })
 
-        noteFragmentViewModel.noteLoad.observe(viewLifecycleOwner, SpecificEventObserver<LoadNoteEvent> { event ->
-            view?.let { view ->
-                when(event) {
-                    is LoadNoteEvent.Success -> this.note = event.note
-                    is LoadNoteEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
-                    is LoadNoteEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
+        noteFragmentViewModel.noteLoad.observe(
+            viewLifecycleOwner,
+            SpecificEventObserver<LoadNoteEvent> { event ->
+                view?.let { view ->
+                    when (event) {
+                        is LoadNoteEvent.Success -> this.note = event.note
+                        is LoadNoteEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
+                        is LoadNoteEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
+                    }
                 }
-            }
-        })
+            })
     }
 
     private fun saveNote() {
@@ -180,7 +183,7 @@ class NoteFragment : Fragment() {
         note.noteDescription = editTextNoteDescription.text.toString()
 
         //If change occurred, save
-        if(!this.note?.noteTitle.equals(note.noteTitle) || !this.note?.noteDescription.equals(note.noteDescription)) {
+        if (!this.note?.noteTitle.equals(note.noteTitle) || !this.note?.noteDescription.equals(note.noteDescription)) {
             noteFragmentViewModel.saveNote(args.folderUUID, note)
         }
     }

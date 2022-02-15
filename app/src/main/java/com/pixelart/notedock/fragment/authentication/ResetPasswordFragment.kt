@@ -26,7 +26,7 @@ class ResetPasswordFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val dataBinding = setupDataBinding<ViewDataBinding>(
             R.layout.fragment_reset_password,
             BR.viewmodel to resetPasswordViewModel
@@ -42,31 +42,43 @@ class ResetPasswordFragment : Fragment() {
     }
 
     private fun observeLiveData() {
-        resetPasswordViewModel.backToLogin.observe(viewLifecycleOwner, SpecificEventObserver<ButtonPressedEvent> {
-            findNavController().popBackStack()
-        })
+        resetPasswordViewModel.backToLogin.observe(
+            viewLifecycleOwner,
+            SpecificEventObserver<ButtonPressedEvent> {
+                findNavController().popBackStack()
+            })
 
-        resetPasswordViewModel.recoverAccountPressed.observe(viewLifecycleOwner, SpecificEventObserver<ButtonPressedEvent> {
-            val view = view
-            val context = context
-            if(view != null && context != null) {
-                hideSoftKeyboard(context, view)
-            }
-        })
+        resetPasswordViewModel.recoverAccountPressed.observe(
+            viewLifecycleOwner,
+            SpecificEventObserver<ButtonPressedEvent> {
+                val view = view
+                val context = context
+                if (view != null && context != null) {
+                    hideSoftKeyboard(context, view)
+                }
+            })
 
         resetPasswordViewModel.recoverAccount.observe(viewLifecycleOwner, Observer { event ->
             view?.let { view ->
-                when(event) {
+                when (event) {
                     is RecoverAccountEvent.Success -> {
                         R.string.recover_email_sent.showAsSnackBar(view)
                         findNavController().popBackStack()
                     }
                     is RecoverAccountEvent.Error -> {
-                        when(event.error) {
-                            is RecoverAccountEventError.InvalidEmail -> R.string.invalid_email_message.showAsSnackBar(view)
-                            is RecoverAccountEventError.NetworkError -> R.string.network_error_message.showAsSnackBar(view)
-                            is RecoverAccountEventError.TooManyRequests -> R.string.too_many_requests.showAsSnackBar(view)
-                            is RecoverAccountEventError.UnknownError -> R.string.error_occurred.showAsSnackBar(view)
+                        when (event.error) {
+                            is RecoverAccountEventError.InvalidEmail -> R.string.invalid_email_message.showAsSnackBar(
+                                view
+                            )
+                            is RecoverAccountEventError.NetworkError -> R.string.network_error_message.showAsSnackBar(
+                                view
+                            )
+                            is RecoverAccountEventError.TooManyRequests -> R.string.too_many_requests.showAsSnackBar(
+                                view
+                            )
+                            is RecoverAccountEventError.UnknownError -> R.string.error_occurred.showAsSnackBar(
+                                view
+                            )
                         }
                     }
                 }

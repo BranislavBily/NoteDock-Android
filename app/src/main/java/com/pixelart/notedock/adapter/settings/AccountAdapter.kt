@@ -8,7 +8,8 @@ import com.pixelart.notedock.R
 import com.pixelart.notedock.model.AccountListModel
 import kotlinx.android.synthetic.main.account_list_item.view.*
 
-class AccountAdapter(private val onAccountClickListener: OnAccountClickListener
+class AccountAdapter(
+    private val onAccountClickListener: OnAccountClickListener
 ) : RecyclerView.Adapter<AccountAdapter.AccountHolder>() {
 
     private var accountListItems = ArrayList<AccountListModel>()
@@ -19,8 +20,10 @@ class AccountAdapter(private val onAccountClickListener: OnAccountClickListener
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AccountHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.account_list_item, parent, false)
-        return AccountHolder(view, onAccountClickListener
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.account_list_item, parent, false)
+        return AccountHolder(
+            view, onAccountClickListener
         )
     }
 
@@ -33,15 +36,14 @@ class AccountAdapter(private val onAccountClickListener: OnAccountClickListener
     }
 
 
-    class AccountHolder(itemView: View, private val onAccountClickListener: OnAccountClickListener
-    ): RecyclerView.ViewHolder(itemView) {
+    class AccountHolder(
+        itemView: View, private val onAccountClickListener: OnAccountClickListener
+    ) : RecyclerView.ViewHolder(itemView) {
 
         fun bindData(account: AccountListModel) {
             itemView.textViewAccountTitle.text = account.title
             itemView.textViewAccountDetail.text = account.description
-            if(account.title != "Delete account") {
-
-
+            if (account.title != "Delete account") {
                 itemView.imageViewAccountIcon.setImageResource(R.drawable.ic_edit)
 
                 itemView.imageViewAccountIcon.setOnClickListener {

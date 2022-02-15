@@ -8,7 +8,7 @@ interface NoteModelFromDocumentSnapshotUseCase {
     fun getNote(document: DocumentSnapshot): NoteModel
 }
 
-class NoteModelFromDocumentSnapshotImpl(private val firebaseIDSRepository: FirebaseIDSRepository):
+class NoteModelFromDocumentSnapshotImpl(private val firebaseIDSRepository: FirebaseIDSRepository) :
     NoteModelFromDocumentSnapshotUseCase {
 
     override fun getNote(document: DocumentSnapshot): NoteModel {

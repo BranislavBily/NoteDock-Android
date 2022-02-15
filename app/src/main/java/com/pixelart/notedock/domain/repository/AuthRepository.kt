@@ -11,13 +11,13 @@ interface AuthRepository {
     fun register(email: String, password: String): Completable
     fun sendPasswordResetEmail(email: String): Completable
     fun sendVerificationEmail(user: FirebaseUser): Completable
-    fun reauthenticateUser(user: FirebaseUser, email: String, password: String): Completable
+    fun reAuthenticateUser(user: FirebaseUser, email: String, password: String): Completable
     fun changePassword(user: FirebaseUser, newPassword: String): Completable
     fun deleteAccount(user: FirebaseUser): Completable
     fun updateEmail(user: FirebaseUser, newEmail: String): Completable
 }
 
-class AuthRepositoryImpl(private val auth: FirebaseAuth): AuthRepository {
+class AuthRepositoryImpl(private val auth: FirebaseAuth) : AuthRepository {
     override fun login(email: String, password: String): Completable {
         return Completable.create { emitter ->
             if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
@@ -70,7 +70,11 @@ class AuthRepositoryImpl(private val auth: FirebaseAuth): AuthRepository {
         }
     }
 
-    override fun reauthenticateUser(user: FirebaseUser, email: String, password: String): Completable {
+    override fun reAuthenticateUser(
+        user: FirebaseUser,
+        email: String,
+        password: String
+    ): Completable {
         return Completable.create { emitter ->
             val credentials = EmailAuthProvider.getCredential(email, password)
             user.reauthenticate(credentials)
@@ -101,7 +105,7 @@ class AuthRepositoryImpl(private val auth: FirebaseAuth): AuthRepository {
     }
 
     override fun updateEmail(user: FirebaseUser, newEmail: String): Completable {
-        return Completable.create {emitter ->
+        return Completable.create { emitter ->
             user.updateEmail(newEmail)
                 .addOnSuccessListener { emitter.onComplete() }
                 .addOnFailureListener { emitter.tryOnError(it) }
@@ -110,6 +114,6 @@ class AuthRepositoryImpl(private val auth: FirebaseAuth): AuthRepository {
 }
 
 class InvalidEmailException : Throwable() {
-    override val message: String?
+    override val message: String
         get() = "Text was not matched with `Patterns.EMAIL_ADDRESS`"
 }

@@ -8,13 +8,15 @@ import com.pixelart.notedock.R
 import com.pixelart.notedock.model.SettingsModel
 import kotlinx.android.synthetic.main.settings_list_item.view.*
 
-class SettingsAdapter(private val settings: ArrayList<SettingsModel>,
-                      private val onSettingsClickListener: OnSettingsClickListener
+class SettingsAdapter(
+    private val settings: ArrayList<SettingsModel>,
+    private val onSettingsClickListener: OnSettingsClickListener
 ) : RecyclerView.Adapter<SettingsAdapter.SettingsHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SettingsHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.settings_list_item, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.settings_list_item, parent, false)
         return SettingsHolder(
             view,
             onSettingsClickListener
@@ -30,9 +32,10 @@ class SettingsAdapter(private val settings: ArrayList<SettingsModel>,
     }
 
 
-    class SettingsHolder(itemView: View,
-                         private val onSettingsClickListener: OnSettingsClickListener
-    ): RecyclerView.ViewHolder(itemView) {
+    class SettingsHolder(
+        itemView: View,
+        private val onSettingsClickListener: OnSettingsClickListener
+    ) : RecyclerView.ViewHolder(itemView) {
 
         fun bindData(setting: SettingsModel) {
             itemView.textViewSettingsTitle.text = setting.title
