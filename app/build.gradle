@@ -10,6 +10,8 @@ apply plugin: "androidx.navigation.safeargs.kotlin"
 
 android {
 
+    compileSdk 33
+
     signingConfigs {
         release {
             storeFile file('/Users/branislavbily/Documents/NoteDock-Key/Untitled')
@@ -19,11 +21,10 @@ android {
         }
     }
 
-    compileSdkVersion 29
     defaultConfig {
         applicationId "com.pixelart.notedock"
-        minSdkVersion 21
-        targetSdkVersion 29
+        minSdk 21
+        targetSdk 33
         multiDexEnabled true
         versionCode 6
         versionName "1.0.4.1"
@@ -65,10 +66,10 @@ android {
     sourceSets { prod { java.srcDirs = ['src/dev/java', 'src/dev/java/'] } }
     sourceSets { dev { resources.srcDirs = ['src/dev/resources', 'src/dev/resources/'] } }
     sourceSets { prod { res.srcDirs = ['src/prod/res', 'src/prod/res/'] } }
+    namespace 'com.pixelart.notedock'
 }
 
 apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.firebase.crashlytics'
 
 
 dependencies {
@@ -88,7 +89,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     //Koin
-    implementation 'org.koin:koin-android-viewmodel:2.0.0'
+    implementation "io.insert-koin:koin-core:3.3.3"
 
     //Firebase
     implementation 'com.google.firebase:firebase-analytics:17.2.2'
@@ -103,15 +104,12 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
 
     //Navigation support
-    implementation "androidx.navigation:navigation-fragment-ktx:2.2.1"
-    implementation "androidx.navigation:navigation-ui-ktx:2.2.1"
+    implementation "androidx.navigation:navigation-fragment-ktx:2.6.0"
+    implementation "androidx.navigation:navigation-ui-ktx:2.6.0"
 
 
     //rxjava
     implementation "io.reactivex.rxjava2:rxjava:2.2.13"
     implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
     implementation "io.reactivex.rxjava2:rxkotlin:2.4.0"
-
-    //Crashlytics
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 }
