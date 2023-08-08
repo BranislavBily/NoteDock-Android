@@ -1,16 +1,15 @@
 package com.pixelart.notedock.adapter.note
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.pixelart.notedock.R
+import com.pixelart.notedock.databinding.NoteListItemBinding
 import com.pixelart.notedock.model.NoteModel
-import kotlinx.android.synthetic.main.note_list_item.view.*
 
 class NotesAdapter(
     private val onNoteClickListener: OnNoteClickListener,
-    private val onImageClickListener: OnImageClickListener
+    private val onImageClickListener: OnImageClickListener,
 ) : RecyclerView.Adapter<NotesAdapter.NotesHolder>() {
 
     private var notes = ArrayList<NoteModel>()
@@ -21,12 +20,15 @@ class NotesAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotesHolder {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.note_list_item, parent, false)
+        val binding = NoteListItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false,
+        )
         return NotesHolder(
-            view,
+            binding,
             onNoteClickListener,
-            onImageClickListener
+            onImageClickListener,
         )
     }
 
@@ -38,38 +40,37 @@ class NotesAdapter(
         holder.bindData(notes[position])
     }
 
-
     class NotesHolder(
-        itemView: View,
+        private val binding: NoteListItemBinding,
         private val onNoteClickListener: OnNoteClickListener,
-        private val onImageClickListener: OnImageClickListener
-    ) : RecyclerView.ViewHolder(itemView) {
+        private val onImageClickListener: OnImageClickListener,
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bindData(note: NoteModel) {
-            itemView.textViewNoteTitle.text = note.noteTitle
-            itemView.textViewNotePreview.text = note.noteDescription
+            binding.textViewNoteTitle.text = note.noteTitle
+            binding.textViewNotePreview.text = note.noteDescription
 
             if (note.marked == true) {
-                itemView.imageViewPinned.setImageResource(R.drawable.ic_marked)
+                binding.imageViewPinned.setImageResource(R.drawable.ic_marked)
             } else {
-                itemView.imageViewPinned.setImageResource(R.drawable.ic_unmarked)
+                binding.imageViewPinned.setImageResource(R.drawable.ic_unmarked)
             }
 
-            itemView.textViewNoteTitle.setOnClickListener {
+            binding.textViewNoteTitle.setOnClickListener {
                 onNoteClickListener.onNoteClick(note.uuid)
             }
-            itemView.textViewNotePreview.setOnClickListener {
+            binding.textViewNotePreview.setOnClickListener {
                 onNoteClickListener.onNoteClick(note.uuid)
             }
-            itemView.textViewNoteTitle.setOnLongClickListener {
+            binding.textViewNoteTitle.setOnLongClickListener {
                 onNoteClickListener.onLongNoteClick(note.uuid)
                 true
             }
-            itemView.textViewNotePreview.setOnLongClickListener {
+            binding.textViewNotePreview.setOnLongClickListener {
                 onNoteClickListener.onLongNoteClick(note.uuid)
                 true
             }
-            itemView.imageViewPinned.setOnClickListener {
+            binding.imageViewPinned.setOnClickListener {
                 onImageClickListener.onImageClick(note)
             }
         }

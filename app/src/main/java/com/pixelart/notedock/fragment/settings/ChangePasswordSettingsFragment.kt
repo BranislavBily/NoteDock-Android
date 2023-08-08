@@ -20,19 +20,20 @@ import com.pixelart.notedock.ext.openLoginActivity
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.viewModel.settings.ChangePasswordEvent
 import com.pixelart.notedock.viewModel.settings.ChangePasswordViewModel
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ChangePasswordSettingsFragment : Fragment() {
 
     private val changePasswordViewModel: ChangePasswordViewModel by viewModel()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         val dataBinding = setupDataBinding<ViewDataBinding>(
             R.layout.fragment_change_password_settings,
-            BR.viewmodel to changePasswordViewModel
+            BR.viewmodel to changePasswordViewModel,
         )
         setHasOptionsMenu(true)
         changePasswordViewModel.lifecycleOwner = this
@@ -52,7 +53,7 @@ class ChangePasswordSettingsFragment : Fragment() {
             user.reload()
                 .addOnFailureListener { error ->
                     if (error is FirebaseNetworkException) {
-                        //All is well
+                        // All is well
                     } else {
                         openLoginActivity()
                     }
@@ -61,19 +62,25 @@ class ChangePasswordSettingsFragment : Fragment() {
     }
 
     private fun observeLiveData() {
-        changePasswordViewModel.onBackClicked.observe(viewLifecycleOwner, EventObserver {
-            findNavController().popBackStack()
-        })
+        changePasswordViewModel.onBackClicked.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                findNavController().popBackStack()
+            },
+        )
 
-        changePasswordViewModel.loading.observe(viewLifecycleOwner, Observer { loading ->
-            if (loading) {
-                context?.let { context ->
-                    view?.let { view ->
-                        hideSoftKeyboard(context, view)
+        changePasswordViewModel.loading.observe(
+            viewLifecycleOwner,
+            Observer { loading ->
+                if (loading) {
+                    context?.let { context ->
+                        view?.let { view ->
+                            hideSoftKeyboard(context, view)
+                        }
                     }
                 }
-            }
-        })
+            },
+        )
 
         changePasswordViewModel.changePassword.observe(
             viewLifecycleOwner,
@@ -87,35 +94,45 @@ class ChangePasswordSettingsFragment : Fragment() {
                             R.string.password_changed.showAsSnackBar(view)
                             findNavController().popBackStack()
                         }
+
                         is ChangePasswordEvent.NetworkError -> R.string.network_error_message.showAsSnackBar(
-                            view
+                            view,
                         )
+
                         is ChangePasswordEvent.FillAllFields -> R.string.please_fill_all_fields.showAsSnackBar(
-                            view
+                            view,
                         )
+
                         is ChangePasswordEvent.NewPasswordCannotBeCurrent -> R.string.new_password_cannot_be_current.showAsSnackBar(
-                            view
+                            view,
                         )
+
                         is ChangePasswordEvent.PasswordsDoNotMatch -> R.string.passwords_do_not_match_message.showAsSnackBar(
-                            view
+                            view,
                         )
+
                         is ChangePasswordEvent.WeakPassword -> R.string.weak_password_message.showAsSnackBar(
-                            view
+                            view,
                         )
+
                         is ChangePasswordEvent.UserNotFound -> R.string.no_user_found.showAsSnackBar(
-                            view
+                            view,
                         )
+
                         is ChangePasswordEvent.WrongPassword -> R.string.wrong_password.showAsSnackBar(
-                            view
+                            view,
                         )
+
                         is ChangePasswordEvent.TooManyRequests -> R.string.too_many_requests.showAsSnackBar(
-                            view
+                            view,
                         )
+
                         is ChangePasswordEvent.UnknownError -> R.string.error_occurred.showAsSnackBar(
-                            view
+                            view,
                         )
                     }
                 }
-            })
+            },
+        )
     }
 }

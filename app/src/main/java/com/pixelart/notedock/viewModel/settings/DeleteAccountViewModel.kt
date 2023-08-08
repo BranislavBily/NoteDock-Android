@@ -3,7 +3,6 @@ package com.pixelart.notedock.viewModel.settings
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import com.crashlytics.android.Crashlytics
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
@@ -89,7 +88,6 @@ class DeleteAccountViewModel(
             is FirebaseTooManyRequestsException -> DeleteAccountEvent.TooManyRequests()
             is FirebaseAuthInvalidCredentialsException -> DeleteAccountEvent.WrongPassword()
             else -> {
-                Crashlytics.logException(throwable)
                 DeleteAccountEvent.UnknownError()
             }
         }

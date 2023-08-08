@@ -3,7 +3,6 @@ package com.pixelart.notedock.viewModel.settings
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import com.crashlytics.android.Crashlytics
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.*
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
@@ -15,7 +14,7 @@ import io.reactivex.schedulers.Schedulers
 
 class ChangeEmailViewModel(
     private val auth: FirebaseAuth,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
 ) : LifecycleViewModel() {
 
     private val _onBackClicked = MutableLiveData<ButtonPressedEvent>()
@@ -101,12 +100,13 @@ class ChangeEmailViewModel(
             is FirebaseAuthEmailException -> ChangeEmailEvent.EmailAlreadyUsed()
             is FirebaseAuthInvalidCredentialsException -> ChangeEmailEvent.InvalidPassword()
             is FirebaseAuthInvalidUserException -> {
-                //This happens if user wants to change email and cached FirebaseUser has old email address
-                auth.currentUser?.reload()?.addOnFailureListener { Crashlytics.logException(it) }
+                // This happens if user wants to change email and cached FirebaseUser has old email address
+                auth.currentUser?.reload()?.addOnFailureListener {
+                }
                 ChangeEmailEvent.TryAgainError()
             }
+
             else -> {
-                Crashlytics.logException(throwable)
                 ChangeEmailEvent.UnknownError()
             }
         }

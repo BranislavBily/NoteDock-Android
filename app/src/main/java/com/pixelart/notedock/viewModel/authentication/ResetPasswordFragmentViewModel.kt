@@ -1,13 +1,9 @@
 package com.pixelart.notedock.viewModel.authentication
 
-import android.util.Log
 import android.util.Patterns
-import android.widget.Button
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import com.crashlytics.android.Crashlytics
-import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
@@ -74,7 +70,6 @@ class ResetPasswordFragmentViewModel(private val authRepository: AuthRepository)
             is FirebaseNetworkException -> RecoverAccountEventError.NetworkError()
             is FirebaseTooManyRequestsException -> RecoverAccountEventError.TooManyRequests()
             else -> {
-                Crashlytics.logException(throwable)
                 RecoverAccountEventError.UnknownError()
             }
         }

@@ -3,8 +3,6 @@ package com.pixelart.notedock.viewModel.authentication
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import com.crashlytics.android.Crashlytics
-import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
@@ -111,7 +109,6 @@ class RegisterFragmentViewModel(
             is FirebaseTooManyRequestsException -> RegisterEventError.TooManyRequests()
             is FirebaseNetworkException -> RegisterEventError.NetworkError()
             else -> {
-                Crashlytics.logException(throwable)
                 RegisterEventError.UnknownError()
             }
         }

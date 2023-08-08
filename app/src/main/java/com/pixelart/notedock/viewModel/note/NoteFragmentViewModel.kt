@@ -2,7 +2,6 @@ package com.pixelart.notedock.viewModel.note
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.crashlytics.android.Crashlytics
 import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
 import com.pixelart.notedock.domain.livedata.model.Event
@@ -21,7 +20,7 @@ class NoteFragmentViewModel(
     private val notesRepository: NotesRepository,
     private val auth: FirebaseAuth,
     private val deleteNoteUseCase: DeleteNoteUseCase,
-    private val updateNoteUseCase: UpdateNoteUseCase
+    private val updateNoteUseCase: UpdateNoteUseCase,
 ) : LifecycleViewModel() {
 
     private val _editTextNoteTitle = MutableLiveData<String>()
@@ -62,7 +61,6 @@ class NoteFragmentViewModel(
                     _editTextNoteDescription.postValue(noteModel.noteDescription)
                     _noteLoad.postValue(LoadNoteEvent.Success(noteModel))
                 }, { error ->
-                    Crashlytics.logException(error)
                     _noteLoad.postValue(LoadNoteEvent.Error())
                 })
                 .addTo(disposeBag)
@@ -77,11 +75,12 @@ class NoteFragmentViewModel(
                 deleteNoteUseCase.deleteNote(user, folderUUID, noteUUID)
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
-                    .subscribe({ _noteDeleted.postValue(GenericCRUDEvent.Success()) },
+                    .subscribe(
+                        { _noteDeleted.postValue(GenericCRUDEvent.Success()) },
                         { error ->
-                            Crashlytics.logException(error)
                             _noteDeleted.postValue(GenericCRUDEvent.Error())
-                        })
+                        },
+                    )
                     .addTo(bag)
             }
         } ?: run {
@@ -94,11 +93,12 @@ class NoteFragmentViewModel(
             updateNoteUseCase.updateNote(user, folderUUID, noteModel)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .subscribe({ _noteSaved.postValue(GenericCRUDEvent.Success()) },
+                .subscribe(
+                    { _noteSaved.postValue(GenericCRUDEvent.Success()) },
                     { error ->
-                        Crashlytics.logException(error)
                         _noteSaved.postValue(GenericCRUDEvent.Error())
-                    })
+                    },
+                )
         } ?: run {
             _noteSaved.postValue(GenericCRUDEvent.NoUserFound())
         }

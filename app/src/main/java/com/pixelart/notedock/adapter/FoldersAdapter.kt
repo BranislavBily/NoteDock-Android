@@ -1,12 +1,10 @@
 package com.pixelart.notedock.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.pixelart.notedock.R
+import com.pixelart.notedock.databinding.FolderListItemBinding
 import com.pixelart.notedock.model.FolderModel
-import kotlinx.android.synthetic.main.folder_list_item.view.*
 
 class FoldersAdapter(private val onFolderClickListener: OnFolderClickListener) :
     RecyclerView.Adapter<FoldersAdapter.FoldersHolder>() {
@@ -19,9 +17,12 @@ class FoldersAdapter(private val onFolderClickListener: OnFolderClickListener) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FoldersHolder {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.folder_list_item, parent, false)
-        return FoldersHolder(view, onFolderClickListener)
+        val binding = FolderListItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false,
+        )
+        return FoldersHolder(binding, onFolderClickListener)
     }
 
     override fun getItemCount(): Int {
@@ -32,13 +33,15 @@ class FoldersAdapter(private val onFolderClickListener: OnFolderClickListener) :
         holder.bindData(folders[position])
     }
 
-
-    class FoldersHolder(itemView: View, private val onFolderClickListener: OnFolderClickListener) :
-        RecyclerView.ViewHolder(itemView) {
+    class FoldersHolder(
+        private val binding: FolderListItemBinding,
+        private val onFolderClickListener: OnFolderClickListener,
+    ) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bindData(folder: FolderModel) {
-            itemView.textViewFolderName.text = folder.name
-            itemView.textViewNotesCount.text = folder.notesCount.toString()
+            binding.textViewFolderName.text = folder.name
+            binding.textViewNotesCount.text = folder.notesCount.toString()
 
             itemView.setOnClickListener {
                 onFolderClickListener.onFolderClick(folder.uid, folder.name)

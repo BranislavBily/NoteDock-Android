@@ -2,8 +2,6 @@ apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
 
-apply plugin: 'kotlin-android-extensions'
-
 apply plugin: "kotlin-kapt"
 
 apply plugin: "androidx.navigation.safeargs.kotlin"
@@ -59,8 +57,13 @@ android {
         viewBinding = true
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     sourceSets { prod { java.srcDirs = ['src/prod/java', 'src/prod/java/'] } }
     sourceSets { prod { java.srcDirs = ['src/dev/java', 'src/dev/java/'] } }
@@ -89,7 +92,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     //Koin
-    implementation "io.insert-koin:koin-core:3.3.3"
+    implementation "io.insert-koin:koin-android:3.4.0"
 
     //Firebase
     implementation 'com.google.firebase:firebase-analytics:17.2.2'
