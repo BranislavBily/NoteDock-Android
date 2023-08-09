@@ -1,22 +1,15 @@
 package com.pixelart.notedock.fragment.settings
 
-import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
-import androidx.core.widget.addTextChangedListener
-import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.common.internal.AccountType
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -25,6 +18,7 @@ import com.pixelart.notedock.NavigationRouter
 import com.pixelart.notedock.R
 import com.pixelart.notedock.adapter.settings.AccountAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
+import com.pixelart.notedock.databinding.FragmentAccountSettingsBinding
 import com.pixelart.notedock.dialog.EditDisplayNameDialog
 import com.pixelart.notedock.dialog.EditDisplaySuccessListener
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
@@ -35,21 +29,22 @@ import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.model.AccountListModel
 import com.pixelart.notedock.viewModel.settings.AccountSettingsViewModel
 import com.pixelart.notedock.viewModel.settings.UpdateDisplayNameEvent
-import kotlinx.android.synthetic.main.create_folder_dialog.view.*
-import kotlinx.android.synthetic.main.fragment_account_settings.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AccountSettingsFragment : Fragment(), AccountAdapter.OnAccountClickListener {
 
     private val accountSettingsViewModel: AccountSettingsViewModel by viewModel()
 
+    private lateinit var dataBinding: FragmentAccountSettingsBinding
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
-        val dataBinding = setupDataBinding<ViewDataBinding>(
+        dataBinding = setupDataBinding(
             R.layout.fragment_account_settings,
-            BR.viewmodel to accountSettingsViewModel
+            BR.viewmodel to accountSettingsViewModel,
         )
         setHasOptionsMenu(true)
         accountSettingsViewModel.lifecycleOwner = this
@@ -60,8 +55,8 @@ class AccountSettingsFragment : Fragment(), AccountAdapter.OnAccountClickListene
         super.onStart()
 
         val accountAdapter = AccountAdapter(this)
-        recyclerViewAccount.layoutManager = LinearLayoutManager(context)
-        recyclerViewAccount.adapter = accountAdapter
+        dataBinding.recyclerViewAccount.layoutManager = LinearLayoutManager(context)
+        dataBinding.recyclerViewAccount.adapter = accountAdapter
         observeLiveData(accountAdapter)
     }
 
@@ -72,7 +67,7 @@ class AccountSettingsFragment : Fragment(), AccountAdapter.OnAccountClickListene
             user.reload()
                 .addOnFailureListener { error ->
                     if (error is FirebaseNetworkException) {
-                        //All is well
+                        // All is well
                     } else {
                         openLoginActivity()
                     }
@@ -81,24 +76,30 @@ class AccountSettingsFragment : Fragment(), AccountAdapter.OnAccountClickListene
     }
 
     private fun observeLiveData(accountAdapter: AccountAdapter) {
-        accountSettingsViewModel.onBackClicked.observe(viewLifecycleOwner, EventObserver {
-            findNavController().popBackStack()
-        })
+        accountSettingsViewModel.onBackClicked.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                findNavController().popBackStack()
+            },
+        )
 
-        accountSettingsViewModel.user.observe(viewLifecycleOwner, Observer { user ->
-            user.reload()
-                .addOnFailureListener { error ->
-                    if (error is FirebaseNetworkException) {
-                        //This is alright
-                    } else {
-                        openLoginActivity()
+        accountSettingsViewModel.user.observe(
+            viewLifecycleOwner,
+            Observer { user ->
+                user.reload()
+                    .addOnFailureListener { error ->
+                        if (error is FirebaseNetworkException) {
+                            // This is alright
+                        } else {
+                            openLoginActivity()
+                        }
                     }
-                }
-                .addOnSuccessListener {
-                    accountAdapter.setNewData(fillTable(user))
-                }
-            accountAdapter.setNewData(fillTable(user))
-        })
+                    .addOnSuccessListener {
+                        accountAdapter.setNewData(fillTable(user))
+                    }
+                accountAdapter.setNewData(fillTable(user))
+            },
+        )
 
         accountSettingsViewModel.updateDisplayName.observe(
             viewLifecycleOwner,
@@ -108,15 +109,18 @@ class AccountSettingsFragment : Fragment(), AccountAdapter.OnAccountClickListene
                         is UpdateDisplayNameEvent.Success -> {
                             reloadData(accountAdapter)
                         }
+
                         is UpdateDisplayNameEvent.NetworkError -> R.string.network_error_message.showAsSnackBar(
-                            view
+                            view,
                         )
+
                         is UpdateDisplayNameEvent.UnknownError -> R.string.error_occurred.showAsSnackBar(
-                            view
+                            view,
                         )
                     }
                 }
-            })
+            },
+        )
     }
 
     private fun reloadData(accountAdapter: AccountAdapter) {
@@ -139,8 +143,8 @@ class AccountSettingsFragment : Fragment(), AccountAdapter.OnAccountClickListene
         accountList.add(
             AccountListModel(
                 getString(R.string.delete_account),
-                "Click to delete your NoteDock account"
-            )
+                "Click to delete your NoteDock account",
+            ),
         )
         return accountList
     }
@@ -151,12 +155,15 @@ class AccountSettingsFragment : Fragment(), AccountAdapter.OnAccountClickListene
                 getString(R.string.email) -> {
                     NavigationRouter(view).accountToChangeEmail()
                 }
+
                 getString(R.string.phone_number) -> {
                     R.string.this_feature_not_available_yet.showAsSnackBar(view)
                 }
+
                 getString(R.string.display_name) -> {
                     openEditDisplayNameDialog()
                 }
+
                 else -> {
                     NavigationRouter(view).accountToDeleteAccount()
                 }
@@ -175,7 +182,7 @@ class AccountSettingsFragment : Fragment(), AccountAdapter.OnAccountClickListene
                         accountSettingsViewModel.updateDisplayName(displayName)
                     }
                 }
-            }).createDialog(activity)
+            }).createDialog(activity, layoutInflater)
             dialog.show()
             FirebaseAuth.getInstance().currentUser?.let { user ->
                 user.displayName?.let { displayName ->

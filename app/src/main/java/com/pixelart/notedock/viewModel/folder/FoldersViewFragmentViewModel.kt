@@ -2,7 +2,6 @@ package com.pixelart.notedock.viewModel.folder
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.crashlytics.android.Crashlytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
@@ -25,7 +24,7 @@ class FoldersViewFragmentViewModel(
     private val createFolderUseCase: CreateFolderUseCase,
     private val folderNameTakenUseCase: FolderNameTakenUseCase,
     private val deleteFolderUseCase: DeleteFolderUseCase,
-    private val renameFolderUseCase: RenameFolderUseCase
+    private val renameFolderUseCase: RenameFolderUseCase,
 ) : LifecycleViewModel() {
 
     private val _loadFolders = MutableLiveData<LoadFoldersEvent>()
@@ -58,11 +57,12 @@ class FoldersViewFragmentViewModel(
             folderRepository.getFolders(user)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .subscribe({ _loadFolders.postValue(LoadFoldersEvent.Success(it)) },
+                .subscribe(
+                    { _loadFolders.postValue(LoadFoldersEvent.Success(it)) },
                     { error ->
-                        Crashlytics.logException(error)
                         _loadFolders.postValue(LoadFoldersEvent.Error())
-                    }).addTo(disposeBag)
+                    },
+                ).addTo(disposeBag)
         } ?: run {
             _loadFolders.postValue(LoadFoldersEvent.NoUserFound())
         }
@@ -77,16 +77,14 @@ class FoldersViewFragmentViewModel(
                     .subscribe(
                         { _newFolderCreated.postValue(CreateFolderEvent.Success()) },
                         { error ->
-                            Crashlytics.logException(error)
                             _newFolderCreated.postValue(CreateFolderEvent.Error())
-                        }
+                        },
                     )
                     .addTo(bag)
             }
         } ?: run {
             _newFolderCreated.postValue(CreateFolderEvent.NoUserFound())
         }
-
     }
 
     fun isNameTaken(folderName: String) {
@@ -96,10 +94,12 @@ class FoldersViewFragmentViewModel(
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
                     .subscribe({ nameTaken ->
-                        if (nameTaken) _newFolderCreated.postValue(CreateFolderEvent.FolderNameTaken())
-                        else this.uploadFolderModel(folderName)
+                        if (nameTaken) {
+                            _newFolderCreated.postValue(CreateFolderEvent.FolderNameTaken())
+                        } else {
+                            this.uploadFolderModel(folderName)
+                        }
                     }, { error ->
-                        Crashlytics.logException(error)
                         _newFolderCreated.postValue(CreateFolderEvent.Error())
                     })
                     .addTo(bag)
@@ -116,10 +116,12 @@ class FoldersViewFragmentViewModel(
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
                     .subscribe({ nameTaken ->
-                        if (nameTaken) _renameFolder.postValue(RenameFolderEvent.FolderNameTaken())
-                        else this.updateFolderName(user, folderUUID, folderName)
+                        if (nameTaken) {
+                            _renameFolder.postValue(RenameFolderEvent.FolderNameTaken())
+                        } else {
+                            this.updateFolderName(user, folderUUID, folderName)
+                        }
                     }, { error ->
-                        Crashlytics.logException(error)
                         _renameFolder.postValue(RenameFolderEvent.Error())
                     })
                     .addTo(bag)
@@ -138,7 +140,6 @@ class FoldersViewFragmentViewModel(
                     .subscribe({
                         _deleteFolder.postValue(GenericCRUDEvent.Success())
                     }, { error ->
-                        Crashlytics.logException(error)
                         _deleteFolder.postValue(GenericCRUDEvent.Error())
                     })
                     .addTo(bag)
@@ -156,7 +157,6 @@ class FoldersViewFragmentViewModel(
                 .subscribe({
                     _renameFolder.postValue(RenameFolderEvent.Success())
                 }, { error ->
-                    Crashlytics.logException(error)
                     _renameFolder.postValue(RenameFolderEvent.Error())
                 })
                 .addTo(bag)

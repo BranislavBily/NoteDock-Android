@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,27 +13,29 @@ import com.pixelart.notedock.BR
 import com.pixelart.notedock.R
 import com.pixelart.notedock.adapter.settings.SettingsAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
+import com.pixelart.notedock.databinding.FragmentHelpAndSupportSettingsBinding
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.ext.openLoginActivity
 import com.pixelart.notedock.ext.openMailApp
 import com.pixelart.notedock.model.SettingsModel
 import com.pixelart.notedock.viewModel.settings.HelpAndSupportViewModel
-import kotlinx.android.synthetic.main.fragment_help_and_support_settings.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
-
 
 class HelpAndSupportSettingsFragment : Fragment(), SettingsAdapter.OnSettingsClickListener {
 
     private val helpAndSupportViewModel: HelpAndSupportViewModel by viewModel()
 
+    private lateinit var dataBinding: FragmentHelpAndSupportSettingsBinding
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
-        val dataBinding = setupDataBinding<ViewDataBinding>(
+        dataBinding = setupDataBinding(
             R.layout.fragment_help_and_support_settings,
-            BR.viewmodel to helpAndSupportViewModel
+            BR.viewmodel to helpAndSupportViewModel,
         )
         setHasOptionsMenu(true)
         helpAndSupportViewModel.lifecycleOwner = this
@@ -47,10 +48,10 @@ class HelpAndSupportSettingsFragment : Fragment(), SettingsAdapter.OnSettingsCli
         val settingsAdapter =
             SettingsAdapter(
                 createSettings(),
-                this
+                this,
             )
-        recycler_view_help_and_support.layoutManager = LinearLayoutManager(context)
-        recycler_view_help_and_support.adapter = settingsAdapter
+        dataBinding.recyclerViewHelpAndSupport.layoutManager = LinearLayoutManager(context)
+        dataBinding.recyclerViewHelpAndSupport.adapter = settingsAdapter
         observeLiveData()
     }
 
@@ -61,7 +62,7 @@ class HelpAndSupportSettingsFragment : Fragment(), SettingsAdapter.OnSettingsCli
             user.reload()
                 .addOnFailureListener { error ->
                     if (error is FirebaseNetworkException) {
-                        //All is well
+                        // All is well
                     } else {
                         openLoginActivity()
                     }
@@ -77,9 +78,12 @@ class HelpAndSupportSettingsFragment : Fragment(), SettingsAdapter.OnSettingsCli
     }
 
     private fun observeLiveData() {
-        helpAndSupportViewModel.onBackClicked.observe(viewLifecycleOwner, EventObserver {
-            findNavController().popBackStack()
-        })
+        helpAndSupportViewModel.onBackClicked.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                findNavController().popBackStack()
+            },
+        )
     }
 
     override fun onSettingClick(setting: SettingsModel) {
@@ -87,6 +91,7 @@ class HelpAndSupportSettingsFragment : Fragment(), SettingsAdapter.OnSettingsCli
             getString(R.string.send_bug_report) -> {
                 activity?.openMailApp("branislav.bily@gmail.com", "NoteDock: Send bug report")
             }
+
             getString(R.string.send_feedback) -> {
                 activity?.openMailApp("branislav.bily@gmail.com", "NoteDock: Send feedback")
             }

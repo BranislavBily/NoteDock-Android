@@ -1,29 +1,30 @@
 package com.pixelart.notedock.dialog
 
 import android.app.Activity
+import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import com.pixelart.notedock.R
-import kotlinx.android.synthetic.main.create_folder_dialog.view.*
+import com.pixelart.notedock.databinding.EditFolderDialogBinding
 
 class EditFolderDialog(
     private val folderName: String,
-    private val callback: EditFolderSuccessListener
+    private val callback: EditFolderSuccessListener,
 ) {
 
-    fun createDialog(activity: Activity): AlertDialog {
+    fun createDialog(activity: Activity, inflater: LayoutInflater): AlertDialog {
+        val binding = EditFolderDialogBinding.inflate(inflater)
         val builder = AlertDialog.Builder(activity)
-        val view = activity.layoutInflater.inflate(R.layout.edit_folder_dialog, null)
-        view.editTextFolderName.setText(folderName, TextView.BufferType.EDITABLE)
-        view.editTextFolderName.setSelection(folderName.length)
+        binding.editTextFolderName.setText(folderName, TextView.BufferType.EDITABLE)
+        binding.editTextFolderName.setSelection(folderName.length)
         builder.setPositiveButton(R.string.action_rename) { dialog, _ ->
-            callback.editFolderClick(view.editTextFolderName.text.toString())
+            callback.editFolderClick(binding.editTextFolderName.text.toString())
             dialog.cancel()
         }
         builder.setNegativeButton(R.string.cancel_dialog) { dialog, _ ->
             dialog.cancel()
         }
-        builder.setView(view)
+        builder.setView(binding.root)
         return builder.create()
     }
 }
