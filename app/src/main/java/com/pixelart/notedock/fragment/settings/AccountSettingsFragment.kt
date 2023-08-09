@@ -182,7 +182,7 @@ class AccountSettingsFragment : Fragment(), AccountAdapter.OnAccountClickListene
                         accountSettingsViewModel.updateDisplayName(displayName)
                     }
                 }
-            }).createDialog(activity)
+            }).createDialog(activity, layoutInflater)
             dialog.show()
             FirebaseAuth.getInstance().currentUser?.let { user ->
                 user.displayName?.let { displayName ->

@@ -65,6 +65,10 @@ val firebaseModule = module {
         FirebaseFirestore.getInstance()
     }
 
+    single {
+        FirebaseAuth.getInstance()
+    }
+
     singleOf(::FolderRepositoryImpl) bind FolderRepository::class
     singleOf(::NotesRepositoryImpl) bind NotesRepository::class
 

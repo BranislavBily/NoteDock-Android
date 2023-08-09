@@ -13,6 +13,7 @@ import com.pixelart.notedock.NavigationRouter
 import com.pixelart.notedock.R
 import com.pixelart.notedock.activity.MainActivity
 import com.pixelart.notedock.dataBinding.setupDataBinding
+import com.pixelart.notedock.databinding.FragmentLoginBinding
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.viewModel.authentication.LoginEvent
@@ -24,27 +25,25 @@ class LoginFragment : Fragment() {
 
     private val loginFragmentViewModel: LoginFragmentViewModel by viewModel()
 
+    private lateinit var binding: FragmentLoginBinding
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        val dataBinding = setupDataBinding<ViewDataBinding>(
+        binding = setupDataBinding(
             R.layout.fragment_login,
             BR.viewmodel to loginFragmentViewModel,
         )
         loginFragmentViewModel.lifecycleOwner = this
-        return dataBinding.root
+        return binding.root
     }
 
     override fun onResume() {
         super.onResume()
 
         observeLiveData()
-    }
-
-    override fun onPause() {
-        super.onPause()
     }
 
     private fun goToMainActivity() {

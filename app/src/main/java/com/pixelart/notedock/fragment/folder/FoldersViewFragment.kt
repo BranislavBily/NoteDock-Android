@@ -105,7 +105,9 @@ class FoldersViewFragment :
                     when (event) {
                         is LoadFoldersEvent.Success -> foldersAdapter.setNewData(event.folders)
                         is LoadFoldersEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
-                        is LoadFoldersEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
+                        is LoadFoldersEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(
+                            view,
+                        )
                     }
                 }
             },
@@ -143,7 +145,9 @@ class FoldersViewFragment :
                         }
 
                         is GenericCRUDEvent.Error -> R.string.error_occurred.showAsSnackBar(view)
-                        is GenericCRUDEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
+                        is GenericCRUDEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(
+                            view,
+                        )
                     }
                 }
             },
@@ -169,7 +173,9 @@ class FoldersViewFragment :
                             view,
                         )
 
-                        is RenameFolderEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(view)
+                        is RenameFolderEvent.NoUserFound -> R.string.no_user_found.showAsSnackBar(
+                            view,
+                        )
                     }
                 }
             },
@@ -178,17 +184,20 @@ class FoldersViewFragment :
 
     private fun createFolderDialog() {
         activity?.let { activity ->
-            val dialog = CreateFolderDialog(object : FolderDialogSuccessListener {
+            CreateFolderDialog(object : FolderDialogSuccessListener {
                 override fun onSuccess(folderName: String?) {
                     folderName?.let { foldersViewFragmentViewModel.isNameTaken(it) }
                 }
-            }).createDialog(activity)
-            dialog.show()
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
-            dialog.findViewById<EditText>(R.id.editTextFolderName)
-                ?.addTextChangedListener { watcher ->
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
-                        !watcher.isNullOrEmpty()
+            })
+                .createDialog(activity, layoutInflater)
+                .apply {
+                    show()
+                    getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+                    findViewById<EditText>(R.id.editTextFolderName)
+                        ?.addTextChangedListener { watcher ->
+                            getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
+                                !watcher.isNullOrEmpty()
+                        }
                 }
         }
     }
@@ -227,7 +236,7 @@ class FoldersViewFragment :
                             foldersViewFragmentViewModel.renameFolder(folderUUID, folderName)
                         }
                     },
-                ).createDialog(activity)
+                ).createDialog(activity, layoutInflater)
                 dialog.show()
                 dialog.findViewById<EditText>(R.id.editTextFolderName)
                     ?.addTextChangedListener { watcher ->
