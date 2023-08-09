@@ -1,26 +1,25 @@
 package com.pixelart.notedock.dialog
 
 import android.app.Activity
+import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import com.pixelart.notedock.R
-import kotlinx.android.synthetic.main.create_folder_dialog.view.*
-import kotlinx.android.synthetic.main.edit_displayname_dialog.view.*
+import com.pixelart.notedock.databinding.EditDisplaynameDialogBinding
 
 class EditDisplayNameDialog(
-    private val callback: EditDisplaySuccessListener
+    private val callback: EditDisplaySuccessListener,
 ) {
-
-    fun createDialog(activity: Activity): AlertDialog {
+    fun createDialog(activity: Activity, inflater: LayoutInflater): AlertDialog {
+        val binding = EditDisplaynameDialogBinding.inflate(inflater)
         val builder = AlertDialog.Builder(activity)
-        val view = activity.layoutInflater.inflate(R.layout.edit_displayname_dialog, null)
-        builder.setPositiveButton(R.string.save) { dialog, _ ->
-            callback.onSuccess(view.editTextDisplayName.text.toString())
+        builder.setPositiveButton(R.string.create_dialog) { dialog, _ ->
+            callback.onSuccess(binding.editTextDisplayName.text.toString())
             dialog.cancel()
         }
         builder.setNegativeButton(R.string.cancel_dialog) { dialog, _ ->
             dialog.cancel()
         }
-        builder.setView(view)
+        builder.setView(binding.root)
         return builder.create()
     }
 }

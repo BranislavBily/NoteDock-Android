@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        package="com.pixelart.notedock">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
             android:name=".NoteDockApplication"
@@ -15,7 +14,8 @@
                 android:screenOrientation="portrait" />
         <activity
                 android:name=".activity.SplashActivity"
-                android:screenOrientation="portrait">
+                android:screenOrientation="portrait"
+                android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

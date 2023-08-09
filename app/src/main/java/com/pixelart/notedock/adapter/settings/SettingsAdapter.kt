@@ -1,25 +1,25 @@
 package com.pixelart.notedock.adapter.settings
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.pixelart.notedock.R
+import com.pixelart.notedock.databinding.SettingsListItemBinding
 import com.pixelart.notedock.model.SettingsModel
-import kotlinx.android.synthetic.main.settings_list_item.view.*
 
 class SettingsAdapter(
     private val settings: ArrayList<SettingsModel>,
-    private val onSettingsClickListener: OnSettingsClickListener
+    private val onSettingsClickListener: OnSettingsClickListener,
 ) : RecyclerView.Adapter<SettingsAdapter.SettingsHolder>() {
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SettingsHolder {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.settings_list_item, parent, false)
+        val binding = SettingsListItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false,
+        )
         return SettingsHolder(
-            view,
-            onSettingsClickListener
+            binding,
+            onSettingsClickListener,
         )
     }
 
@@ -31,15 +31,14 @@ class SettingsAdapter(
         holder.bindData(settings[position])
     }
 
-
     class SettingsHolder(
-        itemView: View,
-        private val onSettingsClickListener: OnSettingsClickListener
-    ) : RecyclerView.ViewHolder(itemView) {
+        private val binding: SettingsListItemBinding,
+        private val onSettingsClickListener: OnSettingsClickListener,
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bindData(setting: SettingsModel) {
-            itemView.textViewSettingsTitle.text = setting.title
-            itemView.imageViewIcon.setImageResource(setting.drawable)
+            binding.textViewSettingsTitle.text = setting.title
+            binding.imageViewIcon.setImageResource(setting.drawable)
 
             itemView.setOnClickListener {
                 onSettingsClickListener.onSettingClick(setting)

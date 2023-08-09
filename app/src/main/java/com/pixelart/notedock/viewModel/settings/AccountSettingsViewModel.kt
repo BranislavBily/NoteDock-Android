@@ -2,7 +2,6 @@ package com.pixelart.notedock.viewModel.settings
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.crashlytics.android.Crashlytics
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -56,7 +55,6 @@ class AccountSettingsViewModel(private val auth: FirebaseAuth) : LifecycleViewMo
         return when (throwable) {
             is FirebaseNetworkException -> UpdateDisplayNameEvent.NetworkError()
             else -> {
-                Crashlytics.logException(throwable)
                 UpdateDisplayNameEvent.UnknownError()
             }
         }

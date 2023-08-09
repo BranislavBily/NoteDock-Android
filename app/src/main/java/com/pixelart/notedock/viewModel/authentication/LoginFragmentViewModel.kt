@@ -3,12 +3,9 @@ package com.pixelart.notedock.viewModel.authentication
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import com.crashlytics.android.Crashlytics
-import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
@@ -21,7 +18,7 @@ import io.reactivex.schedulers.Schedulers
 
 class LoginFragmentViewModel(
     private val authRepository: AuthRepository,
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
 ) : LifecycleViewModel() {
 
     private val _loginCompleted = MutableLiveData<LoginEvent>()
@@ -112,7 +109,6 @@ class LoginFragmentViewModel(
             is FirebaseTooManyRequestsException -> TooManyRequests()
             is FirebaseNetworkException -> NetworkError()
             else -> {
-                Crashlytics.logException(throwable)
                 UnknownError()
             }
         }
@@ -123,7 +119,6 @@ class LoginFragmentViewModel(
             is FirebaseNetworkException -> SendEmailEvent.NetworkError()
             is FirebaseTooManyRequestsException -> SendEmailEvent.TooManyRequests()
             else -> {
-                Crashlytics.logException(throwable)
                 SendEmailEvent.UnknownError()
             }
         }

@@ -2,12 +2,10 @@ package com.pixelart.notedock.viewModel.folder
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.crashlytics.android.Crashlytics
 import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.dataBinding.rxjava.LifecycleViewModel
 import com.pixelart.notedock.domain.livedata.model.Event
 import com.pixelart.notedock.domain.repository.NotesRepository
-import com.pixelart.notedock.domain.usecase.folder.DeleteFolderUseCase
 import com.pixelart.notedock.domain.usecase.note.CreateNoteUseCase
 import com.pixelart.notedock.domain.usecase.note.DeleteNoteUseCase
 import com.pixelart.notedock.domain.usecase.note.MarkNoteUseCase
@@ -25,7 +23,7 @@ class FolderFragmentViewModel(
     private val deleteNoteUseCase: DeleteNoteUseCase,
     private val createFolderUseCase: CreateNoteUseCase,
     private val markNoteUseCase: MarkNoteUseCase,
-    private val notesRepository: NotesRepository
+    private val notesRepository: NotesRepository,
 ) : LifecycleViewModel() {
 
     val toolbarTitle: LiveData<String> = MutableLiveData<String>().apply { postValue(folderName) }
@@ -68,11 +66,11 @@ class FolderFragmentViewModel(
                 createFolderUseCase.createNote(user, folderUUID)
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
-                    .subscribe({ _noteCreated.postValue(CreateNoteEvent.Success(it)) },
+                    .subscribe(
+                        { _noteCreated.postValue(CreateNoteEvent.Success(it)) },
                         { error ->
-                            Crashlytics.logException(error)
                             _noteCreated.postValue(CreateNoteEvent.Error())
-                        }
+                        },
                     )
                     .addTo(bag)
             }
@@ -90,9 +88,8 @@ class FolderFragmentViewModel(
                     .subscribe(
                         { _markNote.postValue(GenericCRUDEvent.Success()) },
                         { error ->
-                            Crashlytics.logException(error)
                             _markNote.postValue(GenericCRUDEvent.Error())
-                        }
+                        },
                     )
                     .addTo(bag)
             }
@@ -108,9 +105,8 @@ class FolderFragmentViewModel(
                     .subscribe(
                         { _deleteNote.postValue(GenericCRUDEvent.Success()) },
                         { error ->
-                            Crashlytics.logException(error)
                             _deleteNote.postValue(GenericCRUDEvent.Error())
-                        }
+                        },
                     )
                     .addTo(bag)
             }
@@ -124,8 +120,11 @@ class FolderFragmentViewModel(
         val unmarkedNotes = ArrayList<NoteModel>()
         for (note in notes) {
             note.marked?.let { marked ->
-                if (marked) markedNotes.add(note)
-                else unmarkedNotes.add(note)
+                if (marked) {
+                    markedNotes.add(note)
+                } else {
+                    unmarkedNotes.add(note)
+                }
             }
         }
         _loadedNotes.postValue(LoadNotesEvent.Success(markedNotes, unmarkedNotes))
@@ -136,11 +135,12 @@ class FolderFragmentViewModel(
             notesRepository.getNotes(user, folderUUID)
                 .observeOn(Schedulers.io())
                 .subscribeOn(Schedulers.io())
-                .subscribe({ separateNotes(it) },
+                .subscribe(
+                    { separateNotes(it) },
                     { error ->
-                        Crashlytics.logException(error)
                         _loadedNotes.postValue(LoadNotesEvent.Error())
-                    })
+                    },
+                )
                 .addTo(disposeBag)
         } ?: run {
             _loadedNotes.postValue(LoadNotesEvent.NoUserFoundError())

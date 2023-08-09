@@ -8,11 +8,11 @@ import androidx.fragment.app.Fragment
 
 fun <B : ViewDataBinding> AppCompatActivity.setupDataBinding(
     layoutId: Int,
-    vararg variables: Pair<Int, Any>
+    vararg variables: Pair<Int, Any>,
 ): B {
     val dataBinding: B = DataBindingUtil.setContentView(
         this,
-        layoutId
+        layoutId,
     )
     dataBinding.lifecycleOwner = this
     variables.forEach {
@@ -23,7 +23,7 @@ fun <B : ViewDataBinding> AppCompatActivity.setupDataBinding(
 
 fun <B : ViewDataBinding> Fragment.setupDataBinding(
     layoutId: Int,
-    vararg variables: Pair<Int, Any>
+    vararg variables: Pair<Int, Any>,
 ): B {
     val dataBinding: B =
         DataBindingUtil.inflate(LayoutInflater.from(context), layoutId, null, false)

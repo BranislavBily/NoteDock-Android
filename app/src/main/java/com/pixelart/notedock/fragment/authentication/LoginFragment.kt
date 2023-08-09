@@ -1,6 +1,5 @@
 package com.pixelart.notedock.fragment.authentication
 
-
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,40 +13,37 @@ import com.pixelart.notedock.NavigationRouter
 import com.pixelart.notedock.R
 import com.pixelart.notedock.activity.MainActivity
 import com.pixelart.notedock.dataBinding.setupDataBinding
+import com.pixelart.notedock.databinding.FragmentLoginBinding
 import com.pixelart.notedock.domain.livedata.observer.SpecificEventObserver
 import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.viewModel.authentication.LoginEvent
 import com.pixelart.notedock.viewModel.authentication.LoginFragmentViewModel
 import com.pixelart.notedock.viewModel.authentication.SendEmailEvent
-import kotlinx.android.synthetic.main.fragment_login.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LoginFragment : Fragment() {
 
     private val loginFragmentViewModel: LoginFragmentViewModel by viewModel()
 
+    private lateinit var binding: FragmentLoginBinding
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
-        val dataBinding = setupDataBinding<ViewDataBinding>(
+        binding = setupDataBinding(
             R.layout.fragment_login,
-            BR.viewmodel to loginFragmentViewModel
+            BR.viewmodel to loginFragmentViewModel,
         )
         loginFragmentViewModel.lifecycleOwner = this
-        return dataBinding.root
+        return binding.root
     }
 
     override fun onResume() {
         super.onResume()
 
         observeLiveData()
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        editTextLoginPassword.setText("")
     }
 
     private fun goToMainActivity() {
@@ -59,7 +55,6 @@ class LoginFragment : Fragment() {
     }
 
     private fun observeLiveData() {
-
         loginFragmentViewModel.loginCompleted.observe(
             viewLifecycleOwner,
             SpecificEventObserver { event ->
@@ -67,30 +62,41 @@ class LoginFragment : Fragment() {
                     when (event) {
                         is LoginEvent.Success -> goToMainActivity()
                         is LoginEvent.InvalidEmail -> R.string.invalid_email_message.showAsSnackBar(
-                            view
+                            view,
                         )
+
                         is LoginEvent.BadCredentials -> R.string.invalid_credentials_message.showAsSnackBar(
-                            view
+                            view,
                         )
+
                         is LoginEvent.NetworkError -> R.string.network_error_message.showAsSnackBar(
-                            view
+                            view,
                         )
+
                         is LoginEvent.UnknownError -> R.string.error_occurred.showAsSnackBar(view)
                         is LoginEvent.TooManyRequests -> R.string.too_many_requests.showAsSnackBar(
-                            view
+                            view,
                         )
+
                         is LoginEvent.UserEmailNotVerified -> showEmailNotVerifiedSnackBar()
                     }
                 }
-            })
+            },
+        )
 
-        loginFragmentViewModel.forgotPassword.observe(viewLifecycleOwner, SpecificEventObserver {
-            NavigationRouter(view).loginToForgotPassword()
-        })
+        loginFragmentViewModel.forgotPassword.observe(
+            viewLifecycleOwner,
+            SpecificEventObserver {
+                NavigationRouter(view).loginToForgotPassword()
+            },
+        )
 
-        loginFragmentViewModel.createAccount.observe(viewLifecycleOwner, SpecificEventObserver {
-            NavigationRouter(view).loginToRegister()
-        })
+        loginFragmentViewModel.createAccount.observe(
+            viewLifecycleOwner,
+            SpecificEventObserver {
+                NavigationRouter(view).loginToRegister()
+            },
+        )
 
         loginFragmentViewModel.sendEmail.observe(
             viewLifecycleOwner,
@@ -98,20 +104,24 @@ class LoginFragment : Fragment() {
                 view?.let { view ->
                     when (event) {
                         is SendEmailEvent.Success -> R.string.verification_email_sent.showAsSnackBar(
-                            view
+                            view,
                         )
+
                         is SendEmailEvent.UnknownError -> R.string.error_occurred.showAsSnackBar(
-                            view
+                            view,
                         )
+
                         is SendEmailEvent.TooManyRequests -> R.string.too_many_requests.showAsSnackBar(
-                            view
+                            view,
                         )
+
                         is SendEmailEvent.NetworkError -> R.string.network_error_message.showAsSnackBar(
-                            view
+                            view,
                         )
                     }
                 }
-            })
+            },
+        )
     }
 
     private fun showEmailNotVerifiedSnackBar() {
@@ -123,7 +133,3 @@ class LoginFragment : Fragment() {
         }
     }
 }
-
-
-
-

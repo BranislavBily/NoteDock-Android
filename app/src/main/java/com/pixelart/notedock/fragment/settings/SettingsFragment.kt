@@ -1,44 +1,40 @@
 package com.pixelart.notedock.fragment.settings
 
-
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.ViewDataBinding
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
 import com.pixelart.notedock.BR
 import com.pixelart.notedock.NavigationRouter
-
 import com.pixelart.notedock.R
-import com.pixelart.notedock.activity.LoginActivity
 import com.pixelart.notedock.adapter.settings.SettingsAdapter
 import com.pixelart.notedock.dataBinding.setupDataBinding
+import com.pixelart.notedock.databinding.FragmentSettingsBinding
 import com.pixelart.notedock.domain.livedata.observer.EventObserver
 import com.pixelart.notedock.ext.openLoginActivity
-import com.pixelart.notedock.ext.showAsSnackBar
 import com.pixelart.notedock.model.SettingsModel
 import com.pixelart.notedock.viewModel.settings.SettingsFragmentViewModel
-import kotlinx.android.synthetic.main.fragment_settings.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsFragment : Fragment(), SettingsAdapter.OnSettingsClickListener {
 
     private val settingFragmentViewModel: SettingsFragmentViewModel by viewModel()
 
+    private lateinit var dataBinding: FragmentSettingsBinding
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
-        val dataBinding = setupDataBinding<ViewDataBinding>(
+        dataBinding = setupDataBinding(
             R.layout.fragment_settings,
-            BR.viewmodel to settingFragmentViewModel
+            BR.viewmodel to settingFragmentViewModel,
         )
         setHasOptionsMenu(true)
         settingFragmentViewModel.lifecycleOwner = this
@@ -52,10 +48,10 @@ class SettingsFragment : Fragment(), SettingsAdapter.OnSettingsClickListener {
         val settingsAdapter =
             SettingsAdapter(
                 createSettings(),
-                this
+                this,
             )
-        recyclerViewSettings.layoutManager = LinearLayoutManager(context)
-        recyclerViewSettings.adapter = settingsAdapter
+        dataBinding.recyclerViewSettings.layoutManager = LinearLayoutManager(context)
+        dataBinding.recyclerViewSettings.adapter = settingsAdapter
     }
 
     override fun onResume() {
@@ -65,7 +61,7 @@ class SettingsFragment : Fragment(), SettingsAdapter.OnSettingsClickListener {
             user.reload()
                 .addOnFailureListener { error ->
                     if (error is FirebaseNetworkException) {
-                        //All is well
+                        // All is well
                     } else {
                         openLoginActivity()
                     }
@@ -74,14 +70,19 @@ class SettingsFragment : Fragment(), SettingsAdapter.OnSettingsClickListener {
     }
 
     private fun observeLiveData() {
+        settingFragmentViewModel.onBackClicked.observe(
+            this,
+            EventObserver {
+                findNavController().popBackStack()
+            },
+        )
 
-        settingFragmentViewModel.onBackClicked.observe(this, EventObserver {
-            findNavController().popBackStack()
-        })
-
-        settingFragmentViewModel.signedOut.observe(this, EventObserver {
-            openLoginActivity()
-        })
+        settingFragmentViewModel.signedOut.observe(
+            this,
+            EventObserver {
+                openLoginActivity()
+            },
+        )
     }
 
     override fun onSettingClick(setting: SettingsModel) {
@@ -90,9 +91,10 @@ class SettingsFragment : Fragment(), SettingsAdapter.OnSettingsClickListener {
             getString(R.string.changePassword) -> NavigationRouter(view).settingsToChangePassword()
             getString(R.string.rateUs) -> context?.let { context ->
                 NavigationRouter(view).settingsToGooglePlay(
-                    context
+                    context,
                 )
             }
+
             getString(R.string.helpAndSupport) -> NavigationRouter(view).settingsToHelpAndSupport()
             else -> settingFragmentViewModel.logOut()
         }

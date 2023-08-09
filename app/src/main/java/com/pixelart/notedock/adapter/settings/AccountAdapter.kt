@@ -1,15 +1,14 @@
 package com.pixelart.notedock.adapter.settings
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.pixelart.notedock.R
+import com.pixelart.notedock.databinding.AccountListItemBinding
 import com.pixelart.notedock.model.AccountListModel
-import kotlinx.android.synthetic.main.account_list_item.view.*
 
 class AccountAdapter(
-    private val onAccountClickListener: OnAccountClickListener
+    private val onAccountClickListener: OnAccountClickListener,
 ) : RecyclerView.Adapter<AccountAdapter.AccountHolder>() {
 
     private var accountListItems = ArrayList<AccountListModel>()
@@ -20,10 +19,14 @@ class AccountAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AccountHolder {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.account_list_item, parent, false)
+        val binding = AccountListItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false,
+        )
         return AccountHolder(
-            view, onAccountClickListener
+            binding,
+            onAccountClickListener,
         )
     }
 
@@ -35,18 +38,18 @@ class AccountAdapter(
         holder.bindData(accountListItems[position])
     }
 
-
     class AccountHolder(
-        itemView: View, private val onAccountClickListener: OnAccountClickListener
-    ) : RecyclerView.ViewHolder(itemView) {
+        private val binding: AccountListItemBinding,
+        private val onAccountClickListener: OnAccountClickListener,
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bindData(account: AccountListModel) {
-            itemView.textViewAccountTitle.text = account.title
-            itemView.textViewAccountDetail.text = account.description
+            binding.textViewAccountTitle.text = account.title
+            binding.textViewAccountDetail.text = account.description
             if (account.title != "Delete account") {
-                itemView.imageViewAccountIcon.setImageResource(R.drawable.ic_edit)
+                binding.imageViewAccountIcon.setImageResource(R.drawable.ic_edit)
 
-                itemView.imageViewAccountIcon.setOnClickListener {
+                binding.imageViewAccountIcon.setOnClickListener {
                     onAccountClickListener.onAccountClick(account)
                 }
             } else {

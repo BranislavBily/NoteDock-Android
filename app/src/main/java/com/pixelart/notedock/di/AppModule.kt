@@ -5,18 +5,21 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.pixelart.notedock.domain.repository.*
 import com.pixelart.notedock.domain.usecase.folder.*
 import com.pixelart.notedock.domain.usecase.note.*
+import com.pixelart.notedock.viewModel.authentication.LoginFragmentViewModel
+import com.pixelart.notedock.viewModel.authentication.RegisterFragmentViewModel
+import com.pixelart.notedock.viewModel.authentication.ResetPasswordFragmentViewModel
 import com.pixelart.notedock.viewModel.folder.FolderFragmentViewModel
 import com.pixelart.notedock.viewModel.folder.FoldersViewFragmentViewModel
-import com.pixelart.notedock.viewModel.authentication.LoginFragmentViewModel
 import com.pixelart.notedock.viewModel.note.NoteFragmentViewModel
-import com.pixelart.notedock.viewModel.authentication.ResetPasswordFragmentViewModel
-import com.pixelart.notedock.viewModel.authentication.RegisterFragmentViewModel
 import com.pixelart.notedock.viewModel.settings.*
-import org.koin.android.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModelOf
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val viewModelModule = module {
-    //Folder
+    // Folder
     viewModel { (folderUUID: String, folderName: String) ->
         FolderFragmentViewModel(
             folderUUID = folderUUID,
@@ -25,20 +28,11 @@ val viewModelModule = module {
             deleteNoteUseCase = get(),
             createFolderUseCase = get(),
             markNoteUseCase = get(),
-            notesRepository = get()
+            notesRepository = get(),
         )
     }
-    viewModel {
-        FoldersViewFragmentViewModel(
-            folderRepository = get(),
-            auth = FirebaseAuth.getInstance(),
-            createFolderUseCase = get(),
-            folderNameTakenUseCase = get(),
-            deleteFolderUseCase = get(),
-            renameFolderUseCase = get()
-        )
-    }
-    //Note
+    viewModelOf(::FoldersViewFragmentViewModel)
+    // Note
     viewModel { (folderUUID: String, noteUUID: String) ->
         NoteFragmentViewModel(
             folderUUID = folderUUID,
@@ -46,158 +40,54 @@ val viewModelModule = module {
             notesRepository = get(),
             auth = FirebaseAuth.getInstance(),
             deleteNoteUseCase = get(),
-            updateNoteUseCase = get()
+            updateNoteUseCase = get(),
         )
     }
-    //Authentication
-    viewModel {
-        LoginFragmentViewModel(
-            authRepository = get(),
-            auth = FirebaseAuth.getInstance()
-        )
-    }
-    viewModel {
-        RegisterFragmentViewModel(
-            authRepository = get(),
-            auth = FirebaseAuth.getInstance()
-        )
-    }
-    viewModel {
-        ResetPasswordFragmentViewModel(
-            authRepository = get()
-        )
-        //Settings
-    }
-    viewModel {
-        SettingsFragmentViewModel(
-            auth = FirebaseAuth.getInstance()
-        )
-    }
-    viewModel {
-        AccountSettingsViewModel(
-            auth = FirebaseAuth.getInstance()
-        )
-    }
-    viewModel {
-        ChangePasswordViewModel(
-            auth = FirebaseAuth.getInstance(),
-            authRepository = get()
-        )
-    }
-    viewModel {
-        HelpAndSupportViewModel()
-    }
+    // Authentication
+    viewModelOf(::LoginFragmentViewModel)
+    viewModelOf(::RegisterFragmentViewModel)
+    viewModelOf(::ResetPasswordFragmentViewModel)
 
-    viewModel {
-        ChangeEmailViewModel(
-            auth = FirebaseAuth.getInstance(),
-            authRepository = get()
-        )
-    }
-
-    viewModel {
-        DeleteAccountViewModel(
-            auth = FirebaseAuth.getInstance(),
-            authRepository = get()
-        )
-    }
+    // Settings
+    viewModelOf(::SettingsFragmentViewModel)
+    viewModelOf(::AccountSettingsViewModel)
+    viewModelOf(::ChangePasswordViewModel)
+    viewModelOf(::HelpAndSupportViewModel)
+    viewModelOf(::ChangeEmailViewModel)
+    viewModelOf(::DeleteAccountViewModel)
 }
 
 val firebaseModule = module {
-    //Repository
-    single { FirebaseIDSImpl() as FirebaseIDSRepository }
-    single {
-        FolderRepositoryImpl(
-            firebaseIDSRepository = get(),
-            folderModelFromDocumentSnapshotUseCase = get(),
-            folderModelFromDocumentUseCase = get(),
-            firebaseInstance = FirebaseFirestore.getInstance()
-        ) as FolderRepository
-    }
-    single {
-        NotesRepositoryImpl(
-            firebaseIDSRepository = get(),
-            firebaseInstance = FirebaseFirestore.getInstance(),
-            noteModelFromDocumentSnapshotUseCase = get()
-        ) as NotesRepository
-    }
+    // Repository
+    single<FirebaseIDSRepository> { FirebaseIDSImpl() }
 
-    //UseCase Folder
     single {
-        FolderModelFromDocumentImpl(
-            firebaseIDSRepository = get()
-        ) as FolderModelFromDocumentUseCase
-    }
-    single {
-        FolderModelFromDocumentSnapshotImpl(
-            firebaseIDSRepository = get()
-        ) as FolderModelFromDocumentSnapshotUseCase
-    }
-    single {
-        CreateFolderImpl(
-            firebaseIDSRepository = get(),
-            firebaseInstance = FirebaseFirestore.getInstance()
-        ) as CreateFolderUseCase
-    }
-    single {
-        DeleteFolderImpl(
-            firebaseIDSRepository = get(),
-            firebaseInstance = FirebaseFirestore.getInstance()
-        ) as DeleteFolderUseCase
-    }
-    single {
-        FolderNameTakenImpl(
-            firebaseFirestore = FirebaseFirestore.getInstance(),
-            firebaseIDSRepository = get()
-        ) as FolderNameTakenUseCase
-    }
-    single {
-        RenameFolderImpl(
-            firebaseIDSRepository = get(),
-            firebaseInstance = FirebaseFirestore.getInstance()
-        ) as RenameFolderUseCase
-    }
-    //Note
-    single {
-        CreateNoteImpl(
-            firebaseIDSRepository = get(),
-            firebaseInstance = FirebaseFirestore.getInstance()
-        ) as CreateNoteUseCase
-    }
-    single {
-        DeleteNoteImpl(
-            firebaseIDSRepository = get(),
-            firebaseInstance = FirebaseFirestore.getInstance()
-        ) as DeleteNoteUseCase
-    }
-    single {
-        NoteModelFromQueryDocumentSnapshotImpl(
-            firebaseIDSRepository = get()
-        ) as NoteModelFromQueryDocumentSnapshotUseCase
-    }
-    single {
-        NoteModelFromDocumentSnapshotImpl(
-            firebaseIDSRepository = get()
-        ) as NoteModelFromDocumentSnapshotUseCase
-    }
-    single {
-        UpdateNoteImpl(
-            firebaseIDSRepository = get(),
-            firebaseInstance = FirebaseFirestore.getInstance()
-        ) as UpdateNoteUseCase
+        FirebaseFirestore.getInstance()
     }
 
     single {
-        MarkNoteImpl(
-            firebaseIDSRepository = get(),
-            firebaseInstance = FirebaseFirestore.getInstance()
-        ) as MarkNoteUseCase
+        FirebaseAuth.getInstance()
     }
 
-    //Authentication
-    single {
-        AuthRepositoryImpl(
-            auth = FirebaseAuth.getInstance()
-        ) as AuthRepository
-    }
+    singleOf(::FolderRepositoryImpl) bind FolderRepository::class
+    singleOf(::NotesRepositoryImpl) bind NotesRepository::class
+
+    // UseCase Folder
+    singleOf(::FolderModelFromDocumentImpl) bind FolderModelFromDocumentUseCase::class
+    singleOf(::FolderModelFromDocumentSnapshotImpl) bind FolderModelFromDocumentSnapshotUseCase::class
+    singleOf(::CreateFolderImpl) bind CreateFolderUseCase::class
+    singleOf(::DeleteFolderImpl) bind DeleteFolderUseCase::class
+    singleOf(::FolderNameTakenImpl) bind FolderNameTakenUseCase::class
+    singleOf(::RenameFolderImpl) bind RenameFolderUseCase::class
+
+    // Note
+    singleOf(::CreateNoteImpl) bind CreateNoteUseCase::class
+    singleOf(::DeleteNoteImpl) bind DeleteNoteUseCase::class
+    singleOf(::NoteModelFromQueryDocumentSnapshotImpl) bind NoteModelFromQueryDocumentSnapshotUseCase::class
+    singleOf(::NoteModelFromDocumentSnapshotImpl) bind NoteModelFromDocumentSnapshotUseCase::class
+    singleOf(::UpdateNoteImpl) bind UpdateNoteUseCase::class
+    singleOf(::MarkNoteImpl) bind MarkNoteUseCase::class
+
+    // Authentication
+    singleOf(::AuthRepositoryImpl) bind AuthRepository::class
 }
